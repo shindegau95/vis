@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 06 · Design System (plain) · 2026-05-23</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-good: #1F7A4A;
+    --gc-avoid: #B53A1A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --gc-shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(255,106,0,0.12);
+      --gc-good: #6BD49A;
+      --gc-avoid: #F58A6A;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg);
+    color: var(--gc-text);
+    line-height: 1.65;
+    font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page { padding-bottom: 22px; margin-bottom: 28px; border-bottom: 1px solid var(--gc-border); }
+  header.page .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 600; color: var(--vis-amber-primary); }
+  header.page h1 { margin: 6px 0 2px; font-size: 28px; font-weight: 600; letter-spacing: -0.015em; }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract { margin-top: 12px; font-size: 14.5px; color: var(--gc-text-muted); max-width: 760px; }
+
+  h2 { margin: 32px 0 10px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  h3 { margin: 16px 0 6px; font-size: 16px; font-weight: 600; }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 6px 0; }
+  strong { color: var(--vis-amber-primary); }
+  em { color: var(--gc-text-muted); font-style: italic; }
+
+  .glossary {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-deep);
+    border-radius: 14px;
+    padding: 18px 22px;
+    box-shadow: var(--gc-shadow-card);
+    margin-top: 12px;
+  }
+  .glossary h3 { margin: 0 0 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--vis-amber-deep); }
+  .glossary dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: 14px; }
+  .glossary dt { font-weight: 600; color: var(--vis-amber-primary); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; padding-top: 1px; }
+  .glossary dd { margin: 0; color: var(--gc-text); }
+
+  .decision-card {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    box-shadow: var(--gc-shadow-card);
+    margin-top: 16px;
+  }
+  .decision-card.recommended {
+    border-color: var(--vis-amber-primary);
+    box-shadow:
+      0 0 0 1px var(--vis-amber-primary) inset,
+      0 0 20px rgba(255,106,0,0.10),
+      var(--gc-shadow-card);
+  }
+  .decision-card .pill {
+    display: inline-block;
+    background: rgba(224,99,19,0.10); color: var(--vis-amber-primary);
+    border-radius: 999px; padding: 3px 10px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .decision-card h3 { margin: 0 0 4px; font-size: 17px; }
+  .decision-card .lede { color: var(--gc-text-muted); font-size: 14px; }
+
+  .pro-con { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px; }
+  @media (max-width: 700px) { .pro-con { grid-template-columns: 1fr; } }
+  .pro-con .col h4 {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 4px;
+  }
+  .pro-con .col.pros h4 { color: var(--gc-good); }
+  .pro-con .col.cons h4 { color: var(--gc-avoid); }
+  .pro-con ul { font-size: 13.5px; margin: 0; padding-left: 18px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  th {
+    font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--gc-text-muted);
+    border-bottom: 1px solid var(--vis-amber-primary);
+    background: rgba(255,106,0,0.02);
+  }
+  tbody tr:hover { background: rgba(255,106,0,0.04); }
+
+  .watch-block {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-primary);
+    border-radius: 14px;
+    padding: 16px 22px;
+    box-shadow: var(--gc-shadow-card);
+    margin-top: 16px;
+  }
+  .watch-block h3 { margin: 0 0 6px; font-size: 16px; }
+
+  footer.cta {
+    margin-top: 40px; padding: 20px 22px;
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 16px; box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: rgba(196,81,0,0.08); color: var(--vis-amber-primary); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 06 · plain-language version</div>
+  <h1>Design system choice — explained, no jargon</h1>
+  <div class="meta">2026-05-23 · Author: Gauravprakashshinde · Rendered after jargon callout</div>
+  <div class="abstract">
+    The choice in front of you: what set of building blocks sits <em>under</em> Vis's custom-built orb / Equipment-Aware Logger / PR Moment components, doing the boring-but-critical work (dialogs, focus management, accessibility, theme switching). Three paths. Every term defined below before you decide.
+  </div>
+</header>
+
+<section>
+  <h2>Glossary — the terms you'll see in this doc</h2>
+  <div class="glossary">
+    <h3>If you already know it, skim. If you don't, every term is one sentence.</h3>
+    <dl>
+      <dt>React Native (RN)</dt>
+      <dd>Meta's framework for writing iOS + Android apps in JavaScript / React. You write React code; it renders as real native iOS and Android UI (not webview). You already know React — RN is the same mental model.</dd>
+
+      <dt>Expo</dt>
+      <dd>A toolkit on top of React Native that makes setup easier and adds OTA updates + simpler access to phone hardware (camera, push notifications, etc).</dd>
+
+      <dt>OTA (Over-the-Air) update</dt>
+      <dd>Pushing a JavaScript fix to users' phones <em>without</em> going through Apple's / Google's app-store review (which takes a day or more). You ship a bug fix → users get it on next app open. Only works for JS/CSS changes; native code still needs store review.</dd>
+
+      <dt>WCAG 2.1 AA</dt>
+      <dd>The international standard for making apps usable by people with disabilities — text contrast ≥ 4.5:1, screen-reader labels on everything tappable, keyboard navigation, no flashing animations. "AA" is the level Vis targets (industry baseline). Required for India DPDPA + EU GDPR + good practice.</dd>
+
+      <dt>a11y</dt>
+      <dd>Short for "accessibility" — the 11 letters between "a" and "y." Same idea as WCAG-compliance, just shorter.</dd>
+
+      <dt>Tamagui</dt>
+      <dd>A UI toolkit for React Native (and the web). The key feature for Vis: its theme tokens (color + font definitions) look <em>exactly</em> like the two-layer token system we locked in step-05. Swapping themes (light/dark, or future user accent presets) is one config change instead of dozens of component rewrites.</dd>
+
+      <dt>Tailwind CSS</dt>
+      <dd>A way to style web pages by writing short class names (<code>bg-amber-500</code>, <code>p-4</code>) instead of writing CSS files. Used on the Angular admin web. Lets the admin styling stay in sync with the same Vis tokens.</dd>
+
+      <dt>Angular CDK (Component Dev Kit)</dt>
+      <dd>An Angular library of unstyled, accessibility-correct building blocks: dialogs, focus traps, overlays, drag-and-drop. <em>Headless</em> means it does the hard a11y work but doesn't impose any visual design. You style it yourself to match Vis.</dd>
+
+      <dt>Reanimated 3</dt>
+      <dd>React Native's animation library. Runs animations on the phone's native graphics thread instead of JavaScript — animations don't stutter while the app does other work (loading data, etc). Needed for smooth Equipment-Aware Logger gestures (drag the pin, snap a plate).</dd>
+
+      <dt>Lucide</dt>
+      <dd>An open-source icon set with line-style restrained icons. Has both a React Native version and an Angular version, so all three apps use the same icons.</dd>
+
+      <dt>Flutter / Dart</dt>
+      <dd>Google's competing framework — write phone apps in the Dart language; one codebase for iOS + Android. You don't know Dart, so switching costs time you'd save elsewhere.</dd>
+
+      <dt>Kotlin Multiplatform (KMP) + Compose</dt>
+      <dd>JetBrains' competing approach — write business logic in Kotlin once, ship to iOS + Android + Wear OS. Strong on Wear OS. You don't know Kotlin.</dd>
+
+      <dt>SwiftUI</dt>
+      <dd>Apple's official framework. Required by Apple for Apple Watch apps starting watchOS 10+. No way around it for Watch.</dd>
+
+      <dt>Wear OS</dt>
+      <dd>Google's smartwatch operating system. Watches from Samsung, Google Pixel Watch, OnePlus, etc. Apps written in Kotlin + Compose.</dd>
+    </dl>
+  </div>
+</section>
+
+<section>
+  <h2>The Apple Watch / Wear OS reality (read this first)</h2>
+  <div class="watch-block">
+    <h3>No framework gives you "one codebase for phone + watch." Anyone who claims otherwise is selling something.</h3>
+    <ul>
+      <li><strong>Apple Watch</strong> = SwiftUI required by Apple. React Native, Flutter, Kotlin Multiplatform — none of them work on Watch in production. This is Apple's rule, not a framework limitation.</li>
+      <li><strong>Wear OS</strong> = Kotlin + Compose is the official path. Flutter has limited beta support. RN doesn't work on Wear OS.</li>
+      <li><strong>What you actually share across platforms:</strong> the backend API and the data models. Phone app, Watch app, and Wear OS app all talk to the same Spring Boot backend with the same data shape. The <em>UI</em> is built per platform; the <em>logic</em> is shared.</li>
+      <li><strong>How Strava, Trainerize, Bevel do it:</strong> Phone in React Native or native Swift/Kotlin. Watch in SwiftUI (separate codebase). Wear OS in Compose (separate codebase). All three consume the same REST or GraphQL API.</li>
+    </ul>
+    <p style="margin-top: 10px;"><strong>Implication for Vis:</strong> if you eventually want Watch + Wear OS (PRD §6.2 lists this as v2), you will ship <em>additional</em> codebases for them no matter what framework you pick for the phone today. So the framework choice today is about phone + admin web — not about Watch.</p>
+  </div>
+</section>
+
+<section>
+  <h2>The three paths — re-explained plainly</h2>
+  <p>What you're picking: <strong>which library sits under Vis's custom orb / logger / PR Moment components, doing dialogs, focus, accessibility, and theme switching.</strong></p>
+
+  <div class="decision-card recommended">
+    <span class="pill">★ Recommended</span>
+    <h3>Path B — Tamagui (RN) + Tailwind + Angular CDK (web)</h3>
+    <p class="lede">Stay on React Native + Angular (your current skills). Add Tamagui underneath the React Native code for theming + ready-made dialogs. Add Tailwind + Angular CDK underneath the admin web. Your custom Vis components (orb, logger, PR Moment) sit on top.</p>
+    <div class="pro-con">
+      <div class="col pros">
+        <h4>Pros</h4>
+        <ul>
+          <li>Uses skills you already have (React, Angular)</li>
+          <li>Tamagui's theme system maps 1-to-1 to the Vis token system we locked in step-05</li>
+          <li>Theme swap (light/dark, future accent presets) is one config change</li>
+          <li>Angular CDK handles the boring a11y work (focus traps, screen-reader labels) for free</li>
+          <li>Faster to v1 than building everything yourself</li>
+          <li>When you add Watch in v2, this stack survives — Watch is separate code regardless</li>
+        </ul>
+      </div>
+      <div class="col cons">
+        <h4>Cons</h4>
+        <ul>
+          <li>Tamagui has a learning curve (~1-2 weeks for fluency)</li>
+          <li>Tailwind + Tamagui = two slightly different styling languages (one for RN, one for web). Bridged by shared token file.</li>
+          <li>Need to maintain the Lucide icon library port for both React Native and Angular</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="decision-card">
+    <h3>Path A — Pure custom (no UI library underneath)</h3>
+    <p class="lede">Stay on React Native + Angular but build <em>every</em> primitive yourself from scratch — every dialog, every focus trap, every overlay. Maximum control. Maximum cost.</p>
+    <div class="pro-con">
+      <div class="col pros">
+        <h4>Pros</h4>
+        <ul>
+          <li>Zero risk of a library "leaking through" your custom brand</li>
+          <li>No vendor lock-in</li>
+          <li>Smallest app bundle size</li>
+        </ul>
+      </div>
+      <div class="col cons">
+        <h4>Cons</h4>
+        <ul>
+          <li>You hand-roll all a11y / WCAG work — months of effort, risk of failing the standard</li>
+          <li>Slowest to v1 — every dialog, modal, focus trap from scratch</li>
+          <li>Tests, bug fixes, edge cases all on your team forever</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="decision-card">
+    <h3>Path C — Off-the-shelf libraries (React Native Paper + Angular Material)</h3>
+    <p class="lede">Fastest to start. But these libraries impose <em>Google's Material Design</em> visual style. Vis's cinematic amber aesthetic actively fights that. You'd spend time overriding every default to look like Vis, eating back the speed gain.</p>
+    <div class="pro-con">
+      <div class="col pros">
+        <h4>Pros</h4>
+        <ul>
+          <li>Largest off-the-shelf component coverage</li>
+          <li>Mature accessibility</li>
+          <li>Fastest initial scaffold</li>
+        </ul>
+      </div>
+      <div class="col cons">
+        <h4>Cons</h4>
+        <ul>
+          <li>Material Design looks <em>nothing</em> like Vis — every component needs heavy restyling</li>
+          <li>Brand-dilution risk: "looks like every other Material app"</li>
+          <li>Overriding Material themes is harder than building custom on Path B's foundation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>One-row comparison</h2>
+  <table>
+    <thead>
+      <tr><th>Factor</th><th>Path A (Pure custom)</th><th>Path B (Tamagui — Recommended)</th><th>Path C (Material libraries)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Time to first usable v1</td><td>slowest</td><td>fast</td><td>fastest to scaffold, slowest to brand</td></tr>
+      <tr><td>How "Vis" it looks out of the box</td><td>exactly Vis</td><td>brand layer is custom; primitives invisible</td><td>looks like Material until you restyle</td></tr>
+      <tr><td>Accessibility work for you</td><td>you build it all</td><td>mostly free from CDK + Tamagui</td><td>mostly free from Material</td></tr>
+      <tr><td>Theme switching (light/dark + future accent)</td><td>you wire it yourself</td><td>one config change</td><td>works but spec-heavy</td></tr>
+      <tr><td>Skills you need to learn</td><td>nothing new (just deeper React)</td><td>Tamagui (~1-2 weeks)</td><td>Material theming conventions</td></tr>
+      <tr><td>Survives a future Watch addition</td><td>yes — Watch is separate anyway</td><td>yes — same reason</td><td>yes — same reason</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer class="cta">
+  <strong>Question for you:</strong> with the terms defined and the Apple Watch reality clear, which path fits? My recommendation stays <strong>Path B (Tamagui + Tailwind + Angular CDK)</strong> — fastest path that doesn't fight your brand. But ask if anything is still unclear before deciding.
+</footer>
+
+</div>
+</body>
+</html>

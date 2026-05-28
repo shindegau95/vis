@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 03 Party-Mode Critique · 2026-05-22</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --vis-cream: #FFF3E8;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --vis-cream: #1A1310;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --gc-shadow-soft: 0 2px 8px rgba(0,0,0,0.4), 0 12px 28px -8px rgba(255,106,0,0.10);
+      --gc-shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(255,106,0,0.12);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg);
+    color: var(--gc-text);
+    line-height: 1.65;
+    font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page {
+    display: flex; flex-direction: column; gap: 4px;
+    padding-bottom: 24px; margin-bottom: 30px;
+    border-bottom: 1px solid var(--gc-border);
+  }
+  header.page .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 11px; font-weight: 600;
+    color: var(--vis-amber-primary);
+  }
+  header.page h1 {
+    margin: 6px 0 2px;
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract {
+    margin-top: 14px;
+    font-size: 14.5px; color: var(--gc-text-muted);
+    max-width: 760px;
+  }
+  h2 {
+    margin: 36px 0 12px;
+    font-size: 19px; font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  h3 { margin: 18px 0 8px; font-size: 15.5px; font-weight: 600; }
+
+  /* Decision pillar cards */
+  .decision-grid {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    margin-top: 14px;
+  }
+  .decision {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    box-shadow: var(--gc-shadow-card);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .decision.recommended {
+    border-color: var(--vis-amber-primary);
+    box-shadow:
+      0 0 0 1px var(--vis-amber-primary) inset,
+      0 0 20px rgba(255,106,0,0.10),
+      var(--gc-shadow-card);
+  }
+  .decision .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    align-self: flex-start;
+    background: rgba(224,99,19,0.10);
+    color: var(--vis-amber-primary);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .decision h3 { margin: 0; font-size: 16px; }
+  .decision .body { color: var(--gc-text-muted); font-size: 13.5px; line-height: 1.55; }
+  .decision .label { font-size: 12.5px; font-weight: 600; color: var(--vis-amber-primary); margin-top: 2px; }
+
+  /* Consensus block */
+  .consensus {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    padding: 18px 22px;
+    box-shadow: var(--gc-shadow-card);
+    margin-top: 12px;
+  }
+  .consensus h3 { margin-top: 8px; margin-bottom: 4px; color: var(--vis-amber-primary); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .consensus ul { margin: 4px 0 12px; padding-left: 22px; }
+  .consensus li { margin: 4px 0; }
+  .tension {
+    background: linear-gradient(180deg, rgba(255,106,0,0.05), rgba(255,106,0,0));
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-primary);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 14px;
+  }
+  .tension strong { color: var(--vis-amber-primary); }
+
+  /* Agent voices */
+  .agent {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 14px;
+    padding: 4px 18px;
+    margin: 10px 0;
+    box-shadow: var(--gc-shadow-soft);
+  }
+  .agent summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 14px 0;
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 600; font-size: 15.5px;
+  }
+  .agent summary::-webkit-details-marker { display: none; }
+  .agent summary::after {
+    content: "▾";
+    margin-left: auto;
+    color: var(--gc-text-muted);
+    transition: transform 0.2s ease;
+  }
+  .agent[open] summary::after { transform: rotate(180deg); }
+  .agent .avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--vis-amber-highlight) 0%, transparent 20%),
+                radial-gradient(circle at 50% 70%, var(--vis-amber-primary) 0%, var(--vis-amber-deep) 60%, var(--vis-amber-shadow) 100%);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    box-shadow: 0 0 12px rgba(255, 106, 0, 0.25);
+    flex-shrink: 0;
+  }
+  .agent .role {
+    font-weight: 400;
+    font-size: 12.5px;
+    color: var(--gc-text-muted);
+    margin-left: 2px;
+  }
+  .agent-body { padding: 0 0 16px; }
+  .agent-body ul { padding-left: 22px; }
+  .agent-body li { margin: 6px 0; }
+  .agent-body strong { color: var(--vis-amber-primary); }
+  .agent-body p { margin: 8px 0; }
+
+  /* Edit table */
+  table.edits {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 14px;
+  }
+  table.edits th, table.edits td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--gc-border);
+    vertical-align: top;
+  }
+  table.edits th {
+    font-weight: 600; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--gc-text-muted);
+    border-bottom: 1px solid var(--vis-amber-primary);
+  }
+  table.edits td.action {
+    width: 92px;
+    font-weight: 600;
+    color: var(--vis-amber-primary);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  table.edits tbody tr:hover { background: rgba(255,106,0,0.04); }
+  table.edits .target {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    color: var(--vis-amber-primary);
+    background: rgba(196,81,0,0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-right: 6px;
+  }
+
+  .agree-row {
+    display: inline-flex; gap: 4px;
+    background: rgba(224,99,19,0.10);
+    color: var(--vis-amber-primary);
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 11px; font-weight: 600;
+  }
+
+  footer.cta {
+    margin-top: 40px;
+    padding: 20px 22px;
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: rgba(196,81,0,0.08);
+    color: var(--vis-amber-primary);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 03 · Party-Mode Critique</div>
+  <h1>Critique of Core User Experience draft</h1>
+  <div class="meta">2026-05-22 · Author: Gauravprakashshinde · Attendees: 🎨 Sally · 📋 John · 🏗️ Winston · 📊 Mary</div>
+  <div class="abstract">
+    Four BMad agents critiqued the proposed step-03 content (§1 Core Loop · §2 Platform · §3 Effortless Interactions · §4 Success Moments · §5 Principles). Strong cross-agent agreement that the core loop reads as a generic solo-lifter loop, several SMs are uncovered, and three principles are platitudes. Below: 4 decision options, consensus, two tensions, full edit table, and each agent's unabridged take.
+  </div>
+</header>
+
+<section>
+  <h2>Pick one to proceed</h2>
+  <div class="decision-grid">
+
+    <div class="decision recommended">
+      <span class="pill">★ Recommended</span>
+      <div class="label">Option 1 · Full apply</div>
+      <h3>Apply consensus + Mary's core-loop rewrite</h3>
+      <div class="body">
+        Rewrite §1 core loop to lead with multi-actor co-edit (Mary). Name prefill source (Sally). Add Onboarding + Audit-log + PR-share success moments; drop or tie PT-renewal to SM-2 (John). Reclassify AI-accept + reconcile as async with skeleton state (Winston). Rewrite Principles #3 + #6 as testable rules; cut #4 vagueness; name data source per orb state (all 4 agents). Add abandonment flow + mis-logged-set undo + handoff between back-to-back clients + Admin-vs-mobile write-conflict rule (Sally). Add FCM token lifecycle, deep-link strategy, OAuth cold-start, notification priming, single-region IN residency, AI cost primitive (Winston + John).
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 2 · Consensus only</div>
+      <h3>Apply consensus, keep solo-framed core loop</h3>
+      <div class="body">
+        All consensus edits (moments, principles, platform NFRs, AI-latency reclassification, missing flows). But keep §1 core loop as solo-framed with an added line about co-edit as secondary loop. Skip Mary's full §1 rewrite.
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 3 · Cherry-pick</div>
+      <h3>You name which recs to apply</h3>
+      <div class="body">
+        I'll walk you through the 15 concrete edits below and you mark in/out. Slower but precise.
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 4 · Ignore feedback</div>
+      <h3>Save Core Experience as drafted</h3>
+      <div class="body">
+        Commit the preview content unchanged, advance to step-04 (Emotional Response). Party-mode session logged in this HTML for future reference.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>Where all four agents agreed</h2>
+  <div class="consensus">
+    <h3>Strong consensus</h3>
+    <ul>
+      <li><strong>§1 Core loop under-sells the moat.</strong> Reads as the Fitbod / Hevy / Strong solo loop. Mary, Sally, John all push to add a multi-actor framing — "Trainer and client touch the same set; the set knows who wrote it." Sally adds: name the prefill source (QR / NFC / trainer plan / last-session memory). John adds: "logged by either trainer or client."</li>
+      <li><strong>§4 Success Moments missing 3 SMs.</strong> SM-6 Onboarding completion ≥60% D90 has no moment (only "QR onboarding" appears in §3 Effortless). SM-8 Owner audit-log query ≥2/week is implied but not surfaced. SM-5 PR Card share is in detection, not in share — leaving SM-C10 (no-share &gt; 80%) unmapped. Add 2–3 moments; consider dropping PT-renewal D28 or tying it to SM-2 (no PRD SM covers renewal directly).</li>
+      <li><strong>§3 Effortless overstates AI accept latency.</strong> Claude proxy cold path is 2–6 s; "effortless" tier needs reclassification — either move AI-accept to a Success Moment with optimistic-UI skeleton, or state explicitly "AI ghost appears async; accept is local-instant after it lands." Same caveat on offline reconcile (5 s drain, not instant; orb conveys effortlessness, not real latency).</li>
+      <li><strong>§5 Principles — three are unfalsifiable.</strong> "No typing in happy path," "Branch-scope chip glanceable," and "Offline orb doesn't lie" are verifiable. Rewrite needed: "Visible presence + provenance" → "every co-edited row shows actor avatar + timestamp within 500 ms." "Earned over celebrated" → "celebration UI only fires post-server-confirm, never on optimistic write." "One icon layered semantic" — either rewrite with data sources or cut. Each orb state must name its signal (<code>recovery_score</code>, <code>session_active</code>, <code>offline_queue_depth</code>, <code>auth.claims.branch_id</code>).</li>
+      <li><strong>§2 Platform gaps in cross-app/backend seam.</strong> FCM token lifecycle UX, Universal Links + App Links + fallback HTTPS handler, OAuth cold-start handling, notification permission priming, single-region IN data residency stated as UX promise, AI cost ceiling as platform primitive (not just metric), audit-log retention window, offline-save local ack latency.</li>
+      <li><strong>Missing flows.</strong> Sally calls out 3 unscoped flows: (a) abandonment / skipped prescribed set, (b) correcting a mis-logged committed set (undo/edit), (c) trainer handoff between back-to-back clients (fat-finger risk). Add Admin-vs-mobile write-conflict rule for §2 (Admin advisory until session close, OR Admin locks row — pick one).</li>
+      <li><strong>First Co-Edit moment fragility (Winston).</strong> Add explicit "co-edit live" vs "co-edit catching up" UI state tied to <code>ws.readyState</code>; gate the success-moment telemetry on <code>ws.readyState === OPEN && peer_presence === true</code>. Polling-fallback is silent degradation otherwise.</li>
+    </ul>
+  </div>
+
+  <div class="tension">
+    <strong>Tension #1 · How aggressively to rewrite §1 core loop.</strong>
+    <p style="margin: 6px 0 0;">Mary wants a full strategic rewrite: lead with co-edit, demote solo-log to secondary. Sally + John want incremental tightening: name prefill source + "either trainer or client" + 2-tap trigger. The full rewrite makes the doc threaten Trainerize; the incremental keeps the solo Greyjoy persona's framing intact. Option 1 = Mary's rewrite. Option 2 = incremental.</p>
+  </div>
+
+  <div class="tension">
+    <strong>Tension #2 · Cut or rewrite Principle #4 ("One icon, layered semantic")?</strong>
+    <p style="margin: 6px 0 0;">John says "what does this even mean — drop or rewrite." Sally says collapse into #3. Mary calls it craft platitude. Winston wants it tightened with named signals per state. <strong>Recommendation in Option 1:</strong> rewrite as "Orb state changes are backed by a named signal (<code>session_active</code>, <code>offline_queue_depth</code>, <code>recovery_score</code>, <code>auth.claims.branch_id</code>); decoration without data is forbidden." If user prefers cut, drop and consolidate into Principle #6 (offline orb).</p>
+  </div>
+</section>
+
+<section>
+  <h2>15 concrete edits proposed (cross-agent)</h2>
+  <table class="edits">
+    <thead>
+      <tr>
+        <th>Action</th>
+        <th>Where</th>
+        <th>What</th>
+        <th>Agreed by</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="action">Rewrite</td>
+        <td><span class="target">§1</span></td>
+        <td>Lead core loop with multi-actor: "Trainer and client touch the same set; the set knows who wrote it." Demote solo-log to secondary loop. Name prefill source (QR / NFC / plan / last-session memory).</td>
+        <td><span class="agree-row">Sally · John · Mary</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§1</span></td>
+        <td>Abandonment loop — what happens when a prescribed set is skipped. First-class flow, not error path.</td>
+        <td><span class="agree-row">Sally</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§2</span></td>
+        <td>FCM token lifecycle UX (re-link device after reinstall/restore), Universal Links + App Links + fallback HTTPS handler, OAuth cold-start from email-link/redirect, notification permission priming screen (one-shot iOS).</td>
+        <td><span class="agree-row">Winston</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§2</span></td>
+        <td>Single-region IN data residency stated as UX promise (no EU/US trainers v1). AI cost ceiling as platform-level primitive (not just metric). Audit-log retention window tied to SM-8. Offline-save local ack latency ("queued-save ack ≤ 100 ms local").</td>
+        <td><span class="agree-row">Winston · John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§2</span></td>
+        <td>Admin-Web ↔ mobile Co-Edit write conflict resolution rule. Pick: Admin writes are advisory until trainer's session closes, OR Admin writes lock the row. Document the choice.</td>
+        <td><span class="agree-row">Sally</span></td>
+      </tr>
+      <tr>
+        <td class="action">Reclassify</td>
+        <td><span class="target">§3</span></td>
+        <td>AI suggestion accept — move from "effortless" to a Success Moment with optimistic-UI skeleton (Claude cold path 2–6 s breaks the effortless promise). Or state explicitly "ghost appears async; accept is local-instant after."</td>
+        <td><span class="agree-row">Winston · Sally · Mary</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§3</span></td>
+        <td>"Correcting a mis-logged set" — undo / edit on a committed Set row. Happens 10× more than voice fallback.</td>
+        <td><span class="agree-row">Sally</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§3</span></td>
+        <td>"Trainer-client handoff between back-to-back clients" — explicit affordance so trainers don't fat-finger the wrong client's log.</td>
+        <td><span class="agree-row">Sally</span></td>
+      </tr>
+      <tr>
+        <td class="action">Cut</td>
+        <td><span class="target">§3</span></td>
+        <td>Trim "PR detect," "What's next," "AI accept" claims as Vis-effortless (Fitbod / Boostcamp / RP all deliver these at parity). Demote to "table-stakes effortless" or remove. The genuinely-Vis items are Identity switch, Prescribed-vs-actual (only meaningful with live prescriber), and Offline reconcile in co-edit context.</td>
+        <td><span class="agree-row">Mary</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§4</span></td>
+        <td>"First Completed Onboarding D0" mapped to SM-6 + SM-C8.</td>
+        <td><span class="agree-row">John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§4</span></td>
+        <td>"First PR Share to external platform" mapped to SM-5 + SM-C10. Decoupled from detection.</td>
+        <td><span class="agree-row">John · Mary</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§4</span></td>
+        <td>"First Audit-Log Query (Owner)" mapped to SM-8. Currently uncovered.</td>
+        <td><span class="agree-row">John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Drop/Swap</td>
+        <td><span class="target">§4</span></td>
+        <td>"First PT-Renewal D28" has no direct SM. Either tie explicitly to SM-2 (D7 retention proxy) or drop in favour of Audit-Log moment.</td>
+        <td><span class="agree-row">John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Constrain</td>
+        <td><span class="target">§4</span></td>
+        <td>First Co-Edit moment: gate telemetry on <code>ws.readyState === OPEN && peer_presence === true</code>; add explicit "co-edit live" vs "co-edit catching up" UI state.</td>
+        <td><span class="agree-row">Winston</span></td>
+      </tr>
+      <tr>
+        <td class="action">Rewrite</td>
+        <td><span class="target">§5</span></td>
+        <td>Principle #2 "Visible presence + provenance" → "every co-edited row shows actor avatar + timestamp within 500 ms." Principle #3 "Earned over celebrated" → "celebration UI only fires post-server-confirm, never on optimistic write." Principle #4 "One icon, layered semantic" → name signals per state (<code>session_active</code>, <code>offline_queue_depth</code>, <code>recovery_score</code>, <code>auth.claims.branch_id</code>), or cut.</td>
+        <td><span class="agree-row">Sally · John · Winston · Mary</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Each agent's full take</h2>
+
+  <details class="agent">
+    <summary>
+      <span class="avatar">🎨</span>
+      Sally — UX Designer
+      <span class="role">interaction grammar · gesture vocab · thumb zones · accessibility</span>
+    </summary>
+    <div class="agent-body">
+      <p><strong>§1 — Core loop is half-framed.</strong> "Open the app at the equipment" skips the hardest moment: which equipment, which exercise, which set number. The logger doesn't open in a vacuum. Reframe: "Arrive at equipment → app already knows which lift + which set → confirm or override → done." Without naming the prefill source (QR? NFC? trainer plan? last-session memory?), the FR-8 fidelity claim is hand-waved. Also missing: the abandonment loop — what happens when the member skips a prescribed set. First-class flow, not error path.</p>
+      <p><strong>§2 — Two real gaps.</strong> (a) Trainer App "8 sessions/day context-switch" doesn't name the handoff interaction between back-to-back clients. That's where trainers fat-finger the wrong client's log. Needs an explicit "client handoff" affordance. (b) Mobile/web seam understated — when Staff edits a session in Admin Web while Trainer is mid-Co-Edit on mobile, who wins? "Admin no real-time v1" hand-waves a write-conflict the trainer sees as data loss. Pick a rule: Admin writes advisory until session closes, OR Admin writes lock the row.</p>
+      <p><strong>§3 — Two redundancies, one missing.</strong> #6 (AI accept) and #4 (prescribed-vs-actual) are the same gesture grammar applied twice. Missing: correcting a mis-logged set — the undo/edit interaction on a committed set row. Will happen 10× more than voice fallback and isn't listed.</p>
+      <p><strong>§4 — SM-6 (Recovery Orb engagement) has no success moment.</strong> If the orb is demoted to brand surface, drop SM-6 from this list, or admit the orb carries a behavioural KPI. Pick a lane.</p>
+      <p><strong>§5 — Principle #3 "Earned over celebrated" is a platitude.</strong> Rewrite: "No celebratory animation fires without a backend-confirmed event." Principle #4 already says "tied to backend" — collapse #3 into #4 or make #3 about restraint timing (PR cinematic ≤ 1.5 s, dismissible). Principle #2 is the strongest — keep verbatim.</p>
+    </div>
+  </details>
+
+  <details class="agent">
+    <summary>
+      <span class="avatar">📋</span>
+      John — Product Manager
+      <span class="role">PRD intent · success metrics · scope discipline</span>
+    </summary>
+    <div class="agent-body">
+      <p><strong>1. Core loop — pain-anchor is buried.</strong> PRD primary pain = "trainer-led logging is a thumb-typing tax during sets." The loop captures the solution but doesn't name the trigger. Recommend: "Approach equipment mid-set, log in ≤ 2 taps, return to lift." Also: "Most-frequent = log a Set" is right, but add "logged by either trainer or client" — the co-edit duality is the whole point of SM-3.</p>
+      <p><strong>2. Eight success moments — two gaps, one redundancy.</strong></p>
+      <ul>
+        <li>Uncovered: SM-1 (WALS) and SM-6 (Onboarding ≥ 60%). "QR onboarding" is in §3 effortless but not in §4 moments. Add: "First Completed Onboarding D0" → SM-6 + SM-C8.</li>
+        <li>Uncovered: SM-C2 (WS disconnect) and SM-C10 (PR-card no-share). "First PR D7–30" maps to SM-5 but doesn't gate the share — add the share action as the success moment, not the detection.</li>
+        <li>Redundant: "First PT-Renewal D28" — no PRD SM covers renewal directly. Tie to SM-2 (D7 retention proxy) or drop for "First Audit-Log Query (Owner)" → SM-8.</li>
+      </ul>
+      <p><strong>3. Platform §2 — three NFR gaps.</strong> (a) Data residency / India region (INR mentioned but not region pinning); (b) AI cost ceiling per WAU — SM-C1 needs a platform-level budget primitive; (c) audit-log retention window (NFR ties to SM-8). Also "set-save p95 ≤ 250 ms" needs the offline-path counterpart: "queued-save ack ≤ 100 ms local."</p>
+      <p><strong>4. Five principles — three measurable, three vibes.</strong> ✅ No typing / Branch-scope chip / Offline orb. ⚠️ Visible presence + provenance — define: every co-edited row shows actor avatar + timestamp within 500 ms. ⚠️ Earned over celebrated — unfalsifiable; reframe: "Celebration UI only fires post-server-confirm." ⚠️ One icon layered semantic — drop or rewrite.</p>
+    </div>
+  </details>
+
+  <details class="agent">
+    <summary>
+      <span class="avatar">🏗️</span>
+      Winston — System Architect
+      <span class="role">UI ↔ backend seam · timing · failure modes</span>
+    </summary>
+    <div class="agent-body">
+      <p><strong>§2 Platform — gaps in the seam.</strong> Missing: FCM token lifecycle UX (token rotates on reinstall/restore — need a "re-link device" silent step); deep-link strategy (firebase dynamic links sunset — Universal Links + App Links + fallback <code>/o/...</code> HTTPS handler); Firebase Auth email-link/OAuth callback handling on cold-start ("app opened from email-link while logged out"). Multi-region: declare single-region by design v1, IN data residency, no EU/US trainers. That's a UX promise. Also: notification permission priming screen (iOS especially).</p>
+      <p><strong>§3 Effortless — latency feasibility.</strong> AI-accept at effortless tier cannot honor 250 ms. Claude cold path 2–6 s. Either (a) reclassify as Success Moment with optimistic UI + skeleton, or (b) state explicitly "AI suggestion appears async; accept is local-instant after it lands." Offline reconcile also borderline — 5 s drain, not instant; effortlessness comes from orb state, not real reconcile latency.</p>
+      <p><strong>§4 Success Moments — fragility.</strong> First Co-Edit is most fragile. Depends on: WebSocket connect, presence cursor, server monotonic stamp, last-write-wins on Set row, AND both devices online within same session window. Any one failing degrades silently to polling-fallback — not a "first co-edit moment" but invisible degradation. Add explicit "co-edit live" vs "co-edit catching up" UI state tied to <code>ws.readyState</code>; gate telemetry on <code>ws.readyState === OPEN && peer_presence === true</code>.</p>
+      <p><strong>§5 Principles — aspirational check.</strong> "Orb states tied to backend" — name signals: <code>recovery_score</code>, <code>session_active</code>, <code>offline_queue_depth</code>. "Offline orb doesn't lie" — define truth source: queue depth, last-server-ack timestamp, or both. Pick one. "Branch-scope chip" — data source is <code>auth.claims.branch_id</code>; say so. Otherwise these drift into vibes.</p>
+    </div>
+  </details>
+
+  <details class="agent">
+    <summary>
+      <span class="avatar">📊</span>
+      Mary — Business Analyst
+      <span class="role">moats vs features · competitive defensibility</span>
+    </summary>
+    <div class="agent-body">
+      <p><strong>1. Core loop under-sells the moat.</strong> "Open at equipment → log without typing → done" is the Fitbod / Hevy / Strong loop verbatim. Solo-lifter framing. The moat — what Trainerize, TrueCoach, Mariana Tek structurally cannot ship — is two humans editing the same set, in the same room, on two devices, with provenance. The core loop should literally name that: "Trainer and client touch the same set; the set knows who wrote it." If the loop reads identically to Fitbod, you have lost Cluster A's framing war on page one. Rewrite §1 to lead with the multi-actor set; demote solo-log to secondary.</p>
+      <p><strong>2. Success Moments — defensibility audit.</strong></p>
+      <ul>
+        <li><strong>Compound/hard-to-copy:</strong> First Co-Edit (requires both sides on platform — network + switching cost), First PT-Renewal D28 (retention loop, only SM that proves the PT-SaaS thesis), Branch-Switch Identity (multi-role data graph — Trainerize cannot replicate without rebuilding tenancy model), Owner Morning Glance (org-level data flywheel).</li>
+        <li><strong>Table-stakes:</strong> First Set D0 (every logger has this), First PR (Strong shipped PR detection in 2020), First AI-Accept (RP, Juggernaut, Fitbod all auto-suggest). First Offline Reconcile sits in the middle.</li>
+      </ul>
+      <p>Rank SMs by defensibility tier in the doc; do not present them flat.</p>
+      <p><strong>3. Effortless §3 — hollow claims.</strong> PR detect, AI accept, What's next — Fitbod, Boostcamp, RP all deliver at parity. Claiming them as Vis-effortless is vibes. The genuinely-Vis items: Identity switch, Prescribed-vs-actual (only meaningful with live prescriber), Offline reconcile in co-edit context. Cut or demote the three table-stakes.</p>
+      <p><strong>4. Principles — real vs platitude.</strong> Real strategic posture: "Visible presence + provenance" (the moat in one line), "Branch-scope chip always glanceable" (multi-tenancy as UX). Craft platitudes: "No typing happy path," "Earned over celebrated," "One icon layered semantic." "Offline orb doesn't lie" — keep, but reframe as data-integrity posture.</p>
+      <p><strong>Net:</strong> the draft describes a polished Cluster-A logger. Sharpen until a Trainerize PM reading it feels threatened.</p>
+    </div>
+  </details>
+</section>
+
+<footer class="cta">
+  <strong>Next.</strong> Return to chat and pick Option 1 (recommended), 2, 3, or 4. Option 1 = apply consensus + Mary's core-loop rewrite + all 15 edits in the table above. Once chosen, the main thread rewrites Core Experience accordingly and saves to <code>ux-design-specification.md</code>, then loads step-04 (Emotional Response).
+</footer>
+
+</div>
+</body>
+</html>

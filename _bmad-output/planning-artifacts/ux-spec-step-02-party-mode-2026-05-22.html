@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 02 Party-Mode Critique · 2026-05-22</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-ember: #F26200;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --vis-amber-glow: #FF6A00;
+    --vis-cream: #FFF3E8;
+    --vis-smoke: #EFE1D5;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-soft: 0 2px 8px rgba(169, 68, 0, 0.06), 0 12px 28px -8px rgba(169, 68, 0, 0.10);
+    --gc-shadow-card: 0 1px 2px rgba(50, 30, 15, 0.04), 0 8px 24px -10px rgba(169, 68, 0, 0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-ember: #D9590B;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --vis-cream: #1A1310;
+      --vis-smoke: #2A1812;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --gc-shadow-soft: 0 2px 8px rgba(0,0,0,0.4), 0 12px 28px -8px rgba(255,106,0,0.10);
+      --gc-shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(255,106,0,0.12);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg);
+    color: var(--gc-text);
+    line-height: 1.65;
+    font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page {
+    display: flex; flex-direction: column; gap: 4px;
+    padding-bottom: 24px; margin-bottom: 32px;
+    border-bottom: 1px solid var(--gc-border);
+  }
+  header.page .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 11px; font-weight: 600;
+    color: var(--vis-amber-primary);
+  }
+  header.page h1 {
+    margin: 6px 0 2px;
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  header.page .meta {
+    font-size: 13px; color: var(--gc-text-muted);
+  }
+  header.page .abstract {
+    margin-top: 14px;
+    font-size: 14.5px; color: var(--gc-text-muted);
+    max-width: 720px;
+  }
+  h2 {
+    margin: 40px 0 14px;
+    font-size: 19px; font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  h3 { margin: 18px 0 8px; font-size: 15.5px; font-weight: 600; }
+  p { margin: 8px 0; }
+
+  /* Decision pillar cards */
+  .decision-grid {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    margin-top: 14px;
+  }
+  .decision {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    box-shadow: var(--gc-shadow-card);
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative;
+  }
+  .decision.recommended {
+    border-color: var(--vis-amber-primary);
+    box-shadow:
+      0 0 0 1px var(--vis-amber-primary) inset,
+      0 0 20px rgba(255,106,0,0.10),
+      var(--gc-shadow-card);
+  }
+  .decision .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    align-self: flex-start;
+    background: rgba(224, 99, 19, 0.10);
+    color: var(--vis-amber-primary);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .decision h3 { margin: 0; font-size: 16px; }
+  .decision .body { color: var(--gc-text-muted); font-size: 13.5px; line-height: 1.55; }
+  .decision .label { font-size: 12.5px; font-weight: 600; color: var(--vis-amber-primary); margin-top: 2px; }
+
+  /* Consensus block */
+  .consensus {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    padding: 18px 22px;
+    box-shadow: var(--gc-shadow-card);
+    margin-top: 12px;
+  }
+  .consensus ul { margin: 8px 0 4px; padding-left: 22px; }
+  .consensus li { margin: 4px 0; }
+  .tension {
+    background: linear-gradient(180deg, rgba(255,106,0,0.05), rgba(255,106,0,0));
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-primary);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 14px;
+  }
+  .tension strong { color: var(--vis-amber-primary); }
+
+  /* Agent voices */
+  .agent {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 14px;
+    padding: 4px 18px;
+    margin: 10px 0;
+    box-shadow: var(--gc-shadow-soft);
+  }
+  .agent summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 14px 0;
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 600; font-size: 15.5px;
+  }
+  .agent summary::-webkit-details-marker { display: none; }
+  .agent summary::after {
+    content: "▾";
+    margin-left: auto;
+    color: var(--gc-text-muted);
+    transition: transform 0.2s ease;
+  }
+  .agent[open] summary::after { transform: rotate(180deg); }
+  .agent .avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--vis-amber-highlight) 0%, transparent 20%),
+                radial-gradient(circle at 50% 70%, var(--vis-amber-primary) 0%, var(--vis-amber-deep) 60%, var(--vis-amber-shadow) 100%);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    box-shadow: 0 0 12px rgba(255, 106, 0, 0.25);
+    flex-shrink: 0;
+  }
+  .agent .role {
+    font-weight: 400;
+    font-size: 12.5px;
+    color: var(--gc-text-muted);
+    margin-left: 2px;
+  }
+  .agent-body { padding: 0 0 16px; }
+  .agent-body ul { padding-left: 22px; }
+  .agent-body li { margin: 6px 0; }
+  .agent-body strong { color: var(--vis-amber-primary); }
+
+  /* Edit table */
+  table.edits {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 14px;
+  }
+  table.edits th, table.edits td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--gc-border);
+    vertical-align: top;
+  }
+  table.edits th {
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gc-text-muted);
+    border-bottom: 1px solid var(--vis-amber-primary);
+  }
+  table.edits td.action {
+    width: 92px;
+    font-weight: 600;
+    color: var(--vis-amber-primary);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  table.edits tbody tr:hover { background: rgba(255,106,0,0.04); }
+
+  .agree-row {
+    display: inline-flex; gap: 4px;
+    background: rgba(224,99,19,0.10);
+    color: var(--vis-amber-primary);
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 11px; font-weight: 600;
+  }
+
+  footer.cta {
+    margin-top: 40px;
+    padding: 20px 22px;
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+
+  code, kbd {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: rgba(196, 81, 0, 0.08);
+    color: var(--vis-amber-primary);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 02 · Party-Mode Critique</div>
+  <h1>Critique of the Vis Executive Summary draft</h1>
+  <div class="meta">2026-05-22 · Author: Gauravprakashshinde · Attendees: 🎨 Sally · 📋 John · 🏗️ Winston · 📊 Mary</div>
+  <div class="abstract">
+    Four BMad agents stress-tested the draft Executive Summary (Project Vision · Target Users · 10 Design Challenges · 7 Design Opportunities) before commit. Each agent ran as an independent subagent so opinions don't collapse. Output: a consensus set of edits, two real tensions, and a four-way decision on how much to apply.
+  </div>
+</header>
+
+<section>
+  <h2>Pick one to proceed</h2>
+  <p style="color: var(--gc-text-muted); font-size:14px; margin-top:0;">Recommended is highlighted. Detail on each agent's reasoning below.</p>
+  <div class="decision-grid">
+
+    <div class="decision recommended">
+      <span class="pill">★ Recommended</span>
+      <div class="label">Option 1 · Full apply</div>
+      <h3>Apply consensus + Mary's anchor swap</h3>
+      <div class="body">
+        Cut Opportunities #5/#6/#7. Reframe Challenge #2 as presence + provenance. Add Offline-first as Challenge #11. Promote co-edit + multi-role to Anchor #2 (Orb demoted to brand opportunity). House-naming → glossary footnote only. Add trainer-override, PR-share, suggestion-staleness sub-challenges. Each remaining Orb state tied to a backend data source.
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 2 · Consensus only</div>
+      <h3>Apply consensus, keep Orb anchor</h3>
+      <div class="body">
+        Same edits as Option 1, but keep Orb-as-organism as Anchor #2. Add John's behavioral counter-metric, Winston's data-source requirement per state, and Sally's 5th "Disconnected" state. Skip Mary's anchor swap.
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 3 · Cherry-pick</div>
+      <h3>You name which recs to apply</h3>
+      <div class="body">
+        I'll list every concrete edit and you mark in/out. Useful if the two big options don't quite fit. Slower path.
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 4 · Ignore feedback</div>
+      <h3>Save Executive Summary as drafted</h3>
+      <div class="body">
+        Commit the original draft, advance to step-03. The party-mode session is logged in this HTML for future reference but no edits applied.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>What all four agents agreed on</h2>
+  <div class="consensus">
+    <ul>
+      <li><strong>Cut Opportunities #5, #6, #7</strong> — light/dark parity, brand discipline, house-naming. Universally flagged as hygiene or internal-only, not moats.</li>
+      <li><strong>Reframe Challenge #2 (co-edit)</strong> from a data policy ("last-write-wins") to a UX problem (presence + provenance, conflict visibility). Sally, Winston, Mary all push this.</li>
+      <li><strong>Add an Offline-first challenge</strong> — none of the 10 covers gym-floor wifi reality. Sally, Winston, Mary called it out independently.</li>
+      <li><strong>House-naming = team room only.</strong> Strip from the spec body. Keep as a parenthetical glossary or footer map.</li>
+    </ul>
+  </div>
+
+  <h3 style="margin-top: 28px;">Where they disagreed</h3>
+
+  <div class="tension">
+    <strong>Tension #1 · Orb-as-organism: anchor or just brand?</strong>
+    <p style="margin: 6px 0 0;">Mary says <em>demote it</em> — Bevel could clone a glowing orb in 6 weeks; it's brand language, not a structural moat. Sally and John say <em>keep but tighten</em>: Sally wants a 5th "Disconnected/Stale" state; John wants each state tied to a behavioral counter-metric. Winston splits the difference: <em>keep only if each tension state names a backend data source</em>. Decision needed.</p>
+  </div>
+
+  <div class="tension">
+    <strong>Tension #2 · What replaces Orb at Anchor #2?</strong>
+    <p style="margin: 6px 0 0;">If Orb is demoted, Mary proposes <em>"real-time co-edit + multi-role context model"</em> — argues this is the actual SaaS wedge (no competitor handles trainer-across-3-brands AND owns one). John backs promoting onboarding split-paths (Challenge #9) to top 3 but doesn't push the anchor swap explicitly.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Concrete edits proposed (cross-agent)</h2>
+  <table class="edits">
+    <thead>
+      <tr>
+        <th>Action</th>
+        <th>What</th>
+        <th>Why</th>
+        <th>Agreed by</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="action">Cut</td>
+        <td>Opportunity #5 (light + dark parity)</td>
+        <td>Table stakes in 2026, not a moat</td>
+        <td><span class="agree-row">Sally · John · Winston · Mary</span></td>
+      </tr>
+      <tr>
+        <td class="action">Cut</td>
+        <td>Opportunity #6 (cross-app brand discipline)</td>
+        <td>Hygiene / design system work, not a moat</td>
+        <td><span class="agree-row">Sally · John · Winston · Mary</span></td>
+      </tr>
+      <tr>
+        <td class="action">Cut</td>
+        <td>Opportunity #7 (house-naming as moat)</td>
+        <td>Internal jargon — zero user-facing differentiation</td>
+        <td><span class="agree-row">Sally · John · Winston · Mary</span></td>
+      </tr>
+      <tr>
+        <td class="action">Reframe</td>
+        <td>Challenge #2 → "Co-edit conflict visibility — losing write degrades gracefully"</td>
+        <td>LWW is transport, not UX. Provenance + presence is the design surface.</td>
+        <td><span class="agree-row">Sally · Winston · Mary</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td>Challenge #11 — Offline-first session integrity (queued writes + visible state)</td>
+        <td>Indian gym wifi, 5s reconnect drain promise needs a UI</td>
+        <td><span class="agree-row">Sally · Winston · Mary</span></td>
+      </tr>
+      <tr>
+        <td class="action">Reframe</td>
+        <td>Challenge #1 → "Gesture-vocabulary consistency across 6 equipment types"</td>
+        <td>Original was FR-8 restated, not a real challenge</td>
+        <td><span class="agree-row">John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Promote</td>
+        <td>Onboarding split paths (#9) → top 3</td>
+        <td>Gates SM-1 WALS and SM-4 Solo D30 directly</td>
+        <td><span class="agree-row">John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Demote</td>
+        <td>Challenge #7 (cross-app brand parity) → constraint, not challenge</td>
+        <td>Doesn't move an SM; design-system hygiene</td>
+        <td><span class="agree-row">John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td>Sub-challenge — AI suggestion staleness self-dismissal</td>
+        <td>20% cold-path Claude latency = 2–6s; ghost suggestion can arrive after user logs the set</td>
+        <td><span class="agree-row">Winston</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td>Sub-challenge — Trainer-override friction + AI trust calibration</td>
+        <td>SM-C5 trainer-override rate > 70% is unmapped to a UX challenge</td>
+        <td><span class="agree-row">Sally · John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td>Sub-challenge — PR-card share surface ("earned, not cringe outside the app")</td>
+        <td>SM-C10 no-share rate > 80% kills the viral assumption</td>
+        <td><span class="agree-row">John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td>One-handed reachability / thumb-zone discipline for Logger</td>
+        <td>Logger is operated mid-rep, sweaty, phone on a bench</td>
+        <td><span class="agree-row">Sally</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td>Trainer ↔ client trust handoff / data portability when client switches trainer</td>
+        <td>Lannister churn lever; no competitor handles this gracefully</td>
+        <td><span class="agree-row">Mary</span></td>
+      </tr>
+      <tr>
+        <td class="action">Constrain</td>
+        <td>Each Orb tension state must name its backend data source (or get cut)</td>
+        <td>If a state is client-side aspirational, orb lies</td>
+        <td><span class="agree-row">Winston · John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Swap?</td>
+        <td>Anchor #2 → "real-time co-edit + multi-role context model" (Orb demoted to brand opportunity)</td>
+        <td>Co-edit + multi-role are the SaaS wedge; Orb is brand layer</td>
+        <td><span class="agree-row">Mary (Sally · John · Winston split)</span></td>
+      </tr>
+      <tr>
+        <td class="action">Footer</td>
+        <td>House names → glossary footnote only; spec body uses functional role labels</td>
+        <td>New contributors shouldn't need a GoT decoder ring to read the spec</td>
+        <td><span class="agree-row">Sally · John · Winston · Mary</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Each agent's full take</h2>
+
+  <details class="agent" open>
+    <summary>
+      <span class="avatar">🎨</span>
+      Sally — UX Designer
+      <span class="role">interaction grammar · gesture vocabulary · accessibility</span>
+    </summary>
+    <div class="agent-body">
+      <p><strong>10 challenges: 3 mislabeled, 1 missing.</strong></p>
+      <ul>
+        <li>Challenge #2 (co-edit) is under-scoped. LWW per set row is a <em>data</em> policy, not a UX policy. Real challenge = <strong>presence + provenance</strong>. Can the client see the trainer's cursor land before the value flips under them? Without that, LWW feels like gaslighting.</li>
+        <li>Challenge #5 (AI ghost-overlay) is too narrow at "discoverability vs noise." Real risk = <strong>trust calibration</strong>. Trainers reject AI wholesale on day 3 if the first wrong suggestion isn't gracefully dismissible.</li>
+        <li>Challenge #10 (reduce-motion) is correct but missing its sibling: <strong>one-handed reachability during a set</strong>. Phone on a bench, sweaty, mid-rep. Thumb-zone discipline is top-5, not a footnote.</li>
+        <li>Missing entirely: <strong>offline-first behavior in a gym basement</strong>. What does the orb show when offline? UX problem, not just infra.</li>
+      </ul>
+      <p><strong>7 opportunities: only 3 are real moats.</strong> Defensible = #1 Logger gesture vocabulary, #2 Orb semantic system, #3 Connection Orb. Cut #5/#6/#7 from opportunities; demote #4 to a craft principle. Replace with "Offline-resilient logging as trust differentiator" and "Trainer AI ghost-overlay with calibrated confidence."</p>
+      <p><strong>Anchors hold</strong> — but Orb needs a 5th state: "Disconnected / Stale" for offline mode.</p>
+      <p><strong>House naming = cute distraction.</strong> Keep verbal-only in this room; never write into the spec. Personas in the doc stay functional: "Beginner gym client," "Solo strength athlete."</p>
+    </div>
+  </details>
+
+  <details class="agent">
+    <summary>
+      <span class="avatar">📋</span>
+      John — Product Manager
+      <span class="role">PRD intent · success metrics · scope discipline</span>
+    </summary>
+    <div class="agent-body">
+      <p><strong>Challenges — 3 misclassified, 2 missing.</strong></p>
+      <ul>
+        <li>#1 (6 loggers) is FR-8 restated. Real challenge = gesture-vocabulary consistency across 6 types without forcing relearn.</li>
+        <li>#7 (cross-app brand parity) is hygiene. Demote to constraint — doesn't move any SM.</li>
+        <li>#9 (onboarding split paths) under-weighted. Directly gates SM-1 WALS and SM-4 Solo D30. Should be top 3.</li>
+        <li>Missing: <strong>trainer-override friction</strong> — SM-C5 counter-metric has no mapped challenge.</li>
+        <li>Missing: <strong>PR-card share loop</strong> — SM-C10 >80% no-share kills the viral assumption; #6 touches tone but not the share surface.</li>
+      </ul>
+      <p><strong>Opportunities — 3 real moats.</strong> #1, #2, #3. Cut #5/#6/#7. Move to a "design principles" section.</p>
+      <p><strong>Anchors hold, but Orb-as-organism needs a counter-metric.</strong> Tie each tension state to a measurable behavioral trigger (e.g., orb-state-X correlates with session-start within 24h). Otherwise vibes.</p>
+      <p><strong>House-naming = cute distraction in any external artifact.</strong> Useful internally. Footnote map, then use role names in the body. Otherwise we pay a translation tax forever.</p>
+    </div>
+  </details>
+
+  <details class="agent">
+    <summary>
+      <span class="avatar">🏗️</span>
+      Winston — System Architect
+      <span class="role">UI ↔ backend seam · timing · failure modes</span>
+    </summary>
+    <div class="agent-body">
+      <p><strong>UI/backend seam is the thinnest part of the draft.</strong></p>
+      <ul>
+        <li>Challenge #2 hand-waves the real problem. If Trainer types 12 reps at t=0 and Client types 10 at t=40ms, Client's screen flips 10→12 after their own input committed. That is the design problem. Reframe: <strong>"co-edit conflict visibility — how does the losing write degrade gracefully without feeling like betrayal."</strong></li>
+        <li>Challenge #5 ignores Claude proxy latency. 20% cold-path = 2–6s. Add: <strong>suggestion staleness — when does an AI ghost expire and self-dismiss.</strong></li>
+        <li>Missing: <strong>offline-to-online state reconciliation UX.</strong> PRD promises 5s drain on reconnect. What does the Logger look like during those 5 seconds? Queued-but-uncommitted rows need a visual state distinct from committed.</li>
+      </ul>
+      <p><strong>4 moats, 3 quality bars.</strong> Real moats = #1 gesture vocabulary, #2 orb semantic system, #3 connection orb, #4 cinematic PR. Quality bars (not moats) = #5 light+dark parity, #6 cross-app discipline. Sharpen the framing.</p>
+      <p><strong>Anchors hold</strong> — with caveat: each Orb tension state must map to a backend-observable signal (session active, sync lag, AI thinking, error). If any state is purely client-side aspirational, the orb lies.</p>
+      <p><strong>House naming: useful internally, dangerous in artifacts.</strong> Designer/investor/new-hire spends cycles decoding GoT instead of absorbing the persona. Archetype labels in the spec; codenames at most as a glossary parenthetical.</p>
+    </div>
+  </details>
+
+  <details class="agent">
+    <summary>
+      <span class="avatar">📊</span>
+      Mary — Business Analyst
+      <span class="role">moats vs features · competitive defensibility</span>
+    </summary>
+    <div class="agent-body">
+      <p><strong>3 are moats. 4 are table-stakes wearing moat clothing.</strong></p>
+      <p><strong>Real moats:</strong></p>
+      <ul>
+        <li><strong>Co-edit live-session feel (Challenge 2 / Opportunity 3)</strong> — the one structural wedge. Trainerize, TrueCoach, Everfit are remote-first; data model assumes async. Mariana Tek bolted on Appointments 2026-05 but still treats trainer as scheduler, not co-editor. Deserves Challenge #1 billing, not #2.</li>
+        <li><strong>Multi-role context switching (Challenge 4)</strong> — Seaworth + Lannister is the actual SaaS wedge. No competitor handles a trainer across 3 brands AND owns one. Data-model moat. Underweighted.</li>
+        <li><strong>i18n + units day 1 (Challenge 8)</strong> — India-anchored, global day 1 is structurally defensible if executed. Hevy is kg/lb only. Add INR/Hinglish + RTL stub.</li>
+      </ul>
+      <p><strong>Vibes-as-strategy:</strong></p>
+      <ul>
+        <li><strong>Orb-as-organism</strong> — beautiful brand language. Not a moat. Bevel could ship a glowing orb in 6 weeks. Reframe as "differentiated brand surface," not "semantic system." <strong>Demote from anchor; keep as opportunity.</strong></li>
+        <li><strong>PR Moment composer</strong> — Strava clipped this in 2014. Pure feature.</li>
+        <li><strong>Cinematic UX</strong> — craft, not moat. Linear is cinematic; doesn't stop Jira.</li>
+      </ul>
+      <p><strong>Missing from the 10:</strong></p>
+      <ul>
+        <li>Offline-first gym-floor reliability — kills the co-edit moat if not solved.</li>
+        <li>Trainer-client trust handoff (data portability) when client switches trainers within the same gym.</li>
+      </ul>
+      <p><strong>Anchors:</strong> Equipment-Aware Logger holds. Orb-as-organism doesn't hold — demote to brand. Replace Anchor #2 with "real-time co-edit + multi-role context model."</p>
+      <p><strong>House naming:</strong> Useful inside team for 6 months. Strip before any external doc or investor deck — reads as unserious. Hard rename trigger at first hire outside the founding circle.</p>
+    </div>
+  </details>
+</section>
+
+<footer class="cta">
+  <strong>Next step.</strong> Return to the chat and pick Option 1, 2, 3, or 4. Option 1 is recommended. Once chosen, the main thread will rewrite the Executive Summary accordingly and re-present for save (step-02 [C] continue to step-03).
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+name: Pact Verify
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pact-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No Pact contracts yet — stub passes"

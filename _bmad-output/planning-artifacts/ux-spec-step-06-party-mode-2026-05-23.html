@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 06 Party-Mode Critique · 2026-05-23</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --gc-shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(255,106,0,0.12);
+      --gc-shadow-soft: 0 2px 8px rgba(0,0,0,0.4), 0 12px 28px -8px rgba(255,106,0,0.10);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg); color: var(--gc-text);
+    line-height: 1.65; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page { padding-bottom: 24px; margin-bottom: 28px; border-bottom: 1px solid var(--gc-border); }
+  header.page .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 600; color: var(--vis-amber-primary); }
+  header.page h1 { margin: 6px 0 2px; font-size: 28px; font-weight: 600; letter-spacing: -0.015em; }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract { margin-top: 14px; font-size: 14.5px; color: var(--gc-text-muted); max-width: 760px; }
+
+  h2 { margin: 36px 0 12px; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
+  h3 { margin: 18px 0 8px; font-size: 15.5px; font-weight: 600; }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 4px 0; }
+  strong { color: var(--vis-amber-primary); }
+
+  .decision-grid {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    margin-top: 14px;
+  }
+  .decision {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    box-shadow: var(--gc-shadow-card);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .decision.recommended {
+    border-color: var(--vis-amber-primary);
+    box-shadow: 0 0 0 1px var(--vis-amber-primary) inset, 0 0 20px rgba(255,106,0,0.10), var(--gc-shadow-card);
+  }
+  .decision .pill {
+    align-self: flex-start;
+    background: rgba(224,99,19,0.10); color: var(--vis-amber-primary);
+    border-radius: 999px; padding: 3px 10px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .decision h3 { margin: 0; font-size: 16px; }
+  .decision .body { color: var(--gc-text-muted); font-size: 13.5px; line-height: 1.55; }
+  .decision .label { font-size: 12.5px; font-weight: 600; color: var(--vis-amber-primary); margin-top: 2px; }
+
+  .consensus {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    padding: 18px 22px;
+    box-shadow: var(--gc-shadow-card);
+    margin-top: 12px;
+  }
+  .consensus h3 { margin-top: 8px; margin-bottom: 4px; color: var(--vis-amber-primary); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .consensus ul { margin: 4px 0 12px; padding-left: 22px; }
+  .consensus li { margin: 4px 0; }
+  .tension {
+    background: linear-gradient(180deg, rgba(255,106,0,0.05), rgba(255,106,0,0));
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-primary);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 14px;
+  }
+  .tension strong { color: var(--vis-amber-primary); }
+
+  .agent {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 14px;
+    padding: 4px 18px;
+    margin: 10px 0;
+    box-shadow: var(--gc-shadow-soft);
+  }
+  .agent summary {
+    cursor: pointer; list-style: none; padding: 14px 0;
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 600; font-size: 15.5px;
+  }
+  .agent summary::-webkit-details-marker { display: none; }
+  .agent summary::after { content: "▾"; margin-left: auto; color: var(--gc-text-muted); transition: transform 0.2s ease; }
+  .agent[open] summary::after { transform: rotate(180deg); }
+  .agent .avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--vis-amber-highlight) 0%, transparent 20%),
+                radial-gradient(circle at 50% 70%, var(--vis-amber-primary) 0%, var(--vis-amber-deep) 60%, var(--vis-amber-shadow) 100%);
+    box-shadow: 0 0 12px rgba(255, 106, 0, 0.25);
+    flex-shrink: 0;
+  }
+  .agent .role { font-weight: 400; font-size: 12.5px; color: var(--gc-text-muted); margin-left: 2px; }
+  .agent-body { padding: 0 0 16px; }
+  .agent-body ul { padding-left: 22px; }
+  .agent-body li { margin: 6px 0; }
+  .agent-body strong { color: var(--vis-amber-primary); }
+  .agent-body p { margin: 8px 0; }
+
+  table.edits { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+  table.edits th, table.edits td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  table.edits th {
+    font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--gc-text-muted); border-bottom: 1px solid var(--vis-amber-primary);
+  }
+  table.edits td.action {
+    width: 92px; font-weight: 600; color: var(--vis-amber-primary);
+    text-transform: uppercase; font-size: 11px; letter-spacing: 0.06em;
+  }
+  table.edits tbody tr:hover { background: rgba(255,106,0,0.04); }
+  table.edits .target {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px; color: var(--vis-amber-primary);
+    background: rgba(196,81,0,0.08); padding: 1px 6px; border-radius: 4px;
+    margin-right: 6px;
+  }
+  .agree-row {
+    display: inline-flex; gap: 4px;
+    background: rgba(224,99,19,0.10); color: var(--vis-amber-primary);
+    border-radius: 999px; padding: 2px 8px;
+    font-size: 11px; font-weight: 600;
+  }
+
+  footer.cta {
+    margin-top: 40px; padding: 20px 22px;
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 16px; box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: rgba(196,81,0,0.08); color: var(--vis-amber-primary);
+    padding: 1px 6px; border-radius: 4px; font-size: 12.5px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 06 · Party-Mode Critique</div>
+  <h1>Critique of Design System (Path B) draft</h1>
+  <div class="meta">2026-05-23 · Author: Gauravprakashshinde · Attendees: 🎨 Sally · 📋 John · 🏗️ Winston</div>
+  <div class="abstract">
+    Three agents reviewed the Path B (Tamagui + Tailwind + Angular CDK) draft. Strong cross-agent agreement on three big moves: <strong>add 6 missing components</strong> (Presence Avatar Stack, Conflict Toast, Risk Banner, Ghost Set Row, Session Recovery Sheet, Empty States), <strong>monorepo token pipeline</strong> (not git submodules), and <strong>Liquid Glass needs a real blur library + Android fallback</strong>. Plus a sequencing call: Tamagui setup in a "Phase 0.5" week.
+  </div>
+</header>
+
+<section>
+  <h2>Pick one to proceed</h2>
+  <div class="decision-grid">
+
+    <div class="decision recommended">
+      <span class="pill">★ Recommended</span>
+      <div class="label">Option 1 · Full apply</div>
+      <h3>Apply all consensus + add 6 missing components + tighten infra</h3>
+      <div class="body">
+        Add Presence Avatar Stack, Conflict Toast, Risk Banner, Ghost Set Row, Session Recovery Sheet, Empty States set to the component inventory. pnpm monorepo with <code>packages/tokens</code> emitting <code>.ts</code> + <code>.css</code> + <code>.json</code>. Liquid Glass = <code>@react-native-community/blur</code> + Android &lt;12 gradient fallback; orb morph uses Reanimated; reserve react-native-skia for the orb-hero only. Tamagui setup in Phase 0.5 (week between Phase 0 close and Phase 1 kickoff). Realtime transport decision (WS vs polling) moves into Phase 0 architecture. WCAG CI via pa11y-ci (web) + wcag-contrast Node script (RN). ESLint <code>no-restricted-syntax</code> blocking hex literals + brand-lock allowlist. 5-step "adapt to Vis tokens" checklist.
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 2 · Apply most, defer Liquid Glass</div>
+      <h3>All consensus + drop Liquid Glass nav/hero to v1.1 (per John)</h3>
+      <div class="body">
+        Same as Option 1 but defer the Liquid Glass nav + Active Session hero treatments to v1.1 (no FR anchor; aesthetic polish). Reduces v1 blur-library dep + Android-fallback work. v1 uses solid amber-tinted surfaces in those slots. Original spec §17.4 Liquid Glass intent preserved for v1.1.
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 3 · Cherry-pick</div>
+      <h3>You name which recs to apply</h3>
+      <div class="body">
+        Walk through the 18 concrete edits below and mark in/out. Precise but slower.
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 4 · Ignore feedback</div>
+      <h3>Save Design System as drafted</h3>
+      <div class="body">
+        Commit the Path B draft unchanged with current 15-component inventory. Advance to step-07.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>Where the three agents agreed</h2>
+  <div class="consensus">
+    <h3>Strong consensus</h3>
+    <ul>
+      <li><strong>6 missing components in the inventory (Sally).</strong> <em>Presence Avatar Stack</em> (overlapping dots on Set row showing who's editing, FR-1 + FR-25). <em>Conflict Toast</em> (non-modal last-write-wins notification). <em>Risk Banner</em> (ACWR alert with primary action, FR-37). <em>Ghost Set Row</em> (AI-suggested set with accept/dismiss gesture, FR-12 + FR-14 — distinct from standard Set row, different interaction model). <em>Session Recovery Sheet</em> (abandonment flow — "you left 47 min ago, resume or discard?"). <em>Empty States set</em> (per surface: empty logger, empty PR feed, empty branch dashboard — 21st-magic won't get these right).</li>
+      <li><strong>Monorepo pipeline for tokens (Winston).</strong> pnpm workspace with <code>packages/tokens</code> exporting from one source three artifacts: <code>tokens.ts</code> (RN/Tamagui), <code>tokens.css</code> (Angular CSS vars), <code>tokens.json</code> (Style Dictionary input for future Figma sync). One <code>build-tokens.ts</code> script runs in CI on every PR touching <code>packages/tokens/**</code>. Drift becomes impossible.</li>
+      <li><strong>Liquid Glass needs a real blur library + Android fallback (Winston + Sally).</strong> Reanimated handles transforms + opacity but not <code>backdrop-filter: blur</code>. Add <code>@react-native-community/blur</code> (UIVisualEffectView on iOS, RenderEffect on Android 12+). Android &lt; 12 fallback = gradient overlay, not true blur. Restrict to nav + Active Session hero only (never on tables/lists).</li>
+      <li><strong>Add react-native-skia for orb hero only (Winston).</strong> +2 MB bundle, acceptable for orb hero (gradient morphing / shape distortion / noise) but not every screen.</li>
+      <li><strong>Tamagui Babel plugin with <code>optimize: true</code> from day one (Winston).</strong> Default install adds ~80 KB JS + runtime style resolution (150–200 ms cold-start cost on Pixel 6a). Compile-time flattening recovers this. Budget cold-start delta with plugin off vs on — fail if &lt; 120 ms improvement (means misconfigured). Lock in README: Expo dev client required, not Expo Go (Reanimated + Gesture Handler are native modules).</li>
+      <li><strong>Tamagui setup in "Phase 0.5" (John).</strong> Phase 0 = auth + schema + RBAC per PRD. Tamagui setup + one throwaway practice screen belongs in a dedicated week between Phase 0 close and Phase 1 kickoff. Don't bolt onto Phase 0; don't discover during Phase 1.</li>
+      <li><strong>Realtime transport (WS vs polling) decided in Phase 0 (John).</strong> Currently flagged unresolved in CLAUDE.md. SM-3 Co-Edit gate requires this decision before Phase 1.</li>
+      <li><strong>Feature flags wired Phase 0 (John).</strong> SM measurement (onboarding A/B, AI suggestion variants) needs this from day one.</li>
+      <li><strong>WCAG CI via pa11y-ci (web) + wcag-contrast Node script (RN) (Winston + John).</strong> GitHub Action on PR (not pre-commit, too slow). Input = static <code>tokens.contrast-matrix.json</code>. Fail build if any (text, bg) pair drops below 4.5:1. Phase 0 must-have — onboarding completion SM-6 ≥ 60% depends on legibility.</li>
+      <li><strong>ESLint guardrail blocking raw hex (Winston).</strong> <code>no-restricted-syntax</code> rule in <code>/components/**</code>. Plus a brand-lock allowlist file enumerating orb / wordmark / PR-watermark components that may import <code>--vis-amber-*</code> directly. Everything else imports <code>--gc-accent</code> only. Stops 21st-magic generated output from leaking off-palette hex.</li>
+      <li><strong>"Adapt to Vis tokens" = 5-step gated checklist (Sally).</strong> (a) replace every hex with <code>var(--gc-*)</code> or Tamagui theme key, (b) replace shadow stack with 3-layer amber falloff from CLAUDE.md, (c) verify against <code>reference_light.png</code> + <code>reference_dark.png</code>, (d) WCAG contrast check, (e) light + dark screenshot diff. No merge without all five.</li>
+      <li><strong>6 gesture maps documented Phase 0, not Phase 2 (Sally).</strong> One per equipment type (cable, barbell, dumbbell, machine, bodyweight, kettlebell, bands) before build. Otherwise each Logger drifts and the grammar consistency moat collapses.</li>
+      <li><strong>CDK + Tailwind preflight scoping (Winston).</strong> Tailwind's <code>preflight</code> reset must skip <code>.cdk-overlay-container</code> to avoid breaking CDK's z-index stack. One line in <code>tailwind.config.js</code>.</li>
+      <li><strong>Voice fallback flagged for v1.1 spike (Sally).</strong> RN voice story is thin; needs native module wrapper. Budget time before v1.1 — don't discover the gap mid-build.</li>
+    </ul>
+  </div>
+
+  <div class="tension">
+    <strong>Tension · Liquid Glass nav + hero.</strong>
+    <p style="margin: 6px 0 0;">John says drop to v1.1 (no FR anchor; aesthetic polish). Winston says ship v1 with proper library (<code>@react-native-community/blur</code>) + Android fallback. Sally says blur works but flag Android &lt; 12 as the risk. <strong>Option 1</strong> = Winston's path (ship v1 with proper blur infra). <strong>Option 2</strong> = John's path (defer to v1.1, solid surfaces only in v1). Original spec §17.4 (CLAUDE.md) defines Liquid Glass as part of brand identity — ship it v1 unless launch timeline says otherwise.</p>
+  </div>
+</section>
+
+<section>
+  <h2>18 concrete edits proposed (cross-agent)</h2>
+  <table class="edits">
+    <thead>
+      <tr><th>Action</th><th>Where</th><th>What</th><th>Agreed by</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="action">Add</td><td><span class="target">inventory</span></td><td>Presence Avatar Stack — overlapping dots on Set row showing who's editing live (FR-1 + FR-25)</td><td><span class="agree-row">Sally</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">inventory</span></td><td>Conflict Toast — non-modal LWW notification when remote write overwrites yours (FR-1)</td><td><span class="agree-row">Sally</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">inventory</span></td><td>Risk Banner — ACWR &gt; 1.5 alert with primary action (FR-37)</td><td><span class="agree-row">Sally</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">inventory</span></td><td>Ghost Set Row — AI-suggested set with accept/dismiss gesture (FR-12 + FR-14)</td><td><span class="agree-row">Sally</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">inventory</span></td><td>Session Recovery Sheet — "you left 47 min ago, resume or discard?" with partial set preview</td><td><span class="agree-row">Sally</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">inventory</span></td><td>Empty States set — per surface (empty logger, empty PR feed, empty branch dashboard, empty client list)</td><td><span class="agree-row">Sally</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">infra</span></td><td>pnpm monorepo with <code>packages/tokens</code> emitting <code>tokens.ts</code> + <code>tokens.css</code> + <code>tokens.json</code>. <code>build-tokens.ts</code> CI script on every PR.</td><td><span class="agree-row">Winston</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">infra</span></td><td>Tamagui Babel plugin with <code>optimize: true</code>. Cold-start delta budget &gt; 120 ms improvement vs plugin-off (fail config if not).</td><td><span class="agree-row">Winston</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">infra</span></td><td>Liquid Glass uses <code>@react-native-community/blur</code> (UIVisualEffectView iOS, RenderEffect Android 12+). Android &lt; 12 fallback = gradient overlay. Scope to nav + Active Session hero only.</td><td><span class="agree-row">Winston · Sally</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">infra</span></td><td>react-native-skia for orb hero only (+2 MB bundle acceptable; not every screen).</td><td><span class="agree-row">Winston</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">phase-0</span></td><td>Realtime transport decision (WebSocket vs polling) moved into Phase 0 — currently unresolved in CLAUDE.md. Required before Phase 1 Co-Edit work.</td><td><span class="agree-row">John</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">phase-0</span></td><td>Feature flags wired Phase 0 — SM-1/SM-6/SM-3 measurement needs A/B variants from day one.</td><td><span class="agree-row">John</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">phase-0.5</span></td><td>Insert "Phase 0.5" week between Phase 0 close and Phase 1 kickoff. Deliverables: Tamagui setup + one throwaway practice screen + token pipeline verified end-to-end across RN + Angular.</td><td><span class="agree-row">John</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">phase-0</span></td><td>6 gesture maps documented Phase 0 (one per equipment type). Prevents Logger drift in Phase 1.</td><td><span class="agree-row">Sally</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">CI</span></td><td>WCAG contrast CI = pa11y-ci (web) + Node script using <code>wcag-contrast</code> lib (RN). GitHub Action on PR. Input = static <code>tokens.contrast-matrix.json</code>. Fail build if any (text, bg) pair &lt; 4.5:1.</td><td><span class="agree-row">Winston · John</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">CI</span></td><td>ESLint <code>no-restricted-syntax</code> rule blocking hex literals in <code>/components/**</code>. Brand-lock allowlist file enumerates orb / wordmark / PR-watermark components that may import <code>--vis-amber-*</code> directly.</td><td><span class="agree-row">Winston</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">workflow</span></td><td>"Adapt to Vis tokens" = 5-step gated checklist: (1) replace hex with <code>var(--gc-*)</code> or Tamagui token, (2) replace shadow stack with 3-layer amber falloff from CLAUDE.md, (3) verify against <code>reference_light.png</code> + <code>reference_dark.png</code>, (4) WCAG contrast check, (5) light + dark screenshot diff. No merge without all 5.</td><td><span class="agree-row">Sally · John</span></td></tr>
+      <tr><td class="action">Add</td><td><span class="target">config</span></td><td>Tailwind <code>preflight</code> reset scoped away from <code>.cdk-overlay-container</code> in <code>tailwind.config.js</code> — avoids breaking CDK's z-index stack.</td><td><span class="agree-row">Winston</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Each agent's full take</h2>
+
+  <details class="agent">
+    <summary><span class="avatar">🎨</span>Sally — UX Designer <span class="role">interaction grammar · brand fidelity</span></summary>
+    <div class="agent-body">
+      <p>Stack is fine; inventory + "adapt to tokens" step are where this leaks.</p>
+      <p><strong>1. Inventory gaps (not nitpicks).</strong> Presence Avatar Stack (who's editing live), Conflict Toast (LWW moment), Risk Banner (ACWR with primary action — different from a toast), Ghost Set Row (AI accept/dismiss — different interaction model from standard Set row, don't bolt on), Session Recovery Sheet (abandonment with partial-set preview), Empty States set (21st-magic won't get these right).</p>
+      <p><strong>2. Reanimated 3 covers it — except Liquid Glass blur on Android &lt; 12.</strong> Spec gradient-overlay fallback. Don't discover this in QA.</p>
+      <p><strong>3. Gesture Handler adequate — but pin 6 gesture maps in Phase 0.</strong> Six logger vocabularies (FR-8). Documented before build. Otherwise each logger drifts.</p>
+      <p><strong>4. "Adapt to Vis tokens" is hand-wavy.</strong> 5-step checklist required. Replace hex with var, replace shadow stack, verify brand-ref PNGs, WCAG check, light+dark screenshot diff. No merge without all 5.</p>
+      <p><strong>5. Voice fallback risk.</strong> Tamagui/RN voice story thin. Native module wrapper needed. Budget spike before v1.1.</p>
+    </div>
+  </details>
+
+  <details class="agent">
+    <summary><span class="avatar">📋</span>John — Product Manager <span class="role">PRD intent · SM coverage · sequencing</span></summary>
+    <div class="agent-body">
+      <p><strong>1. Tamagui learning curve vs Phase 0 timeline.</strong> Phase 0 = auth + schema + RBAC (zero user-facing). Tamagui setup belongs in a dedicated "Phase 0.5" week between Phase 0 close and Phase 1 kickoff. Bolting onto Phase 0 pulls launch right.</p>
+      <p><strong>2. Phase 0 gaps that gate SMs.</strong> Shared token package verified end-to-end across all apps (SM-6 visual parity), realtime transport decision (SM-3 Co-Edit), feature flags (SM measurement A/B).</p>
+      <p><strong>3. Inventory traceability — Liquid Glass nav/hero has no FR anchor.</strong> Composer maps to FR-PR-Moment, KPI cards map to Owner FRs, but Liquid Glass nav is aesthetic polish. Push to v1.1.</p>
+      <p><strong>4. WCAG contrast CI = Phase 0 must-have.</strong> SM-6 ≥ 60% gated on legibility; warm-ivory + amber is exactly the combo that fails 4.5:1 if anyone hand-tweaks. CI catches drift cheaper than QA.</p>
+      <p><strong>5. 21st-magic fit.</strong> CLAUDE.md already mandates it. Add the one-line rule: magic output adapted to <code>var(--gc-*)</code> before commit, never landed raw.</p>
+      <p><strong>Net:</strong> Path B is right; sequencing is the risk. Phase 0.5 week, realtime now, Liquid Glass to v1.1.</p>
+    </div>
+  </details>
+
+  <details class="agent">
+    <summary><span class="avatar">🏗️</span>Winston — System Architect <span class="role">timing · dependencies · failure modes</span></summary>
+    <div class="agent-body">
+      <p>Six seams worth tightening before Phase 0 ships.</p>
+      <p><strong>1. Tamagui cold-start.</strong> Default install ~80 KB JS + runtime style resolution → ~150-200 ms parse/eval on Pixel 6a. Enable <code>@tamagui/babel-plugin</code> with <code>optimize: true</code> day one. Budget delta plugin off vs on; if &lt; 120 ms improvement, misconfigured. EAS Build + Expo dev client fully compatible (no custom native). Reanimated + Gesture Handler need dev client build, NOT Expo Go. Lock in README.</p>
+      <p><strong>2. tokens.ts pipeline.</strong> No git submodules — sync drift is brutal. pnpm workspace monorepo with <code>packages/tokens</code> exporting <code>tokens.ts</code> + <code>tokens.css</code> + <code>tokens.json</code> from one source. <code>build-tokens.ts</code> in CI on every PR touching <code>/packages/tokens/**</code>.</p>
+      <p><strong>3. Reanimated 3 limits.</strong> Handles transforms / opacity / shared values on UI thread — fine for orb scale/rotate, tension-stem pulse, PR Moment choreography. <strong>No</strong> <code>backdrop-filter: blur</code> in RN. Add <code>@react-native-community/blur</code> for Liquid Glass. For orb gradient morphing with shape distortion or noise, add <code>react-native-skia</code> (+2 MB bundle, acceptable for orb hero only).</p>
+      <p><strong>4. CDK + Tailwind overlay.</strong> No conflict. CDK Overlay uses absolute positioning with inline styles; Tailwind utilities don't apply to CDK-injected DOM unless opted in. Scope Tailwind's <code>preflight</code> away from <code>.cdk-overlay-container</code>.</p>
+      <p><strong>5. 21st-magic guardrail.</strong> Generated components will absolutely leak raw hex. ESLint <code>no-restricted-syntax</code> blocking hex literals in <code>/components/**</code>. Brand-lock allowlist enumerates orb / wordmark / PR-watermark.</p>
+      <p><strong>6. WCAG CI.</strong> <code>pa11y-ci</code> (web) + custom Node script using <code>wcag-contrast</code> (RN) against static <code>tokens.contrast-matrix.json</code>. GitHub Action on PR. Pre-commit too slow. Fail if any (text, bg) pair &lt; 4.5:1.</p>
+    </div>
+  </details>
+</section>
+
+<footer class="cta">
+  <strong>Next.</strong> Pick Option 1 (recommended), 2, 3, or 4. Option 1 = apply all consensus + add 6 components + ship Liquid Glass v1 with proper blur infra. Option 2 = defer Liquid Glass to v1.1.
+</footer>
+
+</div>
+</body>
+</html>

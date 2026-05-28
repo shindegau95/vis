@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture Decision Document — Vis</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-ember: #F26200;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --vis-amber-glow: #FF6A00;
+    --vis-cream: #FFF3E8;
+    --vis-smoke: #EFE1D5;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A1008;
+    --gc-text-secondary: #5C3D1E;
+    --gc-border: rgba(196,81,0,0.15);
+    --gc-accent: #E06313;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-ember: #D9590B;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --vis-amber-glow: #FF6A00;
+      --vis-cream: #1A1310;
+      --vis-smoke: #2A1812;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5E8D8;
+      --gc-text-secondary: #B88060;
+      --gc-border: rgba(255,122,26,0.18);
+      --gc-accent: #FF7A1A;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg);
+    color: var(--gc-text);
+    line-height: 1.65;
+    font-size: 15px;
+  }
+
+  header {
+    background: var(--gc-bg-elevated);
+    border-bottom: 1px solid var(--gc-border);
+    padding: 28px 40px 24px;
+    box-shadow: 0 2px 16px rgba(169,68,0,0.08);
+  }
+  header .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--vis-amber-primary);
+    margin-bottom: 6px;
+  }
+  header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--gc-text);
+    margin-bottom: 6px;
+  }
+  header .meta {
+    font-size: 13px;
+    color: var(--gc-text-secondary);
+  }
+  header .meta span { margin-right: 20px; }
+
+  .layout { display: flex; min-height: calc(100vh - 90px); }
+
+  nav {
+    width: 220px;
+    flex-shrink: 0;
+    padding: 28px 16px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid var(--gc-border);
+    background: var(--gc-bg);
+  }
+  nav h3 {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gc-text-secondary);
+    margin-bottom: 12px;
+    padding-left: 8px;
+  }
+  nav a {
+    display: block;
+    padding: 5px 8px;
+    border-radius: 5px;
+    font-size: 13px;
+    color: var(--gc-text-secondary);
+    text-decoration: none;
+    margin-bottom: 2px;
+    transition: background 0.15s, color 0.15s;
+  }
+  nav a:hover { background: var(--vis-highlight,rgba(224,99,19,0.08)); color: var(--vis-amber-primary); }
+  nav a.active { color: var(--vis-amber-primary); font-weight: 600; }
+
+  main {
+    flex: 1;
+    max-width: 860px;
+    padding: 40px 48px;
+  }
+
+  section { margin-bottom: 52px; }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gc-text);
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gc-border);
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gc-text);
+    margin: 24px 0 12px;
+  }
+  h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gc-text-secondary);
+    margin: 16px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  p { margin-bottom: 12px; }
+  ul, ol { padding-left: 20px; margin-bottom: 12px; }
+  li { margin-bottom: 4px; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    vertical-align: middle;
+  }
+  .badge-resolved { background: rgba(34,197,94,0.15); color: #16a34a; }
+  .badge-open { background: rgba(234,179,8,0.15); color: #b45309; }
+  .badge-locked { background: rgba(224,99,19,0.12); color: var(--vis-amber-primary); }
+
+  .callout {
+    border-left: 3px solid var(--vis-amber-primary);
+    background: rgba(224,99,19,0.06);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .callout strong { color: var(--vis-amber-primary); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13.5px;
+  }
+  th {
+    background: var(--gc-bg-elevated);
+    text-align: left;
+    padding: 9px 12px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--gc-text-secondary);
+    border-bottom: 2px solid var(--gc-border);
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--gc-border);
+    vertical-align: top;
+  }
+  tr:hover td { background: rgba(224,99,19,0.03); }
+  td code, th code {
+    font-family: "SF Mono", "Fira Code", "Fira Mono", monospace;
+    font-size: 12px;
+    background: rgba(224,99,19,0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .driver-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    background: var(--vis-amber-primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-right: 6px;
+  }
+
+  .driver-row { display: flex; align-items: flex-start; margin-bottom: 14px; }
+  .driver-content { flex: 1; }
+  .driver-title { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
+  .driver-body { font-size: 13.5px; color: var(--gc-text-secondary); }
+  .driver-source { font-size: 11px; color: var(--vis-amber-primary); margin-top: 3px; }
+
+  .gate-table td:first-child { font-weight: 600; }
+
+  .decision-box {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+  .decision-box h4 { margin-top: 0; }
+
+  code {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 12px;
+    background: rgba(224,99,19,0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  pre {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    overflow-x: auto;
+    margin: 12px 0;
+    font-family: "SF Mono", "Fira Code", monospace;
+    line-height: 1.6;
+  }
+  pre code { background: none; padding: 0; }
+
+  .conflict-row td:nth-child(3) { color: var(--vis-amber-primary); font-weight: 500; }
+
+  .status-done::before { content: "✅ "; }
+  .status-open::before { content: "🔲 "; }
+
+  .chip-group { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .chip {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--gc-border);
+    color: var(--gc-text-secondary);
+    background: var(--gc-bg-elevated);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Architecture Decision Document</div>
+  <h1>Vis — System Architecture</h1>
+  <div class="meta">
+    <span>Author: Gauravprakashshinde</span>
+    <span>Date: 2026-05-24</span>
+    <span>Status: In Progress — Steps 1–2 Complete</span>
+  </div>
+</header>
+
+<div class="layout">
+  <nav>
+    <h3>Contents</h3>
+    <a href="#linear-audit">Linear Backlog Audit</a>
+    <a href="#context">Project Context Analysis</a>
+    <a href="#drivers">13 Arch Drivers</a>
+    <a href="#q5">Q5 Decision (AI Scope)</a>
+    <a href="#cross-cutting">Cross-Cutting Concerns</a>
+    <a href="#ws-path">WS Path A vs B</a>
+    <a href="#lock-gates">Lock Gates</a>
+  </nav>
+
+  <main>
+
+    <!-- ─── LINEAR AUDIT ─── -->
+    <section id="linear-audit">
+      <h2>Pre-existing Linear Backlog (Audited 2026-05-23)</h2>
+
+      <p><strong>5 projects, 49 issues.</strong> Phase 0 Foundation effectively done (14/16 Done, 2 In Review: GC-18 Flyway V1+V2, GC-30 smoke test). Phases 1–3 backlogs (30 issues) authored 2026-05-07 — two weeks before the PRD pivot of 2026-05-21/22. They reflect the pre-pivot spec.</p>
+
+      <div class="callout"><strong>Decision (2026-05-23):</strong> Leave Linear untouched during architecture phase. <code>bmad-create-epics-and-stories</code> will rebuild the Phase 1–3 backlog after architecture locks. Phase 0 issues (foundation) stay as-is.</div>
+
+      <h3>Architecturally-Relevant Conflicts</h3>
+      <table>
+        <thead>
+          <tr><th>Pre-pivot issue</th><th>Pre-pivot plan</th><th>New PRD direction</th><th>Resolution</th></tr>
+        </thead>
+        <tbody class="conflict-row">
+          <tr><td>GC-44, GC-56 — Active Session sync</td><td>5-second polling</td><td>WebSocket co-edit (PRD §7.2) — server-stamped monotonic LWW</td><td>Step 4: Real-time transport</td></tr>
+          <tr><td>GC-42, GC-45 — AI suggestions</td><td>OpenAI proxy + macro generation</td><td>Claude proxy, prompt caching, trainer-only, $0.40/WAU ceiling</td><td>Step 4: AI proxy design</td></tr>
+          <tr><td>Backend package</td><td><code>in.gymculture.*</code></td><td><code>in.vis.*</code> (already in backend/ per CLAUDE.md)</td><td>Confirmed locked</td></tr>
+          <tr><td>Phase 2 scope</td><td>No Equipment-Aware Logger</td><td>6 loggers (cable/barbell/dumbbell/machine/bodyweight/kettlebell/bands) per FR-8</td><td>Sprint planning post-arch</td></tr>
+          <tr><td>Phase 3 scope</td><td>No PR/e1RM/Recovery/ACWR</td><td>All v1 per FR-10, 11, 35–38</td><td>Sprint planning post-arch</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ─── CONTEXT ANALYSIS ─── -->
+    <section id="context">
+      <h2>Step 2: Project Context Analysis <span class="badge badge-locked" style="margin-left:8px">Completed 2026-05-24</span></h2>
+      <p style="color:var(--gc-text-secondary);font-size:13px">Party-mode stress-tested by 4 agents (Winston, Amelia, Mary, Sally) — 29 critiques accepted. Open Q5 resolved via second party-mode round.</p>
+    </section>
+
+    <!-- ─── 13 DRIVERS ─── -->
+    <section id="drivers">
+      <h2>13 Architectural Drivers</h2>
+
+      <div class="driver-row">
+        <span class="driver-num">1</span>
+        <div class="driver-content">
+          <div class="driver-title">Real-time Co-Edit</div>
+          <div class="driver-body">WebSocket, server-stamped monotonic LWW, ≤500ms propagation. Presence: ephemeral WS topic <code>presence:session:{id}</code>, fire-and-forget, no DB writes. Set-write provenance: <code>last_actor_id</code>, <code>last_actor_role</code>, <code>server_stamped_at</code> (NTP-corrected) on every Set row.</div>
+          <div class="driver-source">PRD §7.2, FR-1</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">2</span>
+        <div class="driver-content">
+          <div class="driver-title">AI Progression Engine <span class="badge badge-resolved" style="margin-left:6px">Q5 Resolved</span></div>
+          <div class="driver-body">Claude proxy + server-side prompt caching ≥80% hit rate. Ghost overlay TTL 30s hard. Cost: $0.40/WAU ceiling; $0.80 throttle; $1.00 pivot. Per-trainer rate limit. History scope: hybrid — see Q5 Decision section.</div>
+          <div class="driver-source">PRD §7.3, FR-12/13</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">3</span>
+        <div class="driver-content">
+          <div class="driver-title">Offline-First Mobile</div>
+          <div class="driver-body">WatermelonDB on op-sqlite. <code>sync_state</code>: <code>local_only | queued | acked | reconciled</code>. Client UUID idempotency on Set writes. 5s reconnect drain on WS restore.</div>
+          <div class="driver-source">PRD §7.5, NFR-4</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">4</span>
+        <div class="driver-content">
+          <div class="driver-title">Multi-Role Multi-Tenant Identity</div>
+          <div class="driver-body">6 role-contexts: CLIENT, TRAINER, STAFF, OWNER, SOLO_CLIENT, GUEST. Branch scoping at service layer. PT lifecycle state machine: NoPt → PtActive → PtEnded → PtActive|NoPt. Two onboarding paths (gym, solo).</div>
+          <div class="driver-source">PRD §4, CLAUDE.md</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">5</span>
+        <div class="driver-content">
+          <div class="driver-title">Equipment-Aware Logger</div>
+          <div class="driver-body">6 variants: cable / barbell / dumbbell / machine / bodyweight / kettlebell+bands. Visual weight pickers (drag stack, plate stacker, slider). Pre-loaded with last-used weight. <strong>Biggest UX investment v1.</strong></div>
+          <div class="driver-source">PRD FR-8, addendum §1</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">6</span>
+        <div class="driver-content">
+          <div class="driver-title">PR Card Dual-Render</div>
+          <div class="driver-body">In-app celebration: RN + Skia (zero latency). Shareable PNG: headless Chromium/Satori worker. Two entirely separate render pipelines.</div>
+          <div class="driver-source">PRD FR-11, UX spec</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">7</span>
+        <div class="driver-content">
+          <div class="driver-title">Schema Versioning + API Backward Compat</div>
+          <div class="driver-body">Versioned DTOs: <code>Accept: application/vnd.vis.vN+json</code>. Backend supports N + N-1 simultaneously. Pact contract tests run in CI on every PR.</div>
+          <div class="driver-source">PRD §7.8</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">8</span>
+        <div class="driver-content">
+          <div class="driver-title">Presence Channel</div>
+          <div class="driver-body">Separate ephemeral WS topic per session (<code>presence:session:{id}</code>). Fire-and-forget. Zero DB persistence for presence events.</div>
+          <div class="driver-source">PRD §7.2, UX spec</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">9</span>
+        <div class="driver-content">
+          <div class="driver-title">Set-Write Provenance</div>
+          <div class="driver-body"><code>last_actor_id</code>, <code>last_actor_role</code>, <code>server_stamped_at</code> columns on every Set row. Row-level audit trail — no separate event table required.</div>
+          <div class="driver-source">PRD §7.2 Glossary</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">10</span>
+        <div class="driver-content">
+          <div class="driver-title">Audit Log Enforcement</div>
+          <div class="driver-body">Separate DB roles: app role = no DELETE grant; migration role = DDL+DELETE. Postgres RLS on <code>tenant_id</code>. Monthly range partitioning from day 1.</div>
+          <div class="driver-source">PRD Glossary, addendum</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">11</span>
+        <div class="driver-content">
+          <div class="driver-title">Compliance (DPDPA + GDPR)</div>
+          <div class="driver-body">DPDPA 8 obligations + GDPR 6 endpoints. Data classification matrix: PII / sensitive-health / operational. Min-age gate for DPDPA §9 (teen gym clients — open policy decision).</div>
+          <div class="driver-source">PRD §7.10</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">12</span>
+        <div class="driver-content">
+          <div class="driver-title">Deployment + Migration</div>
+          <div class="driver-body">Cloud Run <code>asia-south1</code>. RPO 5 min / RTO 4 h. Flyway migrations. GH Actions monorepo CI + EAS Build for mobile. Secrets: Google Secret Manager — not in Docker image.</div>
+          <div class="driver-source">PRD §7.9, CLAUDE.md</div>
+        </div>
+      </div>
+
+      <div class="driver-row">
+        <span class="driver-num">13</span>
+        <div class="driver-content">
+          <div class="driver-title">User Preferences + Theme Tokens Cross-Stack</div>
+          <div class="driver-body"><code>user_preferences</code> table: <code>accent_color_hex</code>, <code>reduce_motion</code>, <code>reduce_transparency</code>, <code>unit_system</code>, <code>locale</code>. Single source of truth shared by RN trainer app, RN client app, Angular admin, and PR card render worker.</div>
+          <div class="driver-source">CLAUDE.md, UX spec</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Q5 DECISION ─── -->
+    <section id="q5">
+      <h2>Q5 Decision: AI History Scope <span class="badge badge-resolved" style="margin-left:8px">Resolved 2026-05-24</span></h2>
+
+      <div class="callout">Previously a BLOCKER for Driver 2. Resolved via party-mode round with Winston (Architect), John (PM), Mary (Analyst), Sally (UX). All four converged on <strong>Hybrid</strong>.</div>
+
+      <div class="decision-box">
+        <h4>Decision: Hybrid — two layers, two scopes</h4>
+        <table>
+          <thead><tr><th>Data Layer</th><th>Scope</th><th>Rationale</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Raw set logs</strong> (weight, reps, RIR)</td>
+              <td><span class="badge badge-locked">Human-identity, 90-day rolling window</span></td>
+              <td>Client's physiological record. 90-day bound = stable cache key + efficient query.</td>
+            </tr>
+            <tr>
+              <td><strong>AI suggestion history</strong> (what was recommended / accepted)</td>
+              <td><span class="badge badge-open">Trainer-identity</span></td>
+              <td>DPDPA/GDPR: aggregating behavioral history across relationships requires explicit consent. Safe default — resets per relationship.</td>
+            </tr>
+            <tr>
+              <td><strong>Prescription notes / program structure</strong></td>
+              <td><span class="badge badge-open">Trainer-identity</span></td>
+              <td>Trainer's methodology/IP. Excluded from cross-trainer AI context.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Claude Prompt Structure</h3>
+      <pre><code>// Stable cacheable prefix (human-identity layer — high cache hit rate)
+cache_key = hash(client_id + exercise_id + 90day_set_log_hash)
+prefix    = [client_id, exercise_id, 90-day set log: weight/reps/RIR per set]
+
+// Dynamic suffix (trainer-identity layer — appended after cached section)
+suffix    = [current trainer's prescription context, current program]</code></pre>
+
+      <h3>Client Consent Gate</h3>
+      <ul>
+        <li><strong>Default:</strong> new trainer sees client's 90-day raw set log automatically</li>
+        <li><strong>Full history (pre-90 days):</strong> explicit client consent toggle — "Share full training history with [Coach]?"</li>
+        <li><strong>Ghost overlay chip:</strong> context source shown — "Based on your training history" vs "Based on sessions with [Trainer]"</li>
+      </ul>
+
+      <h3>v2 Upgrade Path</h3>
+      <p>Trainer-facing toggle to include prior trainer programs as AI context — not in v1. Door stays open.</p>
+    </section>
+
+    <!-- ─── CROSS-CUTTING ─── -->
+    <section id="cross-cutting">
+      <h2>Cross-Cutting Concerns</h2>
+      <table>
+        <thead><tr><th>Concern</th><th>Decision</th></tr></thead>
+        <tbody>
+          <tr><td><strong>WS Auth</strong></td><td>Token revalidation on WebSocket upgrade (auth-on-upgrade), not only at HTTP handshake</td></tr>
+          <tr><td><strong>API Hardening</strong></td><td>Cloud Armor + per-Firebase-UID token bucket (Bucket4j); per-connection message-size limit</td></tr>
+          <tr><td><strong>Secrets</strong></td><td>Google Secret Manager for Firebase SA, Claude API key, Postgres creds — never in Docker image or env file</td></tr>
+          <tr><td><strong>RN Paradigm</strong></td><td>Expo prebuild (bare workflow + Expo modules) — not managed Expo, not vanilla RN</td></tr>
+          <tr><td><strong>Local State</strong></td><td>MMKV only for auth tokens + feature flags. Domain data = WatermelonDB exclusively. No exceptions.</td></tr>
+          <tr><td><strong>Package Naming</strong></td><td><code>in.vis.*</code> everywhere — zero <code>gymculture</code> references in new code</td></tr>
+          <tr><td><strong>Observability</strong></td><td>Per-trainer WAU spend emitted as structured log for Cloud Logging / alerting from day 1</td></tr>
+          <tr><td><strong>E2E Co-Edit</strong></td><td>Playwright × 2 admin-web instances on every PR + Maestro Cloud × 2 devices nightly</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ─── WS PATH ─── -->
+    <section id="ws-path">
+      <h2>Cloud Run WS: Path A vs Path B <span class="badge badge-open" style="margin-left:8px">Pending — Step 4</span></h2>
+
+      <table>
+        <thead>
+          <tr><th></th><th>Path A: Cloud Run + Redis Pub/Sub</th><th>Path B: GKE / Compute Engine</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Stickiness</strong></td><td><code>--session-affinity</code> header-hash</td><td>True sticky (pod affinity)</td></tr>
+          <tr><td><strong>Fan-out</strong></td><td>Redis Pub/Sub (<code>RedisMessageListenerContainer</code>)</td><td>In-process or Redis optional</td></tr>
+          <tr><td><strong>Forced reconnect</strong></td><td>55-min cycle (Cloud Run 3600s timeout − 5-min buffer)</td><td>None</td></tr>
+          <tr><td><strong>Reconnect UX</strong></td><td>Client drains 5s queue, resubscribes</td><td>Transparent</td></tr>
+          <tr><td><strong>Ops overhead</strong></td><td>Low (serverless)</td><td>Medium–High (cluster management)</td></tr>
+          <tr><td><strong>v1 concurrent WS</strong></td><td colspan="2" style="text-align:center">&lt;500 (single gym, early adopter) — same for both</td></tr>
+          <tr><td><strong>v1 cost</strong></td><td>Lower</td><td>Higher (cluster floor)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout"><strong>Lean:</strong> Path A. Redis Pub/Sub adds ~40ms fan-out latency — acceptable at v1 scale. Lock in Step 4.</div>
+    </section>
+
+    <!-- ─── LOCK GATES ─── -->
+    <section id="lock-gates">
+      <h2>Lock Gates (Step 4 Inputs)</h2>
+      <table class="gate-table">
+        <thead><tr><th>Gate</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Open Q5 — AI history scope</td>
+            <td><span class="status-done">RESOLVED 2026-05-24 — Hybrid (see §Q5 Decision)</span></td>
+          </tr>
+          <tr>
+            <td>Cloud Run WS Path A vs B</td>
+            <td><span class="status-open">Open — carry to Step 4</span></td>
+          </tr>
+          <tr>
+            <td>Cost model math (<code>ai-cost-model.html</code>)</td>
+            <td><span class="status-open">Open — produce in Step 4</span></td>
+          </tr>
+          <tr>
+            <td>Min-age gate (DPDPA §9, teen gym clients)</td>
+            <td><span class="status-open">Open — policy decision needed (Product / Legal)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>

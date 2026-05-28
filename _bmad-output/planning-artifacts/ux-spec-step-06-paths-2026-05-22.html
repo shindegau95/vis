@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 06 · Design System Paths · 2026-05-22</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-good: #1F7A4A;
+    --gc-avoid: #B53A1A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --gc-shadow-soft: 0 2px 8px rgba(0,0,0,0.4), 0 12px 28px -8px rgba(255,106,0,0.10);
+      --gc-shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(255,106,0,0.12);
+      --gc-good: #6BD49A;
+      --gc-avoid: #F58A6A;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg);
+    color: var(--gc-text);
+    line-height: 1.6;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page { padding-bottom: 24px; margin-bottom: 28px; border-bottom: 1px solid var(--gc-border); }
+  header.page .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 600; color: var(--vis-amber-primary); }
+  header.page h1 { margin: 6px 0 2px; font-size: 28px; font-weight: 600; letter-spacing: -0.015em; }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract { margin-top: 12px; font-size: 14px; color: var(--gc-text-muted); max-width: 760px; }
+
+  section { margin-top: 36px; }
+  section > h2 { margin: 0 0 8px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  section > .lede { color: var(--gc-text-muted); font-size: 14px; margin: 0 0 14px; }
+  p { margin: 6px 0; }
+  ul, ol { padding-left: 22px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  strong { color: var(--vis-amber-primary); }
+
+  .path-grid {
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    margin-top: 12px;
+  }
+  .path {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    box-shadow: var(--gc-shadow-card);
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative;
+  }
+  .path.recommended {
+    border-color: var(--vis-amber-primary);
+    box-shadow:
+      0 0 0 1px var(--vis-amber-primary) inset,
+      0 0 20px rgba(255,106,0,0.10),
+      var(--gc-shadow-card);
+  }
+  .path .pill {
+    align-self: flex-start;
+    background: rgba(224,99,19,0.10);
+    color: var(--vis-amber-primary);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .path .label { font-size: 12px; font-weight: 600; color: var(--vis-amber-primary); letter-spacing: 0.04em; text-transform: uppercase; }
+  .path h3 { margin: 0; font-size: 17px; }
+  .path .lede { color: var(--gc-text-muted); font-size: 13.5px; }
+  .stack {
+    background: var(--gc-bg);
+    border: 1px solid var(--gc-border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 4px;
+  }
+  .stack .label { font-size: 10.5px; color: var(--gc-text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+  .stack ul { margin: 0; padding-left: 16px; font-size: 12.5px; }
+  .stack li { margin: 2px 0; }
+  .pro-con { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12.5px; }
+  .pro-con .pros li::marker { color: var(--gc-good); }
+  .pro-con .cons li::marker { color: var(--gc-avoid); }
+  .pro-con .label { font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+  .pro-con .pros .label { color: var(--gc-good); }
+  .pro-con .cons .label { color: var(--gc-avoid); }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  th {
+    font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--gc-text-muted);
+    border-bottom: 1px solid var(--vis-amber-primary);
+    background: rgba(255,106,0,0.02);
+  }
+  tbody tr:hover { background: rgba(255,106,0,0.04); }
+  td.label { font-weight: 600; color: var(--vis-amber-primary); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; width: 160px; }
+
+  .locked-block {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-deep);
+    border-radius: 14px;
+    padding: 16px 22px;
+    box-shadow: var(--gc-shadow-card);
+    margin-top: 16px;
+  }
+  .locked-block h3 { margin: 0 0 6px; font-size: 16px; }
+  .locked-block .pill { font-size: 10.5px; color: var(--vis-amber-deep); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+
+  footer.cta {
+    margin-top: 40px; padding: 20px 22px;
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 16px; box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: rgba(196,81,0,0.08); color: var(--vis-amber-primary); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 06 · Design System Choice</div>
+  <h1>Pick a foundation for Vis's three apps</h1>
+  <div class="meta">2026-05-22 · Author: Gauravprakashshinde · Three paths, one decision</div>
+  <div class="abstract">
+    Vis ships brand-distinct UI across React Native (Client + Trainer) and Angular (Admin Web). The question is what sits <em>under</em> the brand layer — pure custom, themeable foundation, or off-the-shelf component lib. The brand layer is custom either way; this choice decides the primitives layer.
+  </div>
+</header>
+
+<section>
+  <h2>What's already locked (regardless of path)</h2>
+  <div class="locked-block">
+    <span class="pill">Vis-original · non-negotiable</span>
+    <h3>Brand layer — custom, no library</h3>
+    <ul>
+      <li><strong>Tokens:</strong> two-layer system from step-05 (Layer A raw amber + brand-locked + future presets; Layer B semantic <code>--accent</code> / <code>--brand-locked-*</code>).</li>
+      <li><strong>Visual:</strong> orb-as-organism with 5 tension states; Vis wordmark; cinematic amber palette; Geist + Geist Mono; warm ivory bg; peach shadows; Liquid Glass on nav + hero only.</li>
+      <li><strong>Signature components (custom-built, no lib):</strong> Equipment-Aware Logger (6 variants), Connection Orb, Recovery Orb, PR Moment composer, Branch-Scope Chip, Active Session Set row.</li>
+      <li><strong>21st-dev/magic MCP</strong> used for component scaffolding (per CLAUDE.md), then adapted to Vis tokens regardless of path chosen.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>The three paths</h2>
+  <p class="lede">Each path describes the layer <em>under</em> the brand layer — the primitives that handle a11y, focus, overlays, gestures, theming.</p>
+
+  <div class="path-grid">
+
+    <div class="path">
+      <span class="label">Path A · Pure custom</span>
+      <h3>No UI library underneath</h3>
+      <div class="lede">Build every primitive from React Native StyleSheet + Angular components from scratch. Maximum control, maximum build cost.</div>
+      <div class="stack">
+        <div class="label">Stack</div>
+        <ul>
+          <li>RN: bare StyleSheet + custom ThemeProvider</li>
+          <li>RN: Reanimated 3 + Gesture Handler (animation + gesture)</li>
+          <li>Angular: pure Angular + custom CSS (no Material, no PrimeNG)</li>
+          <li>A11y: hand-roll focus traps, ARIA, screen-reader labels</li>
+        </ul>
+      </div>
+      <div class="pro-con">
+        <div class="pros"><div class="label">Pros</div><ul><li>Zero brand dilution</li><li>No vendor lock</li><li>Smallest bundle</li><li>Exact behaviour control</li></ul></div>
+        <div class="cons"><div class="label">Cons</div><ul><li>A11y primitives = months of hand work</li><li>Focus / portals / dialogs / modals all re-derived</li><li>Slow to v1</li><li>Quality bar risk on WCAG AA</li></ul></div>
+      </div>
+    </div>
+
+    <div class="path recommended">
+      <span class="pill">★ Recommended</span>
+      <span class="label">Path B · Themeable foundation</span>
+      <h3>Tamagui (RN) + Tailwind + Angular CDK (web)</h3>
+      <div class="lede">Themeable primitives that respect Vis tokens; brand layer stays custom; a11y comes for free from CDK + Tamagui ARIA.</div>
+      <div class="stack">
+        <div class="label">Stack</div>
+        <ul>
+          <li>RN: <strong>Tamagui</strong> — token-driven (matches Layer A/B), cross-RN/web, animation built-in</li>
+          <li>RN: Reanimated 3 + Gesture Handler for Equipment-Aware Logger gestures</li>
+          <li>Web: <strong>Tailwind CSS</strong> utility classes + custom Angular components</li>
+          <li>Web: <strong>Angular CDK</strong> (a11y, overlays, drag-drop, portal, focus trap) — headless, no Material visual on top</li>
+          <li>Icons: <strong>Lucide</strong> (RN + Angular ports) — restrained line icons</li>
+          <li>Fonts: <strong>@fontsource/geist</strong> + Geist Mono, self-hosted</li>
+          <li>Charts: <strong>Victory Native</strong> (RN) + <strong>Apache ECharts</strong> (Angular) — both themable</li>
+        </ul>
+      </div>
+      <div class="pro-con">
+        <div class="pros"><div class="label">Pros</div><ul><li>Token system fits Tamagui's <code>createTheme</code> natively</li><li>A11y primitives from Angular CDK + Tamagui</li><li>Animation perf built-in (Reanimated worklets)</li><li>Time-to-v1 ~30% faster than Path A</li><li>WCAG AA comes mostly free</li></ul></div>
+        <div class="cons"><div class="label">Cons</div><ul><li>Tamagui learning curve</li><li>Tailwind ≠ token-source (need bridge layer)</li><li>Two icon-lib ports to keep in sync</li></ul></div>
+      </div>
+    </div>
+
+    <div class="path">
+      <span class="label">Path C · Off-the-shelf libs</span>
+      <h3>React Native Paper (RN) + Angular Material (web)</h3>
+      <div class="lede">Fastest-to-v1. Costs visual differentiation. Material aesthetic fights cinematic restraint.</div>
+      <div class="stack">
+        <div class="label">Stack</div>
+        <ul>
+          <li>RN: <strong>React Native Paper</strong> (Material) OR <strong>NativeWind</strong></li>
+          <li>Web: <strong>Angular Material</strong> (Material visual)</li>
+          <li>Override theme tokens; restyle every component</li>
+        </ul>
+      </div>
+      <div class="pro-con">
+        <div class="pros"><div class="label">Pros</div><ul><li>Fastest scaffold</li><li>Mature a11y</li><li>Largest component coverage</li></ul></div>
+        <div class="cons"><div class="label">Cons</div><ul><li>Material aesthetic ≠ cinematic amber</li><li>Override cost erases speed gain</li><li>Brand dilution risk — "looks like every other app"</li><li>Restyling Material is harder than building custom on Path B foundation</li></ul></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>Decision matrix</h2>
+  <p class="lede">Vis-specific factors weighed.</p>
+  <table>
+    <thead>
+      <tr><th>Factor</th><th>Path A · Pure custom</th><th>Path B · Themeable (Tamagui + Tailwind + CDK)</th><th>Path C · Off-the-shelf</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="label">Brand differentiation</td><td>★★★★★ max control</td><td>★★★★ brand layer custom; primitives invisible</td><td>★★ Material fight</td></tr>
+      <tr><td class="label">Time to v1</td><td>★★ slowest</td><td>★★★★ fast</td><td>★★★★★ fastest (but restyle cost recoups)</td></tr>
+      <tr><td class="label">WCAG 2.1 AA risk</td><td>★★ hand-rolled — high risk</td><td>★★★★ CDK + Tamagui ARIA handles core</td><td>★★★★ Material a11y is solid</td></tr>
+      <tr><td class="label">Token-system fit</td><td>★★★★★ direct</td><td>★★★★★ Tamagui <code>createTheme</code> direct match</td><td>★★ override every component</td></tr>
+      <tr><td class="label">Animation perf (Logger gestures)</td><td>★★★★ pure RN + Reanimated</td><td>★★★★★ Reanimated + Tamagui animation</td><td>★★★ Material animations get in the way</td></tr>
+      <tr><td class="label">Cross-app parity (RN + Angular)</td><td>★★ both hand-built independently</td><td>★★★★ Tamagui supports RN + web; Tailwind ties Angular to same tokens</td><td>★★ Paper + Material are different libs</td></tr>
+      <tr><td class="label">v1.1 accent presets readiness</td><td>★★★★ token system already in plan</td><td>★★★★★ Tamagui themes flip natively</td><td>★★★ Material theming works but spec-heavy</td></tr>
+      <tr><td class="label">Long-term maintenance</td><td>★★ all-on-team</td><td>★★★★ token contracts + library upkeep shared</td><td>★★★ library evolution may conflict</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Why Path B</h2>
+  <ul>
+    <li>Vis's two-layer token architecture (locked in step-05) maps directly to Tamagui's theme system — Layer A raw tokens become Tamagui's <code>createTokens</code> input, Layer B semantic tokens become Tamagui's <code>createTheme</code> output.</li>
+    <li>The brand layer (orb, wordmark, Equipment-Aware Logger, Connection Orb, PR Moment) is custom-built in all three paths — Path B just removes the "rebuild a Dialog primitive" tax.</li>
+    <li>Angular CDK gives WCAG-AA primitives for free (focus trap, live region, overlay positioning) — saves weeks vs Path A.</li>
+    <li>Light + dark theme parity v1 is one config file in Tamagui — Path A means writing parity by hand for every component.</li>
+    <li>The accent-presets architecture (deferred to v1.1) is a one-line theme switch in Tamagui; Path C means re-overriding the entire Material palette per preset.</li>
+    <li>21st-dev/magic MCP scaffolding (mandated by CLAUDE.md) adapts cleanly to any path — but Path B's themable primitives accept generated components with minimal rewiring.</li>
+  </ul>
+</section>
+
+<footer class="cta">
+  <strong>Pick a path in chat:</strong> Path A (pure custom) · Path B (themeable foundation, recommended) · Path C (off-the-shelf). After that, A / P / C menu on the generated step-06 content.
+</footer>
+
+</div>
+</body>
+</html>

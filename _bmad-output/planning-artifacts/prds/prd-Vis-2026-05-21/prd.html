@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vis — Product Requirements Document</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-ember: #F26200;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --vis-amber-glow: #FF6A00;
+    --vis-cream: #FFF3E8;
+    --vis-smoke: #EFE1D5;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1F1611;
+    --gc-text-muted: #6B5340;
+    --gc-border: rgba(196,81,0,0.18);
+    --gc-shadow: 0 1px 2px rgba(169,68,0,0.06), 0 4px 16px rgba(169,68,0,0.05);
+    --gc-shadow-strong: 0 4px 12px rgba(169,68,0,0.10), 0 16px 40px rgba(169,68,0,0.08);
+    --code-bg: #FFF8EE;
+    --table-stripe: #FCF4E8;
+    --nav-bg: rgba(249,246,240,0.92);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-ember: #D9590B;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --vis-amber-glow: #FF6A00;
+      --vis-cream: #1A1310;
+      --vis-smoke: #2A1812;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F3EBDF;
+      --gc-text-muted: #B59A82;
+      --gc-border: rgba(255,122,26,0.18);
+      --gc-shadow: 0 1px 2px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.4);
+      --gc-shadow-strong: 0 4px 12px rgba(0,0,0,0.6), 0 16px 40px rgba(0,0,0,0.5);
+      --code-bg: #1A1310;
+      --table-stripe: #161106;
+      --nav-bg: rgba(5,5,5,0.92);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--gc-bg);
+    color: var(--gc-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { display: grid; grid-template-columns: 240px 1fr; max-width: 1180px; margin: 0 auto; gap: 0; }
+  @media (max-width: 880px) { .container { grid-template-columns: 1fr; } nav.toc { position: static !important; max-height: none !important; } }
+  header.doc-header {
+    grid-column: 1 / -1;
+    padding: 48px 32px 32px;
+    border-bottom: 1px solid var(--gc-border);
+    background: linear-gradient(180deg, var(--vis-cream) 0%, var(--gc-bg) 100%);
+  }
+  header.doc-header h1 {
+    margin: 0 0 8px;
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--gc-text);
+  }
+  header.doc-header .accent {
+    display: inline-block;
+    width: 48px; height: 4px;
+    background: linear-gradient(90deg, var(--vis-amber-primary), var(--vis-amber-glow));
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  header.doc-header .meta {
+    color: var(--gc-text-muted);
+    font-size: 0.92rem;
+    margin: 4px 0;
+  }
+  header.doc-header .meta strong { color: var(--gc-text); font-weight: 600; }
+  header.doc-header .abstract {
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: var(--gc-bg-elevated);
+    border-left: 3px solid var(--vis-amber-primary);
+    border-radius: 6px;
+    box-shadow: var(--gc-shadow);
+    color: var(--gc-text);
+  }
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding: 32px 16px 32px 32px;
+    border-right: 1px solid var(--gc-border);
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px);
+    font-size: 0.9rem;
+  }
+  nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gc-text-muted); margin: 0 0 12px; }
+  nav.toc ol { list-style: none; padding: 0; margin: 0; }
+  nav.toc li { margin: 4px 0; }
+  nav.toc a { color: var(--gc-text-muted); text-decoration: none; padding: 4px 8px; display: block; border-radius: 4px; }
+  nav.toc a:hover { color: var(--vis-amber-primary); background: var(--vis-cream); }
+  main {
+    padding: 32px 40px 80px;
+    max-width: 820px;
+  }
+  section { margin: 0 0 48px; scroll-margin-top: 20px; }
+  section h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gc-text);
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--gc-border);
+    letter-spacing: -0.01em;
+  }
+  section h3 { font-size: 1.2rem; font-weight: 600; margin: 28px 0 12px; color: var(--gc-text); }
+  section h4 { font-size: 1.0rem; font-weight: 600; margin: 20px 0 8px; color: var(--vis-amber-shadow); }
+  section h5 { font-size: 0.95rem; font-weight: 600; margin: 16px 0 6px; color: var(--gc-text); }
+  p { margin: 0 0 14px; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin: 4px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.92rem;
+    background: var(--gc-bg-elevated);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--gc-shadow);
+  }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  th { background: var(--vis-cream); color: var(--gc-text); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:nth-child(even) td { background: var(--table-stripe); }
+  tr:last-child td { border-bottom: none; }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: var(--vis-amber-shadow);
+  }
+  pre {
+    background: var(--code-bg);
+    padding: 14px 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    border: 1px solid var(--gc-border);
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+  pre code { background: transparent; padding: 0; color: var(--gc-text); }
+  blockquote {
+    margin: 16px 0;
+    padding: 12px 18px;
+    background: var(--gc-bg-elevated);
+    border-left: 3px solid var(--vis-amber-primary);
+    border-radius: 4px;
+    color: var(--gc-text);
+    font-style: italic;
+    box-shadow: var(--gc-shadow);
+  }
+  .fr-card {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    box-shadow: var(--gc-shadow);
+  }
+  .fr-card .fr-id {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--vis-amber-primary), var(--vis-amber-ember));
+    color: #FFF6EA;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    margin-right: 10px;
+    letter-spacing: 0.02em;
+  }
+  .fr-card h4 { margin-top: 0; color: var(--gc-text); }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    margin-left: 6px;
+  }
+  .badge-realises { background: var(--vis-cream); color: var(--vis-amber-shadow); border: 1px solid var(--gc-border); }
+  .badge-nfr { background: var(--vis-amber-highlight); color: var(--vis-amber-shadow); }
+  .badge-non-goal { background: rgba(196,81,0,0.12); color: var(--vis-amber-shadow); }
+  .callout {
+    background: linear-gradient(135deg, var(--vis-cream), var(--gc-bg-elevated));
+    border-left: 4px solid var(--vis-amber-glow);
+    padding: 12px 16px;
+    margin: 14px 0;
+    border-radius: 6px;
+    font-size: 0.93rem;
+  }
+  .callout-pm { border-left-color: var(--vis-amber-primary); }
+  .callout-assumption { border-left-color: var(--vis-amber-shadow); font-style: italic; }
+  details { margin: 12px 0; }
+  details summary {
+    cursor: pointer;
+    padding: 10px 14px;
+    background: var(--vis-cream);
+    border-radius: 6px;
+    font-weight: 600;
+    color: var(--gc-text);
+    list-style: none;
+    border: 1px solid var(--gc-border);
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  details > div.body { padding: 14px 18px; border: 1px solid var(--gc-border); border-top: 0; border-radius: 0 0 6px 6px; background: var(--gc-bg-elevated); }
+  .three-load {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .three-load > div {
+    background: var(--gc-bg-elevated);
+    border-radius: 8px;
+    padding: 14px 16px;
+    box-shadow: var(--gc-shadow);
+    border-top: 3px solid var(--vis-amber-primary);
+  }
+  .three-load .num { font-size: 0.78rem; color: var(--vis-amber-shadow); font-weight: 700; letter-spacing: 0.06em; }
+  .pivot-triggers {
+    background: var(--vis-cream);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    border: 1px solid var(--gc-border);
+  }
+  .pivot-triggers h4 { margin-top: 0; color: var(--vis-amber-shadow); }
+  .uj-block {
+    background: var(--gc-bg-elevated);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 16px 0;
+    box-shadow: var(--gc-shadow-strong);
+    border-top: 3px solid var(--vis-amber-glow);
+  }
+  .uj-block h4 { margin-top: 0; color: var(--gc-text); font-size: 1.05rem; }
+  .uj-block .uj-meta { font-size: 0.85rem; color: var(--gc-text-muted); margin-bottom: 10px; }
+  .footer { color: var(--gc-text-muted); font-size: 0.85rem; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--gc-border); font-style: italic; }
+</style>
+</head>
+<body>
+<header class="doc-header">
+  <div class="accent"></div>
+  <h1>Vis — Product Requirements Document</h1>
+  <div class="meta"><strong>Author:</strong> Gauravprakashshinde &nbsp;·&nbsp; <strong>Created:</strong> 2026-05-21 &nbsp;·&nbsp; <strong>Updated:</strong> 2026-05-22 &nbsp;·&nbsp; <strong>Status:</strong> final</div>
+  <div class="meta"><strong>Project:</strong> Vis &nbsp;·&nbsp; <strong>Inputs:</strong> design spec, progressive-overload spec, domain research, prototype, brand refs</div>
+  <div class="abstract">
+    Vis makes progressive overload effortless for anyone who lifts — solo or with a trainer. Equipment-aware visual logging, live trainer-client co-edit on the gym floor, and multi-branch gym operations in one product. Free at launch, global from day one.
+  </div>
+</header>
+<div class="container">
+  <nav class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#purpose">0 · Document Purpose</a></li>
+      <li><a href="#vision">1 · Vision</a></li>
+      <li><a href="#users">2 · Target User</a></li>
+      <li><a href="#glossary">3 · Glossary</a></li>
+      <li><a href="#features">4 · Features</a></li>
+      <li><a href="#non-goals">5 · Non-Goals</a></li>
+      <li><a href="#mvp-scope">6 · MVP Scope</a></li>
+      <li><a href="#nfrs">7 · Cross-Cutting NFRs</a></li>
+      <li><a href="#metrics">8 · Success Metrics</a></li>
+      <li><a href="#open-questions">9 · Open Questions</a></li>
+      <li><a href="#assumptions">10 · Assumptions Index</a></li>
+      <li><a href="#aesthetic">11 · Aesthetic + Tone</a></li>
+    </ol>
+  </nav>
+  <main>
+
+  <section id="purpose">
+    <h2>0. Document Purpose</h2>
+    <p>This PRD is the canonical product specification for <strong>Vis v1</strong>. Audience: the PM (owner), downstream BMad workflows (UX design, architecture, epics/stories), and any reviewer ramping onto the project. Structured Glossary-anchored; features grouped, FRs nested with stable global IDs (FR-1 through FR-39), user journeys numbered UJ-1 through UJ-3, success metrics SM-1 through SM-8 with counter-metrics SM-C1 through SM-C10.</p>
+    <p>Inline <code>[ASSUMPTION: …]</code> tags flag inferences without confirmation; §10 Assumptions Index lists them. <code>[NOTE FOR PM]</code> callouts mark items emotionally load-bearing that may need revisit at Finalize. Full Discovery audit trail at <code>.decision-log.md</code>; user-contributed depth that belongs downstream sits in <code>addendum.md</code>.</p>
+    <p>Prior artifacts this PRD builds on:</p>
+    <ul>
+      <li>Original spec — <code>docs/superpowers/specs/2026-05-04-vis-design.md</code> (superseded inline where Discovery shifted scope).</li>
+      <li>Progressive-overload addendum spec — <code>docs/superpowers/specs/2026-05-18-progressive-overload-design.md</code>.</li>
+      <li>Domain research — <code>_bmad-output/planning-artifacts/research/domain-vis-fitness-pt-research-2026-05-21.html</code>.</li>
+      <li>Working prototype — <code>prototype/</code> (orb visual language, brand palette, light + dark theme).</li>
+      <li>Brand references — <code>docs/brand-ref/reference_light.png</code>, <code>reference_dark.png</code>.</li>
+    </ul>
+  </section>
+
+  <section id="vision">
+    <h2>1. Vision</h2>
+    <p>Vis makes progressive overload effortless for anyone who lifts — solo or with a trainer. Where competitors force gym-goers to type weights and remember last week, Vis logs through visual gestures that mimic the equipment in front of you: drag the cable pin, snap plates onto a bar, slide the dumbbell rack. Where competitors silo lifters, trainers, and gyms into three apps, Vis is one product where a trainer and client can edit the same set log live during an in-person session — and where a gym can run that experience across all its branches.</p>
+    <p><strong>Free at launch. Global from day one. India-anchored, cinematic in feel, evidence-based in method.</strong></p>
+    <h4>Three load-bearing assertions</h4>
+    <div class="three-load">
+      <div><div class="num">01</div><strong>Visual equipment-aware logging is THE differentiator.</strong> Primary user pain is remembering + inputting progression. Beauty serves usability. <em>Grounded in domain research §competitive-landscape: existing apps (Hevy, Strong, FitNotes) require typing every weight; AI-coached apps (FitnessAI, Caliber) abstract the lift to text prompts.</em></div>
+      <div><div class="num">02</div><strong>Real-time trainer↔client co-edit + multi-branch ops are the structural moats.</strong> <em>Anti-positioning:</em> Trainerize treats trainer-client as async messaging; FitBudd does multi-branch but no co-edit; Bevel does in-person device-sharing but no real-time sync. Vis is first to unify all three.</div>
+      <div><div class="num">03</div><strong>Free v1; pricing later.</strong> Global units (kg + lb), per-locale dates, time zones, multi-currency-ready data model day 1.</div>
+    </div>
+  </section>
+
+  <section id="users">
+    <h2>2. Target User</h2>
+    <h3>2.1 Primary Personas</h3>
+    <p>Six role-contexts across two onboarding paths (<em>solo</em> or <em>gym-attached</em>); v1 ships both. RBAC scopes data: branch-scoped for everyone except gym owner.</p>
+    <table>
+      <thead><tr><th>Persona</th><th>Path</th><th>Role</th><th>Branch scope</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Aarav</strong> — gym-going client beginning structured PT</td><td>gym</td><td>Gym Client</td><td>single branch</td></tr>
+        <tr><td><strong>Rohit</strong> — solo strength athlete (no PT, no gym)</td><td>solo</td><td>Solo Client</td><td>n/a</td></tr>
+        <tr><td><strong>Priya</strong> — Personal Trainer at a gym chain</td><td>gym</td><td>Gym Trainer</td><td>single branch</td></tr>
+        <tr><td><strong>Karan</strong> — independent PT across multiple gyms</td><td>solo + gym</td><td>Solo Trainer (+ Gym Trainer at brands)</td><td>per affiliation</td></tr>
+        <tr><td><strong>Anita</strong> — gym branch staff</td><td>gym</td><td>Gym Staff</td><td>single branch</td></tr>
+        <tr><td><strong>Vikram</strong> — gym owner / chain operator</td><td>gym</td><td>Gym Owner</td><td>all branches in brand</td></tr>
+      </tbody>
+    </table>
+    <p><em>A trainer may simultaneously hold Solo Trainer plus Gym Trainer roles at multiple brands. A client may hold Gym Client at one brand plus Solo Client of an independent trainer in parallel. The PT-relationship state is orthogonal to gym membership.</em></p>
+
+    <h3>2.2 Jobs To Be Done</h3>
+    <ul>
+      <li><strong>Client (any path):</strong> "Tell me what to do next, and let me log it without typing." Remove cognitive load + input friction.</li>
+      <li><strong>Client (PT-attached):</strong> "Let me train <em>with</em> my trainer, not around them." Real-time co-edit, prescribed-vs-actual loop, PR moments.</li>
+      <li><strong>Trainer:</strong> "Give me one place to author programs, track every client's adherence, and coach during the session — across all my clients."</li>
+      <li><strong>Gym Staff:</strong> "Let me run member ops without spreadsheets." Roster, PT activation, payment logging, reminder cadence, CSV import day one.</li>
+      <li><strong>Gym Owner:</strong> "Show me which branches and which trainers are working — and which aren't." Cross-branch revenue, adherence, retention.</li>
+      <li><strong>All:</strong> "Make my data feel mine, my equipment feel mine, my progress feel earned." Cinematic, equipment-aware UI; PR moments worth sharing.</li>
+    </ul>
+
+    <h3>2.3 Non-Users (v1)</h3>
+    <ul>
+      <li>Group fitness classes / class-based bookings — out of scope (v2 candidate).</li>
+      <li>Apple Watch / Wear OS companion users — explicitly deferred (post-v1; addendum §5).</li>
+      <li>Member-facing web portal — clients are mobile-only.</li>
+      <li>Walk-in / non-paying members — only PT-active or self-onboarded users get the Client App.</li>
+    </ul>
+
+    <h3>2.4 Key User Journeys</h3>
+
+    <div class="uj-block">
+      <h4>UJ-1. Priya and Aarav co-edit a lat-pulldown session, live.</h4>
+      <div class="uj-meta"><strong>Personas:</strong> Priya (Gym Trainer), Aarav (Gym Client, 3 mo in). <strong>Entry state:</strong> Both authenticated; same WebSocket Session.</div>
+      <ol>
+        <li>Priya drags the visual cable-pin to slab 8 (40 kg), reps target 12, RIR target 2. Set 1 row appears instantly on Aarav's app. She flips warm-up toggle on set 1.</li>
+        <li>Aarav performs the set; either party can tap "Done" — last-write-wins. Auto-rest timer starts (isolation default 60 s); haptic at 10 s remaining.</li>
+        <li>Sets 2-4: load bumps to slab 10 (50 kg). Aarav misses rep 9 → Priya flags rep 9 as spotter-assisted; rep 10 stays unrecorded. Set 3 prescribed 50/10 but actual 47.5/10 — both shown.</li>
+        <li>Set 4 = failure set: Priya flips "to failure" → RIR target locks to 0. Aarav hits 8 reps actual, RIR derived = 0. Progression Index recomputes live.</li>
+        <li>Priya tap-pairs the next exercise (face-pull) as a superset; tap-drops a band-only drop set after the failure set.</li>
+      </ol>
+      <p><strong>Climax:</strong> Set 4 → e1RM PR detection clears prior best by 1.2 kg. PR moment screen fires; both see it.</p>
+      <p><strong>Resolution:</strong> Session ends; recovery chip updates (Back: red, 28h). Progression Index, e1RM graph, weekly volume all refresh.</p>
+      <p><strong>Edge case:</strong> Network drop → offline banner, queued writes; reconnect reconciles last-write-wins. Disconnect rate &gt; 5% trips SM-C2.</p>
+    </div>
+
+    <div class="uj-block">
+      <h4>UJ-2. Rohit attempts a 200 kg squat PR, solo.</h4>
+      <div class="uj-meta"><strong>Persona:</strong> Rohit (Solo Client, no PT, no gym). Week 8 of curated 5×3 squat block.</div>
+      <ol>
+        <li>Warm-up sets 1-3 marked from set-row long-press menu (excluded from volume + Index).</li>
+        <li>Working sets 1-4 hit 195/3 clean. Set 5 prescribed edited to 200 kg via barbell visualizer (snaps 25 + 25 + 20 + 10 per side; auto-sum 200).</li>
+        <li>Set 5: rep 1 unassisted, rep 2 spotter-assisted (rep-quality bar after set). RIR actual = 0.</li>
+        <li>App detects 1RM load PR AND e1RM PR.</li>
+      </ol>
+      <p><strong>Climax:</strong> PR composer fires. Cinematic amber. Three aspect ratios (square / 9:16 / 4:5). Rohit picks 9:16 → native share-sheet → Instagram Stories.</p>
+      <p><strong>Resolution:</strong> Set saved with assistance metadata; card archived; Progression Index recomputes accounting for the spotter-assisted rep.</p>
+      <p><strong>Edge case:</strong> PR dismissed without share → still archived; surfaced as a "you have an unshared PR" nudge once. SM-C10 watches.</p>
+    </div>
+
+    <div class="uj-block">
+      <h4>UJ-3. Aarav signs up under Priya in his first seven days.</h4>
+      <div class="uj-meta"><strong>Persona:</strong> Aarav (Gym Client). Anita pre-imported his CSV row when he paid.</div>
+      <ol>
+        <li>QR scan → Google sign-in → roster match → ~10-field Onboarding Questionnaire (skippable advanced section).</li>
+        <li>Trainer browse at his branch. Priya's card: certs verified, 4 yrs exp, hypertrophy + novice specialties, 4.8 rating, ~2h response, Hindi + English. Aarav picks her #1 + two fallbacks.</li>
+        <li>Priya gets FCM push → reviews questionnaire → accepts. Aarav's home unlocks the trainer panel.</li>
+        <li>Priya picks Vis "PPL Beginner 12-week" starter template → edits 3 swap-outs → assigns as a phased plan (phases 1/2/3).</li>
+        <li>Aarav sees today's workout + 12-week grid + trainer card. First session tomorrow.</li>
+      </ol>
+      <p><strong>Climax:</strong> Day 7 — 3 sessions complete, adherence 100%, first PR detected.</p>
+      <p><strong>Resolution:</strong> Steady state. Plan-block T-2 reminder scheduled for week 4 minus 2 days.</p>
+      <p><strong>Edge case:</strong> #1 trainer doesn't respond within 24h → next-in-priority gets request. All three decline → marketplace browse path opens. Trainer can decline + transfer with client consent.</p>
+    </div>
+  </section>
+
+  <section id="glossary">
+    <h2>3. Glossary</h2>
+    <p>Downstream workflows and readers must use these terms exactly. FRs, UJs, and SMs use Glossary terms verbatim.</p>
+    <table>
+      <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tenant</strong></td><td>A gym brand OR an independent trainer. Top-level isolation boundary. Solo tenants have one virtual branch.</td></tr>
+        <tr><td><strong>Brand</strong></td><td>Multi-branch gym chain. Tenant of type <code>gym</code>. Has 1..N Branches.</td></tr>
+        <tr><td><strong>Branch</strong></td><td>Physical gym location within a Brand. All gym-path data scoped to one Branch.</td></tr>
+        <tr><td><strong>Gym Trainer</strong></td><td>Trainer affiliated to a Brand at one or more Branches.</td></tr>
+        <tr><td><strong>Solo Trainer</strong></td><td>Independent trainer. Self-onboarded. May additionally hold Gym Trainer roles.</td></tr>
+        <tr><td><strong>Gym Client</strong></td><td>Client paying a Brand. Created by Staff (CSV import / manual) or self-onboarded via Brand QR.</td></tr>
+        <tr><td><strong>Solo Client</strong></td><td>Client unaffiliated to any Brand. Self-onboarded.</td></tr>
+        <tr><td><strong>PT Relationship</strong></td><td>Trainer ↔ client engagement, state <code>NoPt | PtActive | PtEnded</code>. Independent of gym membership. Carries a per-(trainer × client × exercise) Progression Rule.</td></tr>
+        <tr><td><strong>Plan</strong></td><td>Trainer-authored / template-derived training program assigned to a client. Flat OR phased.</td></tr>
+        <tr><td><strong>Phase</strong></td><td>Named block within a phased Plan, with start/end dates + FCM expiry reminders.</td></tr>
+        <tr><td><strong>Plan Template</strong></td><td>Reusable Plan blueprint. Three sources: Vis starter, per-trainer, brand-shared.</td></tr>
+        <tr><td><strong>Session</strong></td><td>Scheduled or ad-hoc workout instance. Contains Exercises; Exercises contain Sets.</td></tr>
+        <tr><td><strong>Set</strong></td><td>Load × reps record with prescribed + actual values, warm-up flag, failure intent, RPE target + actual (1.0–10.0 in 0.5 steps), per-rep assistance tags, <code>source</code> + <code>ai_locked</code>. RIR derived for display.</td></tr>
+        <tr><td><strong>RPE</strong></td><td>Rate of Perceived Exertion 1.0–10.0 in 0.5 steps (Tuchscherer / RP). Canonical exertion metric.</td></tr>
+        <tr><td><strong>RIR</strong></td><td>Reps in Reserve. Derived: <code>RIR = round(10 − RPE)</code>. Not stored; computed on the fly.</td></tr>
+        <tr><td><strong>Progression Index</strong></td><td>Per-(client × exercise) score: <code>w_e1rm·Δe1RM + w_vol·ΔVol + w_quality·ΔRPE_eff</code>. Weights trainer-tunable per (client × goal). Excludes warm-up. Source: domain research.</td></tr>
+        <tr><td><strong>Progression Rule</strong></td><td>AI-suggested rule per (trainer × client × exercise) v1. Other rule types (double-prog/linear/RPE/DUP) deferred to v1.5.</td></tr>
+        <tr><td><strong>e1RM</strong></td><td>Epley (<code>load × (1 + reps/30)</code>) for reps ≤ 5; Brzycki (<code>load × 36 / (37 − reps)</code>) for reps 6–10; arithmetic mean at boundary.</td></tr>
+        <tr><td><strong>PR (Personal Record)</strong></td><td>Detected across 4 dimensions v1: 1RM load, e1RM, total-volume, rep-count-at-given-load.</td></tr>
+        <tr><td><strong>PR Card</strong></td><td>Shareable image from one Vis template, three aspect ratios. Native share-sheet.</td></tr>
+        <tr><td><strong>Equipment-Aware Logger</strong></td><td>UI mimicking physical equipment for set entry. Six equipment types v1.</td></tr>
+        <tr><td><strong>Onboarding Questionnaire</strong></td><td>~10-field intake + optional advanced section.</td></tr>
+        <tr><td><strong>Trainer Marketplace</strong></td><td>Vis-wide opt-in directory of Solo Trainers. Moderated.</td></tr>
+        <tr><td><strong>Audit Log</strong></td><td>Append-only record of member edits, payment edits, role changes, plan-template publishes. Enforced at DB level: no <code>DELETE</code> grant for any app role; only <code>INSERT</code> + <code>SELECT</code>.</td></tr>
+        <tr><td><strong>Co-Edit</strong></td><td>Live multi-device editing of the same Session via WebSocket. <strong>Server-stamped monotonic last-write-wins per Set row:</strong> clients carry client-clock for local ordering; server stamps a monotonic version on receipt; reconciliation uses server-version.</td></tr>
+        <tr><td><strong>Adherence</strong></td><td>Per-client: prescribed Sets logged within Session window (± 12 h) / total prescribed Sets in active Plan. Percentage. Drives FR-22 + SM-7.</td></tr>
+        <tr><td><strong>WAU</strong></td><td>Weekly Active User — distinct user IDs authenticating ≥ 1× in rolling 7-day window. Counter-metric denominator. Distinct from WALS (Sessions w/ ≥ 1 Set logged).</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="features">
+    <h2>4. Features</h2>
+    <p>Feature blocks A-K. FRs numbered globally (FR-1 through FR-43) so downstream artifacts reference stably. <strong>Numbering is NOT a build-order signal</strong> — FR-1 (Co-Edit) structurally depends on FR-3 (Set schema), FR-7 (Rest Timer), FR-8 (Equipment-Aware Logger), and FR-12 (AI Progression). Epic / sprint sequencing decisions belong to the architecture + sprint-planning phase. Inline UJ references mark which journey a capability realizes.</p>
+
+    <h3>4.1 Block A — Trainer↔Client In-Person Sessions</h3>
+    <p><strong>Description:</strong> The signature surface. Trainer and client edit the same Session on two devices simultaneously during the workout. All set rows accept prescribed AND actual values, warm-up flag, failure intent, RIR target, per-rep assistance tags. Progression Index updates after every working Set. <span class="badge badge-realises">UJ-1, UJ-2</span></p>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-1</span> Co-edited Session</h4>
+      <p>Trainer and Client can edit the same Session on two devices via WebSocket. Last-write-wins per Set row.</p>
+      <h5>Consequences (testable):</h5>
+      <ul>
+        <li>Trainer edits Set 1 reps from 10 → 12; within ≤ 500 ms Client's UI reflects 12.</li>
+        <li>Both devices write to the same Set within 50 ms of each other → final value matches the later server-received write; conflict logged.</li>
+        <li>WebSocket disconnect → offline banner; writes queue; reconnect sync within 5 s.</li>
+      </ul>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-2</span> Warm-up vs Working Set distinction</h4>
+      <p>Either party can flag any Set row as warm-up. Warm-up Sets excluded from Progression Index, total-volume PR detection, weekly volume metrics. <span class="badge badge-realises">UJ-1</span></p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-3</span> Prescribed vs Actual fields per Set</h4>
+      <p>Every Set stores <code>prescribed_load</code>, <code>prescribed_reps</code>, <code>actual_load</code>, <code>actual_reps</code>, <code>rpe_target</code>, <code>rpe_actual</code> (1.0–10.0 in 0.5 steps), <code>source ∈ {TRAINER, AI, AI_BOOTSTRAP}</code>, <code>ai_locked</code> boolean. Progression Index reads <code>actual</code>. UI shows prescribed + actual when divergent; RIR (<code>10 − RPE</code>) toggleable per user. <span class="badge badge-realises">UJ-1, UJ-3</span></p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-4</span> Failure-intent flag + derived RPE</h4>
+      <p>Trainer can flag a Set as "to failure". <code>rpe_target</code> locks to 10.0 (RIR = 0); <code>rpe_actual</code> measured from rep velocity or trainer/user input. <span class="badge badge-realises">UJ-1, UJ-2</span></p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-5</span> Per-rep Assistance tagging</h4>
+      <p>User labels each rep within a Set as <code>unassisted | spotter_assisted | forced</code>. UI is a rep-quality bar after the Set. Affects PR detection (forced reps disqualify load-PR; spotter-assisted halves Progression Index credit <code>[ASSUMPTION]</code>). <span class="badge badge-realises">UJ-2</span></p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-6</span> Superset + Drop-Set composition by gesture</h4>
+      <p>Tap-to-pair adjacent exercises composes a Superset. Tap-to-drop on a Set then engaging the Equipment-Aware Logger picks the drop weight. No typing. <span class="badge badge-realises">UJ-1</span></p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-7</span> Rest Timer</h4>
+      <p>Auto-starts on Set save. Defaults: compound 2-3 min, isolation 60-90 s. Trainer override per (client × exercise). Haptic cue at 10 s remaining.</p>
+      <h5>Consequences:</h5>
+      <ul>
+        <li>Saving a compound lift Set starts a 150 s timer (default).</li>
+        <li>Trainer override "120 s" persists across Sessions for that (client × exercise).</li>
+      </ul>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-8</span> Equipment-Aware Logger (six equipment types)</h4>
+      <p>User logs Set load via the visualizer that matches the equipment.</p>
+      <table>
+        <thead><tr><th>Equipment</th><th>Logger pattern</th></tr></thead>
+        <tbody>
+          <tr><td>Cable pin-stack</td><td>Drag visual pin to slab position</td></tr>
+          <tr><td>Barbell</td><td>Tap plates onto each side; auto-sum to total</td></tr>
+          <tr><td>Dumbbell</td><td>Number-line slider; kg/lb toggle; rack increments snap</td></tr>
+          <tr><td>Machine pin-stack</td><td>Same pattern as cable</td></tr>
+          <tr><td>Bodyweight</td><td>Body silhouette + optional weight-vest field</td></tr>
+          <tr><td>Kettlebell</td><td>Discrete-step picker matching standard kettlebell weights</td></tr>
+          <tr><td>Bands</td><td>Color-coded resistance-tier picker</td></tr>
+        </tbody>
+      </table>
+      <p>Numeric-keypad fallback always available. Defaults to last-used load for (user × exercise). One-tap "same as last set" / "same as last session". <span class="badge badge-realises">UJ-1, UJ-2, UJ-3</span></p>
+      <h5>Consequences:</h5>
+      <ul>
+        <li>Opening cable exercise pre-loads the last slab position used.</li>
+        <li>Picking 25 + 20 + 10 kg per side renders barbell visualizer totaling 130 kg (60 plates + 20 bar).</li>
+        <li>Voice fallback parses "fifty for ten" → 50 / 10 <code>[ASSUMPTION: voice fallback v1 scope]</code>.</li>
+      </ul>
+      <h5>Feature-specific NFRs <span class="badge badge-nfr">NFR</span>:</h5>
+      <ul>
+        <li>Set save → server commit ≤ 250 ms p95.</li>
+        <li>Visualizer first-contentful render ≤ 200 ms after exercise tap.</li>
+      </ul>
+      <div class="callout callout-pm"><strong>[NOTE FOR PM]</strong> Equipment-aware loggers are the single biggest UX investment in v1. Cutting any one (e.g. bands) reduces the differentiator. Revisit at Finalize only if scope-pressure escalates.</div>
+    </div>
+
+    <h3>4.2 Block B — Solo Program Builder + PR Cards</h3>
+    <p><strong>Description:</strong> Self-directed clients with no PT get a curated template marketplace, Equipment-Aware Logger, Progression Index, e1RM graph, PR detection, PR Card composer. No AI programming (cost containment; v2). <span class="badge badge-realises">UJ-2</span></p>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-9</span> Template Marketplace for Solo Clients</h4>
+      <p>Vis ships ~15 curated public Plan Templates v1 (5×5, nSuns, PPL, RP-style hypertrophy + Vis starters). User picks → edits → assigns to weekly grid. Blank-slate builder is v2.</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-10</span> PR Detection (four dimensions)</h4>
+      <p>System detects PRs across: 1RM load, e1RM, total-volume per Session, rep-count-at-given-load. Detection runs immediately after each Set save. <span class="badge badge-realises">UJ-2</span></p>
+      <h5>Consequences:</h5>
+      <ul>
+        <li>Set <code>actual_load</code> > prior max → 1RM PR fires.</li>
+        <li>e1RM via <code>actual_load × (1 + actual_reps/30)</code> &gt; prior max → e1RM PR fires <code>[ASSUMPTION: Epley]</code>.</li>
+      </ul>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-11</span> PR Moment Screen + Card Composer</h4>
+      <p>On PR detection, cinematic moment screen (amber animation). One Vis template, three aspect ratios (square / 9:16 / 4:5). Native share-sheet to Instagram, Stories, WhatsApp Status, X, camera roll. <strong>Vis watermark default ON</strong>, user-togglable OFF per share; toggle state persists across future shares. Locked at Finalize 2026-05-22. <span class="badge badge-realises">UJ-2</span></p>
+    </div>
+
+    <h3>4.3 Block C — Progression Engine</h3>
+    <p><strong>Description:</strong> The brain. <strong>AI-suggested progression v1</strong> — Claude proxy with prompt caching writes next prescribed Set per (trainer × client × exercise). Trainer reviews + accepts or overrides via ghost overlay. AI is trainer-only v1 (cost containment); solo clients see AI-bootstrap defaults at first assignment then self-direct. Four additional rule types (double-progression, linear, RPE-based, DUP) deferred to v1.5. <span class="badge badge-realises">UJ-1, UJ-2, UJ-3</span></p>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-12</span> AI Progression Rule per (trainer × client × exercise)</h4>
+      <p>System computes next-Set targets via Claude proxy with prompt caching. Inputs: last N=12 Sets' (load, reps, rpe_actual), client goal, exercise class, days-since-last-session. Output: <code>{prescribed_load, prescribed_reps, rpe_target, decision ∈ {MAINTAIN, BUMP_REPS, BUMP_WEIGHT, DEMOTE}}</code>. Persisted per (trainer × client × exercise). On client switching trainer, AI history persists; new trainer adopts or resets. <span class="badge badge-realises">UJ-1</span></p>
+      <h5>Consequences:</h5>
+      <ul>
+        <li>Toggling AI on for (Priya, Aarav, squat) → ghost suggestion on next session's squat exercise.</li>
+        <li>Prompt cache hit-rate ≥ 80% on repeat suggestions for same (client × exercise) within 7 days.</li>
+        <li>AI cost / WAU > $0.40 / mo trips SM-C1.</li>
+      </ul>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-13</span> AI Bootstrap (first-assignment cold start)</h4>
+      <p>On first exercise assignment with no prior Set history, system computes bootstrap prescription from: client questionnaire (experience, goal, sex, age), exercise compound/isolation class, conservative starting-load heuristic (≈ 50% bodyweight × experience-factor for compounds; isolation defaults). <code>source = AI_BOOTSTRAP</code>. <span class="badge badge-realises">UJ-3</span></p>
+      <h5>Consequences:</h5>
+      <ul>
+        <li>Aarav (novice, 78 kg) starts squat → bootstrap prescribed 40 kg × 8 @ RPE 7.</li>
+        <li>First completed Set transitions <code>source</code> from <code>AI_BOOTSTRAP</code> to <code>AI</code> for subsequent suggestions.</li>
+      </ul>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-14</span> Next-Suggested ghost overlay + ai_locked toggle</h4>
+      <p>Next prescribed value rendered as ghost overlay on Equipment-Aware Logger. One-tap "use suggestion" or trainer override. Per-(trainer × client × exercise) <code>ai_locked</code> toggle removes the override surface (autopilot mode). <span class="badge badge-realises">UJ-1, UJ-2</span></p>
+      <h5>Consequences:</h5>
+      <ul>
+        <li>Ghost overlay in <code>--vis-amber-highlight</code>; tap = accept; long-press = override.</li>
+        <li><code>ai_locked = true</code> hides override controls; trainer can still unlock per (client × exercise).</li>
+        <li>Trainer-override rate > 70% trips SM-C5 (AI failing).</li>
+      </ul>
+    </div>
+
+    <h3>4.4 Block D — Gym Staff / Branch Manager Operations</h3>
+    <p><strong>Description:</strong> Anita's surface. Member lifecycle, payment logging, PT activation, reminders. Branch-scoped. <span class="badge badge-realises">UJ-3</span></p>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-15</span> Member CSV / Excel Import</h4>
+      <p>Staff uploads CSV mapping: name, phone, email, membership_type, membership_start/end, pt_start/end, trainer_assigned. Duplicate detection by phone number. <span class="badge badge-realises">UJ-3</span></p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-16</span> PT Activation</h4>
+      <p>Staff activates, suspends, expires a member's PT. State drives Client App access gate (FR-43).</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-17</span> In-person Payment Logging</h4>
+      <p>Staff records cash / UPI / card payment amount, date, member, PT block extension. Generates audit-log entry (FR-26).</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-18</span> Reminder Cadence</h4>
+      <p>Staff triggers WhatsApp / FCM reminder templates: PT expiry, missed sessions, payment overdue. v1 = generate-and-copy templates (P0); WhatsApp Business API direct send is P1.</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-19</span> Trainer Cert Verification (admin gate)</h4>
+      <p>Trainer uploads cert; gym admin (Staff or Owner) reviews + approves → badge appears on trainer's public profile. P0.</p>
+    </div>
+
+    <h3>4.5 Block E — Gym Owner Cross-Branch Operations</h3>
+    <p><strong>Description:</strong> Vikram's surface. All branches, trainers, revenue. Brand-scoped (no cross-brand visibility).</p>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-20</span> Cross-Branch Revenue Dashboard</h4>
+      <p>Per-branch + brand-aggregate revenue, PT activation count, churn, trainer utilisation. Configurable date range.</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-21</span> Trainer Leaderboard</h4>
+      <p>Per-branch + brand-wide rankings on three independent dimensions:</p>
+      <ul>
+        <li><strong>Experience</strong> — years active as Trainer in Vis-recognized practice (self-attested + cert-verified per FR-19).</li>
+        <li><strong>Client Feedback</strong> — mean of post-PT-block 5-star ratings; minimum n=3 ratings to qualify.</li>
+        <li><strong>Client Progress</strong> — median Progression Index Δ across the trainer's active clients over a rolling 90-day window. Δ per (client × exercise) = <code>(current Index − Index 90d ago) / Index 90d ago × 100</code>. Aggregated as median across active client pool.</li>
+      </ul>
+      <p>Feeds Client onboarding-browse surface.</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-22</span> Branch Health Snapshot</h4>
+      <p>Per-branch KPIs: active members, active PT, WALS, adherence avg, trainer-cert-pending count.</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-23</span> Brand-Wide Audit Log Read</h4>
+      <p>Owner reads brand-wide audit log (FR-26). Cannot edit history.</p>
+    </div>
+
+    <h3>4.6 Block F — Cross-Role Gym Surfaces</h3>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-24</span> Trainer Public Profile Card</h4>
+      <p>Fields: name, photo, certifications + verified badge, years experience, specialty tags, client rating, response-time stat, languages. Visible in client browse + on assigned client's home. <span class="badge badge-realises">UJ-3</span></p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-25</span> Client-Chosen Trainer Assignment (gym path)</h4>
+      <p>Client picks top 1-3 trainers in priority order; first-come-first-serve accept. Trainer can decline + transfer with client consent, carrying Questionnaire + Plan. <span class="badge badge-realises">UJ-3</span></p>
+      <h5>Consequences:</h5>
+      <ul>
+        <li>Server enforces single-active-state invariant on <code>(client_id, trainer_id, request_status=PENDING)</code>: simultaneous trainer-decline + client-cancel-and-reissue collapses to one winning write by server-stamped monotonic order; loser receives no-op + UI banner.</li>
+        <li>Trainer accept while client already cancelled → trainer sees "client withdrew" toast; no PtActive created.</li>
+        <li>Two trainers accept at same instant → first server-stamped accept wins; second receives "already assigned".</li>
+      </ul>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-26</span> Audit Log (P0)</h4>
+      <p>Append-only log of: member edits, payment edits, role changes, plan-template publishes. Branch-scoped reads (Staff); brand-wide reads (Owner). Compliance + integrity.</p>
+    </div>
+
+    <h3>4.7 Block G — Onboarding &amp; Plan Lifecycle</h3>
+    <p><strong>Description:</strong> Two onboarding paths sharing one Questionnaire; one Plan model serving both flat and phased with expiry-aware reminders. <span class="badge badge-realises">UJ-3</span></p>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-27</span> Onboarding Questionnaire (~10 fields)</h4>
+      <p>Fields: age, sex, height (cm/in), weight (kg/lb), experience, gap (months sedentary), body-type, primary goal, injuries (free-text), days/week, equipment, wearable opt-in. Optional advanced: sleep avg, calorie estimate. Drives trainer-browse defaults + plan-template suggestions. <span class="badge badge-realises">UJ-3</span></p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-28</span> PT Relationship State Machine</h4>
+      <pre><code>NoPt ──── invite + accept ────► PtActive
+PtActive ──── either-party end ────► PtEnded
+PtEnded ──── new invite + accept ────► PtActive
+PtEnded ──── (inactive threshold) ────► NoPt  [ASSUMPTION]</code></pre>
+      <p>On <code>PtEnded</code>, the prior Trainer retains <strong>read-only</strong> access to past Plans they authored + alumni list. No re-engagement messaging v1.</p>
+      <p><strong>Mid-Session PT-end rule:</strong> if either party terminates PT while a Co-Edit Session is in flight, server freezes new writes, flushes WebSocket queue (acked writes ack; pending return <code>409 conflict</code>), and marks Session <code>terminated_during=true</code>. Session readable to both parties (and prior trainer, read-only).</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-29</span> Plan Builder — Flat or Phased</h4>
+      <p>Trainer authors a flat Plan OR a phased Plan (named blocks with start + end dates). Phase transitions explicit + client-visible. Plan validity window with expiry reminders via FCM.</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-30</span> Plan-Block Expiry Reminders</h4>
+      <p>Trainer receives FCM push at T-2 days before Plan or Phase expiry, and at expiry, until acknowledged or new Plan/Phase assigned. <span class="badge badge-realises">UJ-3</span></p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-31</span> Plan Templates (three sources)</h4>
+      <p>Trainer sees: (1) Vis starter library (~15 templates v1), (2) per-trainer private, (3) brand-shared. RBAC determines edit / publish rights. <span class="badge badge-realises">UJ-3</span></p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-32</span> Cardio Logging</h4>
+      <p>v1 covers treadmill, elliptical, bike, rowing, free-form. Fields: mode + duration + avg HR + perceived effort. Equipment-Aware Logger doesn't cover these; minimal numeric + dropdown UI.</p>
+    </div>
+
+    <h3>4.8 Block H — Solo Trainer Discovery &amp; Marketplace</h3>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-33</span> Solo-Trainer Invite Link</h4>
+      <p>Solo Trainer has a personal share link (default). Sharing routes a new client into the trainer's direct request inbox.</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-34</span> Trainer Marketplace (opt-in)</h4>
+      <p>Solo Trainer can opt in to the Vis-wide marketplace. Filters: specialty, certification, language, rating, response time. Trainer-side moderation queue flags abuse / fake profiles. Marketplace abuse > 1% trips SM-C7.</p>
+      <div class="callout callout-pm"><strong>[NOTE FOR PM]</strong> Marketplace defer-to-v1.5 is a Finalize scope-pressure option (decision-log scope-risk flag).</div>
+    </div>
+
+    <h3>4.9 Block I — Recovery, Volume, Load Monitoring (shared client tabs)</h3>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-35</span> Muscle Recovery Status</h4>
+      <p>Color-coded chips per muscle group (Chest, Upper Back, Lower Back, Shoulders, Biceps, Triceps, Forearms, Quads, Hamstrings, Glutes, Calves, Core). Computed from last Session training that group. Green = recovered; red = hours remaining.</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-36</span> Per-Muscle Weekly Set Count</h4>
+      <p>System tracks working Sets per muscle group per week (rolling 7-day window). Chip per muscle group on Progress Tab: current vs Schoenfeld-derived ceiling (≈ 20 sets / muscle / week for hypertrophy). Amber 16–20; red > 20. Source: domain research §training-science.</p>
+      <h5>Consequences:</h5>
+      <ul>
+        <li>Aarav has logged 14 chest Sets this week → chest chip displays "14 / 20"; green state.</li>
+        <li>Logging Set 21 → chest chip flips red + Trainer App notification (if PT-attached).</li>
+      </ul>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-37</span> ACWR Trainer Alert</h4>
+      <p>System computes Acute:Chronic Workload Ratio per client per week (<code>acute = last 7d volume; chronic = trailing 28d rolling avg</code>). When ACWR > 1.5, Trainer App fires amber alert on client profile card. ACWR > 2.0 → red + auto-deload via FR-12 ghost overlay (next Session: 70% prescribed loads). Source: IOC-grounded.</p>
+      <p><strong>Cold-start suppression:</strong> first 14 calendar days of any client's logging history, ACWR alerts suppressed (chronic baseline not yet representative). Trainer App shows "baseline-building (day X / 14)" chip instead. After day 14, chronic computed from available window even if < 28 days, with "preliminary" qualifier until day 28.</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-38</span> Progress Tab</h4>
+      <p>Body Measurements over time (weight, body fat %, chest/waist/hip/arm/thigh — line charts). Strength Progress (e1RM per exercise over time). Attendance Calendar heatmap. Per-muscle weekly set-count strip (FR-36). ACWR sparkline (FR-37) visible to client + trainer.</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-39</span> Profile Tab</h4>
+      <p>Name, photo, branch (if gym), membership + PT expiry, default daily visit time + per-day overrides + rest days, fitness goals, current body stats summary, assigned trainer card.</p>
+    </div>
+
+    <h3>4.10 Block J — Nutrition (Trainer-Authored)</h3>
+    <p><strong>Description:</strong> Trainer authors per-client daily macro target + meals breakdown. Client reads only. No AI macro generation v1 (v2 candidate). Restored from original spec §7.6.</p>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-40</span> Trainer Macro Plan Authoring</h4>
+      <p>Trainer App provides per-client daily macro editor: total calories, protein (g), carbs (g), fat (g), water (L). Optional weekly variants (higher-carb on training days). Free-text guidance field (200 char).</p>
+      <h5>Consequences:</h5>
+      <ul>
+        <li>Trainer saves Aarav's macros: 2600 kcal / 180P / 280C / 80F → reflected on Aarav's Nutrition tab within next app open.</li>
+        <li>Weekly variant "training-day" overrides default on assigned workout days only.</li>
+      </ul>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-41</span> Client Nutrition Tab (read-only)</h4>
+      <p>Client App Nutrition tab displays: today's macro targets, meals breakdown (Breakfast, Pre-workout, Lunch, Post-workout, Dinner), per-meal food items + quantities + macros, water intake target. Read-only. No client edits v1.</p>
+    </div>
+
+    <h3>4.11 Block K — Authentication &amp; Access Gate</h3>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-42</span> Authentication</h4>
+      <p>Google Sign-In, Apple Sign-In (iOS required), Phone OTP via Firebase Auth. Backend (Spring Boot) validates Firebase JWT on every request.</p>
+    </div>
+
+    <div class="fr-card">
+      <h4><span class="fr-id">FR-43</span> Access Gate by Role</h4>
+      <p>Solo path: any authenticated user lands on solo onboarding. Gym path: user record matched on phone / email against brand's roster; if no match → "pending activation" screen until Staff activates. PT lapse → "PT membership expired" screen (data retained).</p>
+    </div>
+  </section>
+
+  <section id="non-goals">
+    <h2>5. Non-Goals (Explicit)</h2>
+    <ul>
+      <li><span class="badge badge-non-goal">Not</span> a group-fitness app. Class booking + class attendance out (v2 candidate).</li>
+      <li><span class="badge badge-non-goal">Not</span> a payment gateway. Vis logs in-person payments staff make; Vis does not process them.</li>
+      <li><span class="badge badge-non-goal">Not</span> a wearable / Apple Watch app v1 (addendum §5).</li>
+      <li><span class="badge badge-non-goal">Not</span> a messaging platform. Trainer↔client communication outside Sessions on WhatsApp; Vis ships template generation + send-link only.</li>
+      <li><span class="badge badge-non-goal">Not</span> a video content platform. Exercise demos = static images / links v1; trainer-uploaded videos = v2.</li>
+      <li><span class="badge badge-non-goal">Not</span> a member-facing web portal. Clients are mobile-only.</li>
+      <li><span class="badge badge-non-goal">Not</span> writing to Apple Health / Google Fit. Read-only on device; not stored backend-side.</li>
+      <li><span class="badge badge-non-goal">Not</span> an AI coach for solo users v1. AI = Trainer-only.</li>
+      <li><span class="badge badge-non-goal">Not</span> multi-region v1. Cloud Run asia-south1 only.</li>
+      <li><span class="badge badge-non-goal">Not</span> offering SMS v1. v1 = FCM push + email transactional.</li>
+    </ul>
+  </section>
+
+  <section id="mvp-scope">
+    <h2>6. MVP Scope</h2>
+    <h3>6.1 In Scope</h3>
+    <ul>
+      <li>All six role-contexts ship day 1 (solo trainer, solo client, gym trainer, gym client, gym staff, gym owner).</li>
+      <li>All six Equipment-Aware Loggers (cable, barbell, dumbbell, machine pin-stack, bodyweight, kettlebell, bands).</li>
+      <li>Real-time WebSocket co-edit Trainer ↔ Client; last-write-wins per Set row.</li>
+      <li><strong>AI Progression Rule</strong> (Claude proxy + prompt caching) + AI Bootstrap + <code>ai_locked</code> autopilot. Trainer-only v1; solo see AI bootstrap defaults then self-direct.</li>
+      <li>Progression Index: <code>w_e1rm·Δe1RM + w_vol·ΔVol + w_quality·ΔRPE_eff</code>, trainer-tunable weights per (client × goal).</li>
+      <li>e1RM: Epley for reps ≤ 5; Brzycki for reps 6–10; mean at boundary.</li>
+      <li>RPE 1.0–10.0 (0.5 steps) primary; RIR derived for display.</li>
+      <li>Per-muscle weekly set count vs Schoenfeld ~20-set ceiling, amber/red states.</li>
+      <li>ACWR trainer alert (> 1.5 amber; > 2.0 red + auto-deload).</li>
+      <li>Trainer-authored Nutrition module (macro plan + read-only client tab; no AI macros).</li>
+      <li>Light + dark theme parity (v1 deliverable, not v2).</li>
+      <li>PR detection across four dimensions + PR Card composer (1 template, 3 aspect ratios) + native share-sheet.</li>
+      <li><strong>Solo-trainer invite-link</strong> at launch (FR-33). Trainer Marketplace opt-in (FR-34) deferred to v1.5 (see §6.2).</li>
+      <li>Vis starter Plan template library (~15) + per-trainer + brand-shared.</li>
+      <li>Flat OR phased Plans with FCM expiry reminders.</li>
+      <li>Onboarding Questionnaire shared across both paths.</li>
+      <li>Branch Staff CSV import + PT activation + payment logging + WhatsApp / FCM reminder cadence (generate-and-copy templates).</li>
+      <li>Trainer cert verification flow.</li>
+      <li>Cross-branch Owner dashboards + trainer leaderboard + brand-wide audit log read.</li>
+      <li>Cardio logging (treadmill, elliptical, bike, rowing, free-form).</li>
+      <li>Global units day 1 (kg + lb, m + ft/in, per-locale dates, time zones).</li>
+      <li>i18n keys structured day 1; English-only translation v1.</li>
+      <li>Audit log P0 (member, payment, role, plan-template events).</li>
+    </ul>
+    <h3>6.2 Out of Scope for MVP</h3>
+    <details open><summary>v1.5 candidates — Finalize scope-pressure first-cut</summary>
+      <div class="body">
+        <ul>
+          <li><span class="callout callout-pm">[NOTE FOR PM]</span> Trainer Marketplace opt-in (defer; ship invite-link only at launch).</li>
+          <li><span class="callout callout-pm">[NOTE FOR PM]</span> Brand-shared Plan template library (ship Vis starter + per-trainer only).</li>
+          <li><span class="callout callout-pm">[NOTE FOR PM]</span> Flat Plan toggle (default to phased).</li>
+          <li><strong>Additional Progression Rules</strong> (double-progression, linear, RPE-based, DUP). AI-only v1; rule-based options for trainers who reject AI come v1.5.</li>
+        </ul>
+      </div>
+    </details>
+    <details><summary>v2 candidates</summary>
+      <div class="body">
+        <ul>
+          <li>AI macro generation (nutrition).</li>
+          <li>Client-side food logging / barcode scanning.</li>
+          <li>Calorie deficit/surplus tracking.</li>
+          <li>AI programming for solo users.</li>
+          <li>Blank-slate solo program builder (template-only at launch).</li>
+          <li>WhatsApp Business API direct-send.</li>
+          <li>SMS notifications.</li>
+          <li>Trainer-uploaded exercise demo videos.</li>
+          <li>Re-engagement messaging on <code>PtEnded</code>.</li>
+          <li>Multi-region failover.</li>
+          <li>Apple Watch / Wear OS companion app.</li>
+        </ul>
+      </div>
+    </details>
+    <details><summary>Never (v1 firm)</summary>
+      <div class="body">
+        <ul>
+          <li>Group-class booking.</li>
+          <li>Vis-processed payments.</li>
+          <li>Member-facing web portal.</li>
+          <li>Apple Health / Google Fit write-back.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <section id="nfrs">
+    <h2>7. Cross-Cutting NFRs</h2>
+
+    <h3>7.1 Internationalization</h3>
+    <table>
+      <thead><tr><th>Dimension</th><th>Canonical / Display</th></tr></thead>
+      <tbody>
+        <tr><td>Weight</td><td>Stored kg; UI kg or lb per user pref</td></tr>
+        <tr><td>Distance / height</td><td>Stored m; UI m or ft+in</td></tr>
+        <tr><td>Dates</td><td>ISO 8601 internal; per-locale display (DD/MM/YYYY en-IN; MM/DD/YYYY en-US)</td></tr>
+        <tr><td>Time zones</td><td>Per-user with branch-default fallback</td></tr>
+        <tr><td>Currency</td><td>Multi-currency-ready model; no billing surface v1</td></tr>
+        <tr><td>Language</td><td>English-only translation v1; i18n keys structured for future locales</td></tr>
+      </tbody>
+    </table>
+
+    <h3>7.2 Real-Time Sync</h3>
+    <ul>
+      <li>WebSocket transport for Co-Edit sessions. Reconciliation: last-write-wins per Set row.</li>
+      <li>WebSocket disconnect rate > 5% trips SM-C2.</li>
+      <li>Offline queue persists pending writes; reconnect drains within 5 s.</li>
+    </ul>
+
+    <h3>7.3 AI</h3>
+    <ul>
+      <li>Trainer-only feature v1. Solo users do not see AI surfaces.</li>
+      <li>Claude proxy with prompt caching; cache target ≥ 80% hit rate on (trainer × client × exercise) repeats.</li>
+      <li>Cost ceiling: $0.40 / WAU / month (SM-C1). <strong>Runtime circuit-breaker:</strong> at $0.80 / WAU rolling-7-day average, system auto-throttles (cap one suggestion per (client × exercise) per 24 h; otherwise served from cache). $1 / WAU triggers pivot.</li>
+      <li><strong>API failure fallback:</strong> on Claude error (empty / null / HTTP 5xx), ghost overlay falls back to last-prescribed value with <code>stale-ai</code> indicator. Trainer can manually override.</li>
+    </ul>
+
+    <h3>7.4 Compliance + Privacy</h3>
+    <ul>
+      <li><strong>DPDPA (India):</strong> consent capture at onboarding; right-to-erasure flow in Profile → Account → Delete.</li>
+      <li><strong>GDPR readiness:</strong> same erasure + portability surfaces enabled globally.</li>
+      <li>DPDPA support tickets > 0.5% WAU / wk trips SM-C4.</li>
+      <li>Body measurement + health-derived data classified Sensitive; encrypted at rest; never logged in plaintext.</li>
+    </ul>
+
+    <h3>7.5 Performance</h3>
+    <ul>
+      <li>Set save → server commit p95 ≤ 250 ms (SM-C6).</li>
+      <li>Equipment-Aware Logger first-contentful render ≤ 200 ms.</li>
+      <li>App cold start ≤ 2.0 s on mid-tier Android (Pixel 6a / Galaxy A54 target).</li>
+      <li>Admin Web FCP ≤ 1.5 s broadband; LCP ≤ 2.5 s.</li>
+      <li><strong>Idempotency:</strong> every Set write carries client-generated UUID; server dedupes by UUID; on logger crash + retry same UUID returns prior commit (no double-writes, no silent loss).</li>
+    </ul>
+
+    <h3>7.6 Notifications</h3>
+    <ul>
+      <li>v1: FCM push + email transactional.</li>
+      <li>Reminder events: PT expiry, plan-block expiry T-2 / T-0, missed session, trainer client-request, PR shareable.</li>
+      <li>SMS + WhatsApp Business API direct-send → v2 / P1.</li>
+    </ul>
+
+    <h3>7.7 Accessibility</h3>
+    <ul>
+      <li>WCAG 2.1 AA target on Admin Web v1.</li>
+      <li>Mobile: VoiceOver / TalkBack labels on every interactive element; min hit target 44 × 44 pt; reduce-motion respected (orb degrades gracefully to static states).</li>
+    </ul>
+
+    <h3>7.8 Observability</h3>
+    <ul>
+      <li>Counter-metric stream wired day 1.</li>
+      <li>Per-Session distributed trace (device → backend → DB write for FR-1).</li>
+      <li>Crash-free target ≥ 99.0% (SM-C3).</li>
+      <li>Real-time dashboard: WebSocket disconnect rate, AI cost/WAU, p95 set-save latency, crash-free.</li>
+    </ul>
+
+    <h3>7.9 Operational</h3>
+    <ul>
+      <li>Single-region v1 (Cloud Run asia-south1).</li>
+      <li>PostgreSQL daily snapshots + WAL streaming. RPO 5 min; RTO 4 h v1 <code>[ASSUMPTION]</code>.</li>
+      <li>On-call expectations not yet defined — see Open Questions.</li>
+    </ul>
+  </section>
+
+  <section id="metrics">
+    <h2>8. Success Metrics</h2>
+
+    <h3>Primary</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Metric</th><th>Target</th><th>Validates</th></tr></thead>
+      <tbody>
+        <tr><td>SM-1</td><td><strong>WALS</strong> (Weekly Active Logged Sessions ≥ 1 Set / wk)</td><td>2,500 by D90; 12,000 by D180</td><td>Whole product</td></tr>
+        <tr><td>SM-2</td><td>D7 retention</td><td>≥ 35% by D90</td><td>FR-1, FR-8 differentiators</td></tr>
+        <tr><td>SM-3</td><td>Real-Time Co-Edit usage in Trainer-led Sessions</td><td>≥ 25% by D90</td><td>FR-1 (structural moat)</td></tr>
+        <tr><td>SM-4</td><td>Solo D30 retention</td><td>≥ 10% by D180 (pivot trigger if below)</td><td>FR-9, FR-10, FR-11</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Secondary</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Metric</th><th>Target</th><th>Validates</th></tr></thead>
+      <tbody>
+        <tr><td>SM-5</td><td>PR Card share rate</td><td>≥ 30% by D180</td><td>FR-11 (social moat)</td></tr>
+        <tr><td>SM-6</td><td>Onboarding completion (Questionnaire + first Set / 24 h)</td><td>≥ 60% by D90</td><td>FR-27, FR-38, FR-39</td></tr>
+        <tr><td>SM-7</td><td>Trainer adherence-monitoring (≥ 3×/wk)</td><td>≥ 50% by D180</td><td>FR-22</td></tr>
+        <tr><td>SM-8</td><td>Owner audit-log queries / brand / wk</td><td>≥ 2 steady-state</td><td>FR-23, FR-26</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Counter-Metrics (do not optimize)</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Metric</th><th>Threshold</th><th>Counterbalances</th></tr></thead>
+      <tbody>
+        <tr><td>SM-C1</td><td>AI cost / WAU</td><td>> $0.40 / mo (pivot > $1)</td><td>SM-1</td></tr>
+        <tr><td>SM-C2</td><td>WebSocket disconnect rate</td><td>> 5%</td><td>SM-3</td></tr>
+        <tr><td>SM-C3</td><td>Crash-free rate</td><td>< 99.0%</td><td>SM-1, SM-2</td></tr>
+        <tr><td>SM-C4</td><td>DPDPA support tickets / WAU / wk</td><td>> 0.5%</td><td>SM-1</td></tr>
+        <tr><td>SM-C5</td><td>Trainer-override rate on AI suggestions</td><td>> 70%</td><td>SM-1</td></tr>
+        <tr><td>SM-C6</td><td>Set-save p95 latency</td><td>> 1.5 s</td><td>FR-1, FR-8</td></tr>
+        <tr><td>SM-C7</td><td>Marketplace abuse % of profiles</td><td>> 1%</td><td>FR-34</td></tr>
+        <tr><td>SM-C8</td><td>New-signup-no-log rate</td><td>> 50%</td><td>SM-6</td></tr>
+        <tr><td>SM-C9</td><td>Batch logging > 24 h after Session</td><td>> 30%</td><td>FR-1</td></tr>
+        <tr><td>SM-C10</td><td>PR-card generation with no share</td><td>> 80%</td><td>SM-5</td></tr>
+      </tbody>
+    </table>
+
+    <div class="pivot-triggers">
+      <h4>Pivot Triggers</h4>
+      <ul>
+        <li>D7 retention < 20% sustained 8 wks → reconsider differentiator hypothesis.</li>
+        <li>Real-time Co-Edit < 10% by D180 → reconsider structural moat claim.</li>
+        <li>AI cost / WAU > $1 sustained → kill AI suggestion or restrict tighter than trainer-only.</li>
+        <li>Solo D30 < 10% by D180 → solo path doesn't carry; refocus on gym path.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="open-questions">
+    <h2>9. Open Questions</h2>
+    <p><em>Deferred items with owner + revisit condition. Phase-blockers resolved at Finalize; remaining items are non-blocking for UX / architecture / epics phase but should be revisited by the named owner before the listed condition.</em></p>
+    <ol>
+      <li><strong>PT inactive-threshold:</strong> how long must <code>PtEnded</code> persist before transitioning to <code>NoPt</code>? <em>Owner: PM. Revisit: before first alumni-retention sweep.</em></li>
+      <li><strong>Spotter-assisted rep weighting in Progression Index</strong> (FR-5): half-credit assumed; alternatively exclude or RPE-penalize. <em>Owner: PM + trainer-coach. Revisit: at first PR-card-with-assisted-rep edge case in beta.</em></li>
+      <li><strong>Voice-input fallback scope v1</strong> (FR-8): is "≥ 1 s of speech → weight + reps" v1 or v1.5? <em>Owner: PM + Architect. Revisit: at architecture phase scope gate.</em></li>
+      <li><strong>On-call expectations:</strong> single-owner shop until first hire. <em>Owner: PM. Revisit: before WAU > 1k.</em></li>
+      <li><strong>Trainer dual-context conflict resolution:</strong> Solo Trainer + Gym Trainer at brand X engaging same client — which AI history wins? <em>Owner: Architect. Revisit: at architecture phase, FR-12 design.</em></li>
+      <li><strong>Marketplace moderation SLA:</strong> response-time target for abuse reports. Affects SM-C7. <em>Owner: PM. Revisit: at v1.5 marketplace re-introduction.</em></li>
+      <li><strong>Plan-block expiry FCM cadence beyond T-2 + T-0:</strong> escalate (T+2, T+7) if trainer never acknowledges? <em>Owner: PM. Revisit: after first 90 days of FCM-expiry telemetry.</em></li>
+      <li><strong>Branch-level data residency:</strong> brand-wide opt-in for region pinning (EU customer brands)? Affects multi-region v2 timing. <em>Owner: Architect + Legal. Revisit: at first EU brand sign-up signal.</em></li>
+      <li><strong>Progression Index weight defaults</strong> per goal (hypertrophy / strength / endurance / general): defaults need locking even though trainer-tunable. <em>Owner: PM + trainer-coach. Revisit: before first solo-client bootstrap goes live.</em></li>
+      <li><strong>WALS / D7 / D30 target derivation:</strong> current targets aspirational, not benchmarked. Anchor in Hevy / Trainerize / FitBudd public funnels OR TAM × adoption × channel-mix. <em>Owner: PM + GTM. Revisit: at first 30 days of pre-launch landing-page signups.</em> <code>[ASSUMPTION]</code></li>
+    </ol>
+  </section>
+
+  <section id="assumptions">
+    <h2>10. Assumptions Index</h2>
+    <ul>
+      <li>§4.1 FR-5 — Spotter-assisted rep counts as half-credit in Progression Index.</li>
+      <li>§4.1 FR-8 — Voice fallback ("≥ 1 s of speech → weight + reps") is v1 scope.</li>
+      <li>§4.7 FR-28 — Inactive threshold for <code>PtEnded → NoPt</code> unset (Open Question 1).</li>
+      <li>§4.4 FR-19 — Cert verification by either Staff or Owner; division between them unspecified.</li>
+      <li>§4.3 FR-13 — Conservative starting-load heuristic ("≈ 50% bodyweight × experience-factor for compounds") needs trainer-coach validation.</li>
+      <li>§7.5 — Mid-tier Android target Pixel 6a / Galaxy A54.</li>
+      <li>§7.9 — RPO 5 min, RTO 4 h v1.</li>
+    </ul>
+  </section>
+
+  <section id="aesthetic">
+    <h2>11. Aesthetic + Tone (PRD-level pointer)</h2>
+    <p>Vis carries a deliberate visual + voice identity that downstream UX work must honor. This PRD specifies the <em>capability</em> surface; visual + animation + copy detail lives in the UX spec phase, sourced from these canonical references:</p>
+    <ul>
+      <li><strong>Original spec §7.4</strong> — Orb-as-organism tension states (At rest / Under load / Peak tension / Recovered) with named animations; stacked-orb weekly view; trainer-client connection-orb in live Sessions.</li>
+      <li><strong>Original spec §17.1-17.6</strong> — Liquid Glass material principles, warm-orange palette tokens, Geist typography scale, motion vocabulary (easing, durations, breathing loop, shimmer), light + dark theme strategy.</li>
+      <li><strong>CLAUDE.md "Brand Palette"</strong> — Canonical hex tokens (<code>--vis-amber-*</code>, <code>--gc-*</code>). Use CSS vars; never hard-code hex.</li>
+      <li><strong><code>docs/brand-ref/reference_light.png</code> + <code>reference_dark.png</code></strong> — Canonical UI references. Read before any UI work.</li>
+      <li><strong><code>prototype/</code></strong> — Working implementation. Single source of truth for orb-fill recipe, gradient stacks, motion timing.</li>
+    </ul>
+    <p><strong>Tone anchors:</strong> restraint over showiness; warm not cool; cinematic-amber molten emissive, never neon gaming orange; one icon only per surface; "earned" beats "celebrated" for progress moments. Page bg warm ivory, never pure white. Shadows peach-tinted, never neutral black. Light + dark theme parity is a v1 deliverable.</p>
+  </section>
+
+  <div class="footer">
+    Discovery audit + non-PRD depth → <code>.decision-log.md</code> + <code>addendum.md</code>. Status flips to <code>final</code> at Finalize step 7.
+  </div>
+
+  </main>
+</div>
+</body>
+</html>

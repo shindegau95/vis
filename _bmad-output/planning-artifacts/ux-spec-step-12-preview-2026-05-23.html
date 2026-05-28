@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 12 preview · UX Patterns · 2026-05-23</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+    --good: #1F7A4A;
+    --avoid: #B53A1A;
+    --accent: var(--vis-amber-primary);
+    --accent-on: #FFF6EA;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --good: #6BD49A;
+      --avoid: #F58A6A;
+      --accent: var(--vis-amber-primary);
+      --accent-on: #FFF6EA;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg); color: var(--gc-text);
+    line-height: 1.6; font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page { padding-bottom: 22px; margin-bottom: 28px; border-bottom: 1px solid var(--gc-border); }
+  header.page .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 600; color: var(--accent); }
+  header.page h1 { margin: 6px 0 2px; font-size: 28px; font-weight: 600; letter-spacing: -0.015em; }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract { margin-top: 12px; font-size: 14px; color: var(--gc-text-muted); max-width: 760px; }
+
+  nav.toc {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 14px 18px;
+    box-shadow: var(--gc-shadow-card); margin-bottom: 28px; font-size: 13.5px;
+  }
+  nav.toc ol { margin: 6px 0 0; padding-left: 22px; }
+  nav.toc a { color: var(--gc-text); text-decoration: none; }
+  nav.toc a:hover { color: var(--accent); }
+  nav.toc .label { font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
+
+  section { margin-top: 36px; }
+  h2 { margin: 0 0 8px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; display: flex; align-items: baseline; gap: 12px; }
+  h2 .num { color: var(--accent); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+  .lede { color: var(--gc-text-muted); font-size: 14px; margin: 0 0 14px; }
+  h3 { margin: 18px 0 6px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); }
+  p { margin: 6px 0; }
+  ul { padding-left: 22px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  strong { color: var(--accent); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: rgba(196,81,0,0.08); color: var(--accent); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+
+  .card { background: var(--gc-bg-elevated); border: 1px solid var(--gc-border); border-radius: 14px; padding: 18px 22px; box-shadow: var(--gc-shadow-card); }
+
+  /* Buttons */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 8px 0; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; min-height: 44px; }
+  .btn.primary { background: var(--accent); color: var(--accent-on); box-shadow: 0 4px 12px rgba(255,106,0,0.20); }
+  .btn.primary:hover { background: var(--vis-amber-deep); }
+  .btn.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn.ghost { background: transparent; color: var(--accent); }
+  .btn.destructive { background: var(--avoid); color: #FFF0EC; }
+  .btn.disabled { background: rgba(0,0,0,0.08); color: var(--gc-text-muted); cursor: not-allowed; }
+
+  /* Feedback */
+  .toast {
+    background: var(--gc-bg-elevated); border-left: 3px solid var(--accent);
+    padding: 10px 14px; border-radius: 8px; box-shadow: var(--gc-shadow-soft);
+    display: flex; gap: 10px; align-items: center; font-size: 13.5px;
+    margin: 6px 0;
+  }
+  .toast.success { border-left-color: var(--good); }
+  .toast.error { border-left-color: var(--avoid); }
+  .toast.warn { border-left-color: var(--vis-amber-soft); }
+  .toast .ic {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--accent); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0; font-weight: 700;
+  }
+  .toast.success .ic { background: var(--good); }
+  .toast.error .ic { background: var(--avoid); }
+  .toast.warn .ic { background: var(--vis-amber-soft); color: var(--gc-text); }
+
+  .banner {
+    background: rgba(255,106,0,0.08); border: 1px solid var(--vis-amber-soft);
+    padding: 12px 16px; border-radius: 10px;
+    display: flex; gap: 10px; align-items: flex-start;
+    margin: 6px 0; font-size: 13.5px;
+  }
+  .banner.danger { background: rgba(181,58,26,0.08); border-color: var(--avoid); }
+  .banner.info { background: rgba(31,122,74,0.05); border-color: var(--good); }
+
+  /* Forms */
+  .form-field { margin: 8px 0; max-width: 360px; }
+  .form-field label { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 4px; }
+  .form-field input {
+    width: 100%; padding: 10px 12px;
+    border: 1px solid var(--gc-border); border-radius: 8px;
+    background: var(--gc-bg-elevated); color: var(--gc-text);
+    font-size: 14px; font-family: inherit;
+  }
+  .form-field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  .form-field .helper { font-size: 11.5px; color: var(--gc-text-muted); margin-top: 4px; }
+  .form-field.error input { border-color: var(--avoid); }
+  .form-field.error .helper { color: var(--avoid); }
+  .req { color: var(--accent); margin-left: 2px; }
+
+  /* Nav mockup */
+  .nav-mock {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 12px; padding: 8px 14px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: var(--gc-shadow-soft); font-size: 12.5px;
+    margin: 6px 0;
+  }
+  .nav-mock .branch-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(224,99,19,0.10);
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 600;
+    color: var(--accent);
+  }
+  .nav-mock .orb-glyph {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--vis-amber-highlight) 0%, transparent 30%),
+                radial-gradient(circle at 50% 70%, var(--vis-amber-primary) 0%, var(--vis-amber-deep) 60%, var(--vis-amber-shadow) 100%);
+  }
+  .tab-nav {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 12px; box-shadow: var(--gc-shadow-soft);
+    display: flex; padding: 6px;
+    font-size: 12px;
+  }
+  .tab-nav .tab {
+    flex: 1; padding: 8px; text-align: center;
+    color: var(--gc-text-muted); border-radius: 8px;
+  }
+  .tab-nav .tab.active { background: rgba(255,106,0,0.10); color: var(--accent); font-weight: 600; }
+
+  /* Modal mockup */
+  .modal-mock {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 16px 20px;
+    max-width: 360px; box-shadow: var(--gc-shadow-card);
+    margin: 6px 0;
+  }
+  .sheet-mock {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px 14px 0 0;
+    padding: 16px 20px;
+    border-bottom: none;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+    margin: 6px 0;
+  }
+  .sheet-mock .grabber {
+    width: 36px; height: 4px; background: var(--gc-border);
+    border-radius: 2px; margin: 0 auto 10px;
+  }
+
+  /* Skeleton */
+  .skel {
+    background: linear-gradient(90deg, rgba(196,81,0,0.06) 0%, rgba(196,81,0,0.12) 50%, rgba(196,81,0,0.06) 100%);
+    background-size: 200% 100%;
+    border-radius: 6px;
+    height: 16px; margin: 4px 0;
+  }
+  .skel.short { width: 40%; }
+  .skel.med { width: 70%; }
+  .skel.long { width: 100%; }
+
+  /* Search row */
+  .search-row { display: flex; gap: 8px; align-items: center; margin: 6px 0; }
+  .search-input {
+    flex: 1; padding: 8px 12px;
+    border: 1px solid var(--gc-border); border-radius: 8px;
+    background: var(--gc-bg-elevated); font-size: 13px;
+  }
+  .filter-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .chip {
+    padding: 4px 10px; border-radius: 999px;
+    background: rgba(224,99,19,0.06); color: var(--gc-text-muted);
+    font-size: 11.5px; cursor: pointer;
+  }
+  .chip.active { background: var(--accent); color: var(--accent-on); font-weight: 600; }
+
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 8px 11px; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  th { font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gc-text-muted); border-bottom: 1px solid var(--accent); }
+
+  footer.cta {
+    margin-top: 40px; padding: 20px 22px;
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 16px; box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--accent); }
+  .menu-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .menu-row .opt {
+    flex: 1 1 200px;
+    background: var(--gc-bg); border: 1px solid var(--gc-border);
+    border-radius: 10px; padding: 12px 14px; font-size: 13.5px;
+  }
+  .menu-row .opt .key { display: inline-block; width: 22px; height: 22px; background: var(--accent); color: white; border-radius: 5px; text-align: center; line-height: 22px; font-weight: 700; margin-right: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 12 preview</div>
+  <h1>UX Consistency Patterns — buttons · feedback · forms · nav · overlays · empty · search</h1>
+  <div class="meta">2026-05-23 · Author: Gauravprakashshinde · Concrete rules + live examples using Vis tokens</div>
+  <div class="abstract">
+    Seven pattern categories with usage rules + live HTML examples rendered using actual Vis tokens. These rules apply uniformly across Client App, Trainer App, and Admin Web — only platform-specific touch / hit targets differ.
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="label">In this preview</div>
+  <ol>
+    <li><a href="#sec1">Button hierarchy</a></li>
+    <li><a href="#sec2">Feedback patterns (toast · banner · inline)</a></li>
+    <li><a href="#sec3">Form patterns</a></li>
+    <li><a href="#sec4">Navigation patterns</a></li>
+    <li><a href="#sec5">Modal · sheet · overlay patterns</a></li>
+    <li><a href="#sec6">Empty + loading states</a></li>
+    <li><a href="#sec7">Search + filter patterns</a></li>
+  </ol>
+</nav>
+
+<section id="sec1">
+  <h2><span class="num">§1</span> Button hierarchy</h2>
+  <p class="lede">One primary per screen. Hit target ≥ 44 × 44 pt mobile, ≥ 32 × 32 web. Disabled is never the only path forward.</p>
+  <div class="card">
+    <h3>Primary · Secondary · Ghost · Destructive · Disabled</h3>
+    <div class="btn-row">
+      <button class="btn primary">Start Session</button>
+      <button class="btn secondary">Skip</button>
+      <button class="btn ghost">Cancel</button>
+      <button class="btn destructive">Discard</button>
+      <button class="btn disabled">Save</button>
+    </div>
+
+    <h3>Rules</h3>
+    <ul>
+      <li><strong>One primary action per screen.</strong> Multiple primaries = no primary. Use secondary for alternates.</li>
+      <li><strong>Primary uses <code>--accent</code> fill</strong> (currently Tangerine; user-themable v1.1). Text uses <code>--accent-on</code>, precomputed for ≥ 4.5:1 contrast.</li>
+      <li><strong>Secondary is outlined</strong>, not solid. Same accent color but transparent background.</li>
+      <li><strong>Ghost / tertiary</strong> for inline actions (no border, accent text only). Use sparingly.</li>
+      <li><strong>Destructive</strong> uses <code>#B53A1A</code> (light) / <code>#F58A6A</code> (dark). <em>Always</em> requires confirmation step for irreversible actions.</li>
+      <li><strong>Disabled</strong> uses <code>rgba(--gc-text, 0.5)</code>. <strong>Never the only path forward</strong> — disabled CTAs without an explanation create dead-ends.</li>
+      <li><strong>Loading state on primary:</strong> spinner inside button + disable interaction. Don't replace label with spinner — keep label visible for context.</li>
+      <li><strong>Icon-only buttons</strong> only when label is universal (close ×, back ←). Always with <code>aria-label</code>.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec2">
+  <h2><span class="num">§2</span> Feedback patterns</h2>
+  <p class="lede">Calm under degradation. Anxiety is a bug. Three tiers: toast (ephemeral), banner (persistent), inline (per-field).</p>
+  <div class="card">
+    <h3>Toasts — ephemeral, auto-dismiss</h3>
+    <div class="toast success"><div class="ic">✓</div><div><strong>Set committed.</strong> 47.5 kg × 10 saved.</div></div>
+    <div class="toast"><div class="ic">i</div><div>Brienne is now editing.</div></div>
+    <div class="toast warn"><div class="ic">!</div><div>Connection unstable. Queueing writes locally.</div></div>
+    <div class="toast error"><div class="ic">×</div><div>Failed to save. Tap to retry.</div></div>
+
+    <h3>Rules — toasts</h3>
+    <ul>
+      <li>Auto-dismiss 4 s (success / info), 8 s (warn), persistent (error until dismissed or retried).</li>
+      <li>Bottom-anchored above nav on mobile; top-right on web.</li>
+      <li>Stack vertically when multiple; max 3 visible; older collapse with "+N more."</li>
+      <li>Tap = persistent (don't auto-dismiss while user interacts).</li>
+      <li>Live region announce; throttled to avoid screen-reader spam.</li>
+    </ul>
+
+    <h3>Banners — persistent, contextual</h3>
+    <div class="banner"><div>⚠️</div><div><strong>Samwell: ACWR 1.7 — injury-risk zone.</strong> Consider deload next session. <a href="#" style="color: var(--accent); font-weight: 600;">Apply deload →</a></div></div>
+    <div class="banner danger"><div>🔴</div><div><strong>ACWR 2.1 — auto-deload recommended.</strong> Next session prescribed at 70%. <a href="#" style="color: var(--avoid); font-weight: 600;">Review →</a></div></div>
+
+    <h3>Rules — banners</h3>
+    <ul>
+      <li>Inline within the relevant view, never floating.</li>
+      <li>Persistent until user takes action OR explicit dismiss.</li>
+      <li>Always include a clear primary action — never a banner without a path forward.</li>
+      <li>Tone discipline: amber = "consider X" / red = "auto-X recommended" — never "you're failing."</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec3">
+  <h2><span class="num">§3</span> Form patterns</h2>
+  <p class="lede">Single-column always on mobile. Label above field (not floating). Validate on blur, not keystroke.</p>
+  <div class="card">
+    <h3>Standard field</h3>
+    <div class="form-field">
+      <label>Email<span class="req">*</span></label>
+      <input type="email" placeholder="you@example.com" />
+      <div class="helper">We'll use this for receipts and FCM fallback.</div>
+    </div>
+    <div class="form-field error">
+      <label>Phone<span class="req">*</span></label>
+      <input type="tel" value="+91-987" />
+      <div class="helper">Phone must include 10 digits after country code.</div>
+    </div>
+
+    <h3>Rules</h3>
+    <ul>
+      <li><strong>Single column.</strong> Never side-by-side fields on mobile. Even on web, max 2 columns and only when fields are short (city + state).</li>
+      <li><strong>Label above field</strong>, not floating-inside. Floating labels are inconsistent with screen-reader behavior at scale.</li>
+      <li><strong>Required marker:</strong> <code>*</code> after the label, not "*Required" copy. Single-character cleaner.</li>
+      <li><strong>Helper text below field</strong> — explanatory by default; switches to error tone when validation fails.</li>
+      <li><strong>Validate on blur</strong>, not on every keystroke. Exception: format-restricted fields (numeric, OTP) validate on input.</li>
+      <li><strong>Error state:</strong> red border + plain-language error in helper slot. Never modal alerts for form errors.</li>
+      <li><strong>Submit behavior:</strong> if validation fails on submit, focus the first invalid field + announce error via live region.</li>
+      <li><strong>Onboarding Questionnaire:</strong> show "X of 10 fields" progress; skip-link visible for advanced section; state persists across abandonment.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec4">
+  <h2><span class="num">§4</span> Navigation patterns</h2>
+  <p class="lede">Bottom-tab on mobile (4 max). Left sidebar on Admin Web. Branch-Scope Chip always visible.</p>
+  <div class="card">
+    <h3>Mobile bottom-tab nav (Client App)</h3>
+    <div class="tab-nav">
+      <div class="tab active">Home</div>
+      <div class="tab">Train</div>
+      <div class="tab">Progress</div>
+      <div class="tab">Profile</div>
+    </div>
+
+    <h3>Nav header with Branch-Scope Chip (Trainer App / Admin Web)</h3>
+    <div class="nav-mock">
+      <span class="branch-chip"><span class="orb-glyph"></span> Brand A · Kandivali ▾</span>
+      <span style="margin-left: auto; color: var(--gc-text-muted); font-size: 11px;">Davos · Trainer</span>
+    </div>
+
+    <h3>Rules</h3>
+    <ul>
+      <li><strong>Mobile: 4 bottom-tabs max</strong>, thumb-zone respect. Active tab uses <code>--accent</code> + bold weight.</li>
+      <li><strong>Web (Admin): left sidebar</strong> with collapsible groups. Active section uses <code>--accent</code> indicator + bg tint.</li>
+      <li><strong>Branch-Scope Chip always in nav</strong> when user has multi-scope identity. Top-right mobile; top-left web.</li>
+      <li><strong>Back navigation</strong> = standard system back (gesture / device button) + in-app left-chevron header arrow.</li>
+      <li><strong>Deep links</strong> land on destination + correct scope. If scope mismatch, prompt to switch before opening.</li>
+      <li><strong>Tab badges</strong> for unread / urgent (max 3 surfaces — overusing kills the signal). E.g. Trainer App "Clients" tab badge when ACWR alert fires.</li>
+      <li><strong>FCM tap-to-restore:</strong> tapping a push notification opens app to the exact relevant surface with branch scope already set.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec5">
+  <h2><span class="num">§5</span> Modal · sheet · overlay patterns</h2>
+  <p class="lede">Modals for blocking decisions only. Sheets for contextual choices. Toasts for ephemeral feedback.</p>
+  <div class="card">
+    <h3>Modal (full-screen blocking decision)</h3>
+    <div class="modal-mock">
+      <div style="font-weight: 600; margin-bottom: 6px;">Unfinished session from 47 minutes ago</div>
+      <div style="font-size: 13px; color: var(--gc-text-muted); margin-bottom: 14px;">3 partial sets logged. Resume or discard?</div>
+      <div class="btn-row">
+        <button class="btn primary">Resume</button>
+        <button class="btn secondary">Discard</button>
+      </div>
+    </div>
+
+    <h3>Bottom sheet (contextual, doesn't block)</h3>
+    <div class="sheet-mock" style="max-width: 360px;">
+      <div class="grabber"></div>
+      <div style="font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Switch identity</div>
+      <div style="margin-top: 8px;">
+        <div style="padding: 10px 0; border-bottom: 1px solid var(--gc-border); display: flex; align-items: center; gap: 10px;"><span class="orb-glyph" style="width: 18px; height: 18px;"></span>Solo · Davos</div>
+        <div style="padding: 10px 0; border-bottom: 1px solid var(--gc-border); display: flex; align-items: center; gap: 10px;"><span class="orb-glyph" style="width: 18px; height: 18px;"></span>Brand A · Kandivali</div>
+        <div style="padding: 10px 0; display: flex; align-items: center; gap: 10px;"><span class="orb-glyph" style="width: 18px; height: 18px;"></span>Brand B · Borivali</div>
+      </div>
+    </div>
+
+    <h3>Rules</h3>
+    <ul>
+      <li><strong>Modals only for:</strong> irreversible actions (discard, delete), blocking decisions (Session Recovery), full-screen onboarding moments (Questionnaire).</li>
+      <li><strong>Sheets for:</strong> contextual choices (Branch-Scope identity switcher), filter sheets, action menus.</li>
+      <li><strong>Toasts for:</strong> ephemeral feedback (Set commit, Brienne is editing).</li>
+      <li><strong>Banners for:</strong> persistent advice (ACWR Risk Banner, plan-block expiry warning).</li>
+      <li><strong>No modal stacking.</strong> One modal at a time. New modal request while another open → defer until first closes or replace with confirmation.</li>
+      <li><strong>Sheets can dismiss via:</strong> tap backdrop, swipe-down (mobile), Escape (web), explicit close button (always present).</li>
+      <li><strong>Modal focus trap</strong> via Angular CDK <code>FocusTrap</code> or Tamagui equivalent. Cannot tab out of modal.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec6">
+  <h2><span class="num">§6</span> Empty + loading states</h2>
+  <p class="lede">Skeleton when structure is known. Spinner only when structure is unknown. Empty states always carry a next action.</p>
+  <div class="card">
+    <h3>Skeleton (preferred when structure is known)</h3>
+    <div style="background: var(--gc-bg); padding: 12px; border-radius: 10px; max-width: 360px; border: 1px solid var(--gc-border);">
+      <div class="skel short"></div>
+      <div class="skel med" style="height: 22px;"></div>
+      <div class="skel long"></div>
+      <div class="skel med"></div>
+    </div>
+
+    <h3>Empty state (always carries a CTA)</h3>
+    <div style="background: var(--gc-bg-elevated); border: 1px solid var(--gc-border); border-radius: 12px; padding: 24px; text-align: center; max-width: 360px;">
+      <div class="orb-glyph" style="width: 32px; height: 32px; margin: 0 auto 12px;"></div>
+      <div style="font-weight: 600; margin-bottom: 4px;">No PRs yet</div>
+      <div style="font-size: 13px; color: var(--gc-text-muted); margin-bottom: 14px;">Your personal records appear here when you hit one. Start a session to log your first.</div>
+      <button class="btn primary">Start Session</button>
+    </div>
+
+    <h3>Rules</h3>
+    <ul>
+      <li><strong>Skeleton first.</strong> If the structure of the loaded content is known (Set rows, KPI cards, list items), render skeletons that match the structure. Don't show a spinner.</li>
+      <li><strong>Spinner only when structure unknown</strong> (initial app boot, error state recovery).</li>
+      <li><strong>Never both.</strong> Empty state OR loading state — never stacked.</li>
+      <li><strong>Every empty state has a CTA.</strong> Empty without a next action = dead end (anti-pattern from step-05 Bodyspace surveillance critique).</li>
+      <li><strong>Skeleton motion</strong> = subtle shimmer 1.5 s loop. Reduce-motion = static skeleton.</li>
+      <li><strong>Per-surface empty states</strong> ship as component (per step-11) — empty logger, empty PR feed, empty branch dashboard, empty client list, empty trainer roster, empty audit log.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec7">
+  <h2><span class="num">§7</span> Search + filter patterns</h2>
+  <p class="lede">200 ms debounce on input. Filter chips stick under nav. Sort is secondary.</p>
+  <div class="card">
+    <h3>Search bar with filter chips</h3>
+    <div class="search-row">
+      <input class="search-input" type="search" placeholder="Search clients by name or goal..." />
+    </div>
+    <div class="filter-chips">
+      <span class="chip active">All</span>
+      <span class="chip">On Plan</span>
+      <span class="chip">Flagged ACWR</span>
+      <span class="chip">New</span>
+      <span class="chip">PR this week</span>
+    </div>
+
+    <h3>Rules</h3>
+    <ul>
+      <li><strong>Debounce input 200 ms.</strong> Fires after the user stops typing. Reduces server load + flicker.</li>
+      <li><strong>Filter chips scroll horizontally</strong> on mobile, sticky under nav. Active chip = <code>--accent</code> fill + <code>--accent-on</code> text.</li>
+      <li><strong>Multi-select chips</strong> when filters are non-exclusive (e.g. "On Plan" + "Flagged ACWR"). Single-select when mutually exclusive.</li>
+      <li><strong>Sort is secondary.</strong> Sort dropdown lives in a small affordance to the right of the search bar — not a top-level filter.</li>
+      <li><strong>Empty search results</strong> use the Empty States set ("No clients match 'samwell123' — try a broader name or clear filters").</li>
+      <li><strong>Shared pattern</strong> across: Trainer client list (FR-clients), Admin member list (FR-members), Plan Template library (FR-31), Trainer Marketplace (FR-34, v1.5).</li>
+      <li><strong>Search history</strong> v2 — not v1.</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="cta">
+  <p><strong>What now?</strong> Choose in chat:</p>
+  <div class="menu-row">
+    <div class="opt"><span class="key">A</span><strong>Advanced Elicitation</strong> — refine pattern rules before saving.</div>
+    <div class="opt"><span class="key">P</span><strong>Party Mode</strong> — multi-agent critique on consistency rules.</div>
+    <div class="opt"><span class="key">C</span><strong>Continue</strong> — append to <code>ux-design-specification.md</code> and advance to step-13 (Responsive + Accessibility).</div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,166 @@
+# generated: 2026-05-28
+# last_updated: 2026-05-28
+# project: Vis
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-05-28
+last_updated: 2026-05-28
+project: Vis
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # ── Epic E1a: Backend Infrastructure ────────────────────────────────────────
+  epic-1a: in-progress
+  1a-1-gh-actions-ci-cd-pipelines: in-progress
+  1a-2-spring-boot-3-5-x-upgrade-in-vis-package-migration: backlog
+  1a-3-redis-integration-local-dev-testcontainers: backlog
+  1a-4-cloud-armor-bucket4j-per-uid-rate-limiting: backlog
+  1a-5-versioned-dto-content-negotiation: backlog
+  1a-6-observability-day-1-counter-metrics-distributed-tracing: backlog
+  epic-1a-retrospective: optional
+
+  # ── Epic E1b: Mobile Infrastructure ─────────────────────────────────────────
+  epic-1b: backlog
+  1b-1-expo-prebuild-migration-trainer-app-client-app: backlog
+  1b-2-eas-build-ci-pipelines-trainer-app-client-app: backlog
+  1b-3-watermelondb-op-sqlite-integration: backlog
+  1b-4-mmkv-setup-auth-token-storage: backlog
+  1b-5-light-dark-theme-token-system-os-preference-hooks: backlog
+  epic-1b-retrospective: optional
+
+  # ── Epic E1c: Admin-Web Infrastructure ──────────────────────────────────────
+  epic-1c: backlog
+  1c-1-angular-17-21-upgrade-karma-vitest-migration: backlog
+  1c-2-signals-services-state-architecture-baseline: backlog
+  1c-3-wcag-2-1-aa-shell-focus-management-skip-nav-min-targets: backlog
+  1c-4-admin-web-light-dark-theme-token-system: backlog
+  epic-1c-retrospective: optional
+
+  # ── Epic E1d: Auth & Access ──────────────────────────────────────────────────
+  epic-1d: backlog
+  1d-1-firebase-auth-google-apple-phone-otp-all-3-apps: backlog
+  1d-2-backend-jwt-validation-role-extraction-firebaseauthfilter: backlog
+  1d-3-onboarding-questionnaire-10-fields-path-aware-shell: backlog
+  1d-4-role-based-access-gate-gym-path-solo-path-pending-pt-lapse: backlog
+  1d-5-dpdpa-gdpr-compliance-consent-right-to-erasure-data-export: backlog
+  1d-6-fcm-http-v1-api-service-account-config: backlog
+  epic-1d-retrospective: optional
+
+  # ── Epic E2: Gym Operations ──────────────────────────────────────────────────
+  epic-2: backlog
+  2-1-member-csv-excel-import-with-duplicate-detection: backlog
+  2-2-pt-activation-suspension-and-expiry-state-machine: backlog
+  2-3-in-person-payment-logging-cash-upi-card: backlog
+  2-4-whatsapp-fcm-reminder-templates: backlog
+  2-5-trainer-cert-verification-upload-review-verified-badge: backlog
+  2-6-cross-branch-revenue-dashboard-owner: backlog
+  2-7-trainer-leaderboard-experience-feedback-client-progress: backlog
+  2-8-branch-health-snapshot-kpis: backlog
+  2-9-audit-log-append-only-ddl-branch-brand-scoped-read: backlog
+  2-10-trainer-public-profile-card: backlog
+  epic-2-retrospective: optional
+
+  # ── Epic E3: Trainer-Client Pairing & Plans ──────────────────────────────────
+  epic-3: backlog
+  3-1-client-chosen-trainer-assignment-priority-order-single-active-invariant: backlog
+  3-2-pt-relationship-state-machine-nopt-ptactive-ptended: backlog
+  3-3-plan-builder-flat-plan-creation-and-assignment: backlog
+  3-4-plan-builder-phased-plan-phase-transitions-client-visible-progress: backlog
+  3-5-plan-templates-3-sources-rbac: backlog
+  3-6-fcm-plan-block-expiry-reminders-solo-trainer-invite-link: backlog
+  epic-3-retrospective: optional
+
+  # ── Epic E4: Equipment-Aware Logger ──────────────────────────────────────────
+  epic-4: backlog
+  4-1-exerciseset-db-schema-backend-crud-api: backlog
+  4-2-set-row-component-prescribed-actual-fields-failure-intent-per-rep-assistance: backlog
+  4-3-warm-up-flag-skip-set-affordance: backlog
+  4-4-equipment-aware-logger-cable-barbell-dumbbell-variants: backlog
+  4-5-equipment-aware-logger-machine-bodyweight-kettlebell-bands-variants: backlog
+  4-6-superset-drop-set-composition-by-gesture: backlog
+  4-7-rest-timer-auto-start-compound-isolation-defaults-haptic: backlog
+  4-8-cardio-logger-treadmill-elliptical-bike-rowing-free-form: backlog
+  4-9-connection-orb-dormant-scaffold-static-pulse-state: backlog
+  epic-4-retrospective: optional
+
+  # ── Epic E5: Live Session Real-Time Co-Edit ──────────────────────────────────
+  epic-5: backlog
+  5-1-websocket-serverendpoint-auth-on-upgrade: backlog
+  5-2-redis-pub-sub-session-fan-out-lww-conflict-resolution: backlog
+  5-3-mobile-ws-client-offline-queue-drain-55-min-reconnect: backlog
+  5-4-connection-orb-active-co-edit-peak-tension-disconnected-states: backlog
+  5-5-mid-session-pt-end-handling-syncstatusbar-offline-banner: backlog
+  epic-5-retrospective: optional
+
+  # ── Epic E6: Progress & Recovery Analytics ───────────────────────────────────
+  epic-6: backlog
+  6-1-progressionservice-pr-detection-volume-estimated-1rm: backlog
+  6-2-recovery-chips-doms-model-rest-day-recommendation: backlog
+  6-3-acwr-backend-acute-chronic-workload-ratio-computation: backlog
+  6-4-acwr-risk-banner-in-trainer-session-planning: backlog
+  6-5-progress-tab-strength-chart-volume-sparklines: backlog
+  6-6-profile-tab-lifetime-stats-goal-progress: backlog
+  epic-6-retrospective: optional
+
+  # ── Epic E7: AI Progression Engine ───────────────────────────────────────────
+  epic-7: backlog
+  7-1-claude-proxy-anthropic-sdk-backend-prompt-cache-cost-model: backlog
+  7-2-ai-progression-rule-engine-suggest-next-set-parameters: backlog
+  7-3-ai-bootstrap-cold-start-suggestions-for-new-clients: backlog
+  7-4-ghost-overlay-in-session-ai-target-visualization: backlog
+  7-5-ai-locked-feature-flag-toggle-trainer-notification: backlog
+  epic-7-retrospective: optional
+
+  # ── Epic E8: PR Moments & Social Sharing ─────────────────────────────────────
+  epic-8: backlog
+  8-1-gcs-bucket-cdn-headless-worker-infrastructure: backlog
+  8-2-pr-detection-pr-events-write: backlog
+  8-3-in-app-pr-moment-screen-confetti-animation: backlog
+  8-4-pr-card-composer-rn-skia-in-app-render: backlog
+  8-5-headless-png-worker-server-side-pr-card-render-to-gcs: backlog
+  epic-8-retrospective: optional
+
+  # ── Epic E9: Nutrition Tracking ───────────────────────────────────────────────
+  epic-9: backlog
+  9-1-trainer-macro-authoring-set-daily-targets-per-client: backlog
+  9-2-client-nutrition-tab-daily-log-macro-ring: backlog
+  epic-9-retrospective: optional
+
+  # ── Epic E10: Solo Paths & Template Marketplace ───────────────────────────────
+  epic-10: backlog
+  10-1-template-browse-fork-solo-client-workout-selection: backlog
+  10-2-template-edit-solo-session-logging-grid: backlog
+  epic-10-retrospective: optional

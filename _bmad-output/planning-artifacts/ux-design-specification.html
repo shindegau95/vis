@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Design Specification — Complete · 2026-05-23</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-ember: #F26200;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --vis-amber-glow: #FF6A00;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+    --good: #1F7A4A;
+    --orb: radial-gradient(circle at 35% 30%, var(--vis-amber-highlight) 0%, transparent 25%),
+           radial-gradient(circle at 50% 70%, var(--vis-amber-primary) 0%, var(--vis-amber-deep) 55%, var(--vis-amber-shadow) 100%);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --good: #6BD49A;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg); color: var(--gc-text);
+    line-height: 1.7; font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 0;
+    max-width: 1280px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } aside.toc { display: none; } }
+
+  /* Sidebar TOC */
+  aside.toc {
+    position: sticky; top: 0;
+    height: 100vh; overflow-y: auto;
+    padding: 32px 20px;
+    border-right: 1px solid var(--gc-border);
+    background: var(--gc-bg-elevated);
+    font-size: 13px;
+  }
+  aside.toc .brand {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 20px;
+    font-weight: 600; font-size: 15px;
+  }
+  aside.toc .brand .orb-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--orb);
+    box-shadow: 0 0 12px rgba(255,106,0,0.35);
+  }
+  aside.toc .label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--vis-amber-primary); font-weight: 600;
+    margin-top: 14px; margin-bottom: 4px;
+  }
+  aside.toc ol {
+    margin: 0 0 12px; padding-left: 18px;
+    list-style: decimal;
+  }
+  aside.toc li { margin: 3px 0; line-height: 1.4; }
+  aside.toc a {
+    color: var(--gc-text); text-decoration: none; font-size: 12.5px;
+  }
+  aside.toc a:hover { color: var(--vis-amber-primary); }
+  aside.toc .status {
+    display: inline-block;
+    background: rgba(31,122,74,0.10); color: var(--good);
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  main { padding: 40px 36px 80px; }
+
+  /* Cover */
+  .cover { padding-bottom: 28px; margin-bottom: 32px; border-bottom: 1px solid var(--gc-border); position: relative; }
+  .cover::before {
+    content: '';
+    position: absolute; top: -20px; right: 0;
+    width: 200px; height: 200px;
+    background: var(--orb);
+    border-radius: 50%;
+    box-shadow: 0 0 60px rgba(255,106,0,0.30), 0 0 120px rgba(255,122,26,0.15);
+    opacity: 0.45;
+    filter: blur(4px);
+    z-index: 0; pointer-events: none;
+  }
+  .cover .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 11px; font-weight: 600;
+    color: var(--vis-amber-primary);
+    position: relative; z-index: 1;
+  }
+  .cover h1 {
+    margin: 6px 0 6px;
+    font-size: 36px; font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    max-width: 700px;
+    position: relative; z-index: 1;
+  }
+  .cover .meta { font-size: 13.5px; color: var(--gc-text-muted); position: relative; z-index: 1; }
+  .cover .abstract {
+    margin-top: 18px;
+    font-size: 15.5px; color: var(--gc-text);
+    max-width: 700px;
+    position: relative; z-index: 1;
+  }
+
+  /* Section blocks */
+  section {
+    margin: 40px 0;
+    scroll-margin-top: 20px;
+  }
+  section > h2 {
+    margin: 0 0 12px;
+    font-size: 22px; font-weight: 600;
+    letter-spacing: -0.015em;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  section > h2 .num {
+    color: var(--vis-amber-primary);
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  section > .lede {
+    color: var(--gc-text-muted);
+    font-size: 15px;
+    margin: 0 0 18px;
+    max-width: 720px;
+  }
+
+  h3 {
+    margin: 24px 0 10px;
+    font-size: 16px; font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  p { margin: 10px 0; max-width: 760px; }
+  ul, ol { padding-left: 22px; margin: 10px 0; max-width: 760px; }
+  li { margin: 5px 0; }
+  strong { color: var(--vis-amber-primary); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: rgba(196,81,0,0.08); color: var(--vis-amber-primary); padding: 1px 6px; border-radius: 4px; font-size: 13px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; max-width: 100%; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  th {
+    font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--gc-text-muted);
+    border-bottom: 1px solid var(--vis-amber-primary);
+    background: rgba(255,106,0,0.02);
+  }
+  tbody tr:hover { background: rgba(255,106,0,0.04); }
+
+  blockquote {
+    background: linear-gradient(180deg, rgba(255,106,0,0.04), rgba(255,106,0,0));
+    border-left: 3px solid var(--vis-amber-primary);
+    padding: 12px 18px;
+    margin: 16px 0;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--gc-text);
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* Companion artifact links */
+  .companion {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-deep);
+    border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: var(--gc-shadow-soft);
+    margin: 12px 0;
+    font-size: 13.5px;
+  }
+  .companion .label {
+    font-size: 10.5px; font-weight: 600; color: var(--vis-amber-deep);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .companion a { color: var(--vis-amber-primary); text-decoration: none; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; }
+  .companion a:hover { text-decoration: underline; }
+  .companion ul { padding-left: 18px; margin: 4px 0 0; }
+  .companion li { margin: 2px 0; }
+
+  .anchor-pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .anchor-pills .pill {
+    background: rgba(224,99,19,0.10); color: var(--vis-amber-primary);
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 600;
+  }
+
+  /* Persona grid */
+  .persona-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 12px; }
+  .persona {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 12px; padding: 14px 16px; box-shadow: var(--gc-shadow-soft);
+    font-size: 13px;
+  }
+  .persona .house { font-size: 10.5px; color: var(--vis-amber-primary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .persona .name { font-weight: 600; font-size: 14px; margin: 4px 0; }
+  .persona .role { color: var(--gc-text-muted); font-size: 12px; }
+
+  /* Footer completion banner */
+  .complete-banner {
+    background: linear-gradient(135deg, var(--vis-amber-primary), var(--vis-amber-deep));
+    color: #FFF6EA;
+    padding: 24px 28px;
+    border-radius: 16px;
+    margin: 40px 0 28px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px -8px rgba(255,106,0,0.40);
+  }
+  .complete-banner::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.25) 0%, transparent 50%);
+    border-radius: 50%;
+  }
+  .complete-banner h2 { margin: 0 0 4px; color: #FFF6EA; font-size: 22px; font-weight: 600; }
+  .complete-banner .sub { color: rgba(255,246,234,0.85); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<aside class="toc">
+  <div class="brand"><span class="orb-dot"></span> Vis UX Spec</div>
+  <span class="status">✓ Complete</span>
+
+  <div class="label">Sections</div>
+  <ol>
+    <li><a href="#executive">Executive Summary</a></li>
+    <li><a href="#core-ux">Core User Experience</a></li>
+    <li><a href="#emotional">Desired Emotional Response</a></li>
+    <li><a href="#inspiration">UX Pattern Analysis</a></li>
+    <li><a href="#design-system">Design System Foundation</a></li>
+    <li><a href="#defining">Defining Core Experience</a></li>
+    <li><a href="#visual">Visual Design Foundation</a></li>
+    <li><a href="#directions">Design Direction Decision</a></li>
+    <li><a href="#journeys">User Journey Flows</a></li>
+    <li><a href="#components">Component Strategy</a></li>
+    <li><a href="#patterns">UX Consistency Patterns</a></li>
+    <li><a href="#responsive">Responsive + Accessibility</a></li>
+  </ol>
+
+  <div class="label">Companion artifacts</div>
+  <ol style="list-style: none; padding-left: 0;">
+    <li><a href="ux-design-specification.md">📄 Source spec .md</a></li>
+    <li><a href="ux-design-directions-2026-05-23.html">🎨 6 design directions</a></li>
+    <li><a href="ux-spec-step-02-party-mode-2026-05-22.html">🗣️ Step-02 party-mode</a></li>
+    <li><a href="ux-spec-step-03-party-mode-2026-05-22.html">🗣️ Step-03 party-mode</a></li>
+    <li><a href="ux-spec-step-05-party-mode-2026-05-22.html">🗣️ Step-05 party-mode</a></li>
+    <li><a href="ux-spec-step-06-party-mode-2026-05-23.html">🗣️ Step-06 party-mode</a></li>
+  </ol>
+</aside>
+
+<main>
+
+<div class="cover">
+  <div class="eyebrow">UX Design Specification · Complete</div>
+  <h1>Vis — three-app fitness platform built around one live moment</h1>
+  <div class="meta">Author: Gauravprakashshinde · Date: 2026-05-23 · Status: <strong style="color: var(--good);">Complete</strong> · 14 / 14 steps</div>
+  <div class="abstract">
+    Two phones, three feet apart, both editing the same Set live. The trainer drags the cable pin to 40 kg; the client sees it update before they grip the handle. Either taps Done; the other side sees the green check land within 500 ms. <strong>No typing. The Set knows who wrote it.</strong> Everything in this spec serves that moment — the Logger gesture vocabulary, the Connection Orb pulse, the Provenance line, the multi-role identity model, the cinematic restraint. All locked.
+  </div>
+</div>
+
+<div class="complete-banner">
+  <h2>🎉 UX Design Specification — Complete</h2>
+  <div class="sub">14 of 14 steps · 13 companion HTML artifacts · 5-phase implementation roadmap ready for handoff to architecture / dev / Figma.</div>
+</div>
+
+<section id="executive">
+  <h2><span class="num">§1</span> Executive Summary</h2>
+  <p class="lede">Three load-bearing assertions + two anchor priorities locked.</p>
+
+  <h3>Anchor priorities (locked in step-05 party-mode)</h3>
+  <div class="anchor-pills">
+    <span class="pill">Anchor 1 · Equipment-Aware Logger fidelity (6 gestures)</span>
+    <span class="pill">Anchor 2 · Real-time co-edit + multi-role context</span>
+  </div>
+
+  <h3>Three load-bearing assertions</h3>
+  <ol>
+    <li><strong>Primary user pain = remembering + inputting progression.</strong> Visual equipment-aware logging is the differentiator; the orb is a brand surface, not the moat.</li>
+    <li><strong>Trainer ↔ client real-time in-person co-edit + multi-role multi-branch context = structural moats.</strong> No competitor unifies all three (Trainerize = async-only; FitBudd = ops-only; Bevel = solo-only).</li>
+    <li><strong>Free v1; global day one.</strong> Units (kg + lb), date formats, time zones — toggle-aware from the first screen. India-anchored copy + INR-ready data model + RTL stub.</li>
+  </ol>
+
+  <h3>Target users — 6 role-contexts (Game of Thrones house codenames as internal shorthand)</h3>
+  <div class="persona-grid">
+    <div class="persona"><div class="house">House Tarly</div><div class="name">Samwell of Tarly</div><div class="role">Gym Client (beginner) · gym path</div></div>
+    <div class="persona"><div class="house">House Greyjoy</div><div class="name">Theon of Greyjoy</div><div class="role">Solo Client (strength athlete) · solo path</div></div>
+    <div class="persona"><div class="house">House Tarth</div><div class="name">Brienne of Tarth</div><div class="role">Gym Trainer · sworn discipline</div></div>
+    <div class="persona"><div class="house">House Seaworth</div><div class="name">Davos of Seaworth</div><div class="role">Solo + multi-brand Gym Trainer</div></div>
+    <div class="persona"><div class="house">House Tully</div><div class="name">Edmure of Tully</div><div class="role">Gym Staff · front-desk</div></div>
+    <div class="persona"><div class="house">House Lannister</div><div class="name">Tywin of Lannister</div><div class="role">Gym Owner · chain operator</div></div>
+  </div>
+
+  <div class="companion">
+    <div class="label">Companion artifact</div>
+    <div>Step-02 party-mode critique (Sally · John · Winston · Mary): <a href="ux-spec-step-02-party-mode-2026-05-22.html">ux-spec-step-02-party-mode-2026-05-22.html</a></div>
+  </div>
+</section>
+
+<section id="core-ux">
+  <h2><span class="num">§2</span> Core User Experience</h2>
+  <p class="lede">The core loop. Five experience principles. Twelve design challenges (ordered by structural weight).</p>
+
+  <h3>Core loop — multi-actor first</h3>
+  <blockquote>"Trainer and client both touch the same Set, in the same room, on two devices. The Set knows who wrote it."</blockquote>
+  <p>Solo-lifter framing is a <em>secondary</em> loop, not the headline. The Cluster-A competitors (Fitbod, Hevy, Strong, Motra, Bevel) all ship a polished solo logger; Vis's defensible wedge is the multi-actor moment plus the multi-role context.</p>
+
+  <h3>Five core experience principles + 1 operational</h3>
+  <ol>
+    <li><strong>No typing in the happy path.</strong> Verifiable: zero keystroke events on Set log.</li>
+    <li><strong>Visible presence + provenance over silent state.</strong> Verifiable: actor avatar + timestamp on every co-edited row within 500 ms.</li>
+    <li><strong>Celebration UI only fires post-server-confirm.</strong> Verifiable: no animation on optimistic write.</li>
+    <li><strong>Orb state changes are backed by a named signal.</strong> 5 states each tied to a backend tuple.</li>
+    <li><strong>Branch-scope chip always present, always glanceable.</strong> Inspectable in ≤ 200 ms of eye-travel.</li>
+    <li><strong>(Operational) Offline-first means the orb doesn't lie.</strong> Truth source = <code>(ws.readyState, offline_queue.depth, last_server_ack_at)</code>.</li>
+  </ol>
+
+  <div class="companion">
+    <div class="label">Full step-03 detail with 12 design challenges + critique</div>
+    <ul>
+      <li>Preview: <a href="ux-spec-step-03-preview-2026-05-22.html">ux-spec-step-03-preview-2026-05-22.html</a></li>
+      <li>Party-mode critique: <a href="ux-spec-step-03-party-mode-2026-05-22.html">ux-spec-step-03-party-mode-2026-05-22.html</a></li>
+    </ul>
+  </div>
+</section>
+
+<section id="emotional">
+  <h2><span class="num">§3</span> Desired Emotional Response</h2>
+  <p class="lede">Three primary emotional goals. 14-stage journey. 5 emotional design principles.</p>
+
+  <h3>Three primary emotional goals</h3>
+  <ol>
+    <li><strong>Quiet competence.</strong> Capable, in-control. The equipment is theirs to command. Earned, owned. Not flattered.</li>
+    <li><strong>Coached presence + Solitary focus.</strong> PT-attached: accompanied without managed. Solo: focused without lonely.</li>
+    <li><strong>Earned trust in the tool.</strong> The orb doesn't lie. Data doesn't disappear. AI doesn't condescend.</li>
+  </ol>
+
+  <h3>5 emotional design principles</h3>
+  <ul>
+    <li>Earned over celebrated.</li>
+    <li>Calm under degradation. Anxiety is a bug.</li>
+    <li>Dignity in failure.</li>
+    <li>Presence without surveillance.</li>
+    <li>Recognition over reset.</li>
+  </ul>
+
+  <div class="companion">
+    <div class="label">Full step-04 detail with 14-stage emotional journey</div>
+    <div>Preview: <a href="ux-spec-step-04-preview-2026-05-22.html">ux-spec-step-04-preview-2026-05-22.html</a></div>
+  </div>
+</section>
+
+<section id="inspiration">
+  <h2><span class="num">§4</span> UX Pattern Analysis & Inspiration</h2>
+  <p class="lede">5 inspirations (Motra · Strong · Apple Health · Linear/Figma · Bevel deferred). 6 anti-patterns. v1.1 user-themable accent reserved.</p>
+
+  <h3>Inspirations (ordered by transfer fit)</h3>
+  <ol>
+    <li><strong>Motra</strong> — compact Set row with inline RIR/RPE; recovery-aware programming. <em>Strongest fit.</em></li>
+    <li><strong>Strong app</strong> — rest-timer-as-ambient; one-handed thumb operation.</li>
+    <li><strong>Apple Health</strong> — chart interactivity (pinch-zoom, tap callout, swipe between metrics); sparkline-on-card.</li>
+    <li><strong>Linear / Figma multiplayer</strong> — cursor presence model → Connection Orb tension stem; workspace switcher → Branch-Scope Chip.</li>
+    <li><strong>Bevel</strong> — AI suggestion confidence pattern <em>only</em>; component reserved for v1.1.</li>
+  </ol>
+
+  <h3>6 anti-patterns to avoid</h3>
+  <ol>
+    <li>MyFitnessPal data interrogation</li>
+    <li>Mindbody / Glofox dense ops UI</li>
+    <li>Bodyspace bro-culture aesthetic</li>
+    <li>Fitbod gamified celebration</li>
+    <li>Strava social feed + leaderboards</li>
+    <li>Whoop metric overload on home</li>
+  </ol>
+
+  <h3>User-themable accent — deferred to v1.1</h3>
+  <p>Token plumbing ships day 1 (two-layer system). UI lands v1.1 with 4 presets: Tangerine (default), Ember red, Rust gold, Slate teal. Brand-locked surfaces (orb, wordmark, PR-watermark) stay amber regardless. WCAG contrast CI gate.</p>
+
+  <div class="companion">
+    <div class="label">Full step-05 detail + party-mode critique</div>
+    <ul>
+      <li>Preview: <a href="ux-spec-step-05-preview-2026-05-22.html">ux-spec-step-05-preview-2026-05-22.html</a></li>
+      <li>Party-mode critique: <a href="ux-spec-step-05-party-mode-2026-05-22.html">ux-spec-step-05-party-mode-2026-05-22.html</a></li>
+    </ul>
+  </div>
+</section>
+
+<section id="design-system">
+  <h2><span class="num">§5</span> Design System Foundation</h2>
+  <p class="lede">Path B: Tamagui (RN) + Tailwind + Angular CDK (web). Brand layer custom; primitives library-backed.</p>
+
+  <h3>Stack</h3>
+  <table>
+    <thead><tr><th>Surface</th><th>Library</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>RN primitives</td><td><strong>Tamagui</strong></td><td>Theme system matches Vis token architecture 1:1; compile-time style flattening</td></tr>
+      <tr><td>RN gestures</td><td><strong>Gesture Handler + Reanimated 3</strong></td><td>Equipment-Aware Logger drag/snap/slide; 60 fps on UI thread</td></tr>
+      <tr><td>Liquid Glass</td><td><strong>@react-native-community/blur</strong></td><td>UIVisualEffectView iOS; RenderEffect Android 12+; gradient fallback &lt;12</td></tr>
+      <tr><td>Orb hero</td><td><strong>react-native-skia</strong></td><td>Gradient morphing for central orb (+2 MB, hero only)</td></tr>
+      <tr><td>Web</td><td><strong>Tailwind + Angular CDK</strong></td><td>Utility classes from shared tokens.css; headless a11y primitives</td></tr>
+      <tr><td>Icons</td><td><strong>Lucide</strong></td><td>RN + Angular ports</td></tr>
+      <tr><td>Typography</td><td><strong>@fontsource/geist</strong></td><td>Geist + Geist Mono self-hosted</td></tr>
+      <tr><td>Component scaffolding</td><td><strong>21st-dev/magic MCP</strong></td><td>Generate from intent → 5-step adapt-to-Vis-tokens checklist before merge</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Phase 0.5 — bridging week between Phase 0 close and Phase 1 kickoff</h3>
+  <ul>
+    <li>Tamagui setup with <code>@tamagui/babel-plugin optimize: true</code></li>
+    <li>One throwaway practice screen exercising token plumbing end-to-end</li>
+    <li>Expo dev client builds verified iOS + Android (Reanimated, Gesture Handler, blur, Skia)</li>
+    <li>Angular CDK wired; Tailwind preflight scoped away from <code>.cdk-overlay-container</code></li>
+  </ul>
+
+  <div class="companion">
+    <div class="label">Path comparison + party-mode critique</div>
+    <ul>
+      <li>Plain-language path comparison: <a href="ux-spec-step-06-plain-2026-05-23.html">ux-spec-step-06-plain-2026-05-23.html</a></li>
+      <li>Party-mode critique with 18 concrete edits applied: <a href="ux-spec-step-06-party-mode-2026-05-23.html">ux-spec-step-06-party-mode-2026-05-23.html</a></li>
+    </ul>
+  </div>
+</section>
+
+<section id="defining">
+  <h2><span class="num">§6</span> Defining Core Experience</h2>
+  <p class="lede">The 3 irreducible parts of the moment + 8 measurable thresholds + mechanics.</p>
+
+  <h3>The 3 irreducible parts</h3>
+  <ol>
+    <li><strong>The Logger gesture.</strong> Drag the cable pin. Snap a plate. Slide the dumbbell rack. No typing.</li>
+    <li><strong>The Provenance line.</strong> Set row knows which actor wrote each field, when. Avatar + timestamp within 500 ms.</li>
+    <li><strong>The Connection Orb pulse.</strong> Tension stem between two amber spheres pulses on every write.</li>
+  </ol>
+
+  <h3>8 measurable success thresholds</h3>
+  <ul>
+    <li>Set save → server commit <code>p95 ≤ 250 ms</code> online</li>
+    <li>Set save → local-queued ack <code>≤ 100 ms</code> offline</li>
+    <li>Logger first-contentful render <code>≤ 200 ms</code></li>
+    <li>Other side's write on screen <code>≤ 500 ms</code></li>
+    <li>Zero keystrokes in happy path</li>
+    <li>Provenance visible within 500 ms of commit</li>
+    <li>Connection Orb pulse completes <code>&lt; 800 ms</code></li>
+    <li>AI accept ≤ 1 tap (long-press override)</li>
+  </ul>
+
+  <div class="companion">
+    <div class="label">Step-07 full mechanics + edge cases</div>
+    <div>Preview: <a href="ux-spec-step-07-preview-2026-05-23.html">ux-spec-step-07-preview-2026-05-23.html</a></div>
+  </div>
+</section>
+
+<section id="visual">
+  <h2><span class="num">§7</span> Visual Design Foundation</h2>
+  <p class="lede">Two-layer token system. Geist + Geist Mono. 4 px spacing grid. WCAG AA contrast gate.</p>
+
+  <h3>Two-layer token system</h3>
+  <ul>
+    <li><strong>Layer A — Raw amber:</strong> <code>--vis-amber-*</code> (primary, deep, ember, soft, highlight, shadow, glow). Never consumed by components.</li>
+    <li><strong>Layer B — Semantic themable:</strong> <code>--accent</code>, <code>--accent-on</code>, <code>--accent-muted</code>, <code>--accent-emphasis</code>. All themable surfaces consume these.</li>
+    <li><strong>Layer B — Brand-locked:</strong> <code>--brand-locked-primary/deep/shadow</code>. Orb, wordmark, PR-watermark. Never overridden by accent preset.</li>
+  </ul>
+
+  <h3>v1.1 preset palette (4 presets, computed for AA contrast)</h3>
+  <ul>
+    <li>Tangerine (default)</li>
+    <li>Ember red</li>
+    <li>Rust gold</li>
+    <li>Slate teal</li>
+  </ul>
+
+  <div class="companion">
+    <div class="label">Step-08 full color + type + spacing + a11y detail</div>
+    <div>Preview: <a href="ux-spec-step-08-preview-2026-05-23.html">ux-spec-step-08-preview-2026-05-23.html</a></div>
+  </div>
+</section>
+
+<section id="directions">
+  <h2><span class="num">§8</span> Design Direction Decision</h2>
+  <p class="lede">Per-surface composition. 4 directions selected from 6 explored.</p>
+
+  <table>
+    <thead><tr><th>Surface</th><th>Direction</th><th>Lead</th></tr></thead>
+    <tbody>
+      <tr><td>Client Home (PT-attached)</td><td><strong>Direction 1 — Liquid Restraint</strong></td><td>Hero orb · sparse data · single CTA</td></tr>
+      <tr><td>Active Session</td><td><strong>Direction 4 — Coach-led Companion</strong></td><td>Connection Orb header · provenance · Ghost Set Row</td></tr>
+      <tr><td>Solo Client Home</td><td><strong>Direction 5 — Solo Athlete</strong></td><td>PR + e1RM curves + streak heatmap</td></tr>
+      <tr><td>Admin Web (Owner + Staff)</td><td><strong>Direction 6 — Owner Cockpit</strong></td><td>KPI grid + branch drill-down on warm cream bg</td></tr>
+    </tbody>
+  </table>
+
+  <div class="companion">
+    <div class="label">6 design directions showcase</div>
+    <div>Full showcase with phone-frame mockups: <a href="ux-design-directions-2026-05-23.html">ux-design-directions-2026-05-23.html</a></div>
+  </div>
+</section>
+
+<section id="journeys">
+  <h2><span class="num">§9</span> User Journey Flows</h2>
+  <p class="lede">6 detailed journeys. 8 reusable patterns. 6 optimization principles.</p>
+
+  <ol>
+    <li><strong>UJ-1 Live Co-Edit Session</strong> — Brienne + Samwell on lat pulldown. FR-1, FR-3, FR-7, FR-8. SM-3.</li>
+    <li><strong>UJ-2 Solo PR + Share</strong> — Theon 200 kg squat. FR-10, FR-11. SM-5.</li>
+    <li><strong>UJ-3 Gym Onboarding</strong> — Samwell signs up under Brienne. FR-25, FR-27, FR-28. SM-6.</li>
+    <li><strong>UJ-4 Multi-Role Identity Switch</strong> — Davos across brands. <em>(new)</em></li>
+    <li><strong>UJ-5 Owner Morning Glance + Audit</strong> — Tywin daily ritual. <em>(new)</em></li>
+    <li><strong>UJ-6 Offline → Reconcile</strong> — gym basement WiFi drop. <em>(new)</em> Gates SM-2.</li>
+  </ol>
+
+  <div class="companion">
+    <div class="label">Step-10 full flow boards + edge cases + reusable patterns</div>
+    <div>Preview: <a href="ux-spec-step-10-preview-2026-05-23.html">ux-spec-step-10-preview-2026-05-23.html</a></div>
+  </div>
+</section>
+
+<section id="components">
+  <h2><span class="num">§10</span> Component Strategy</h2>
+  <p class="lede">13 custom components specced. Foundation from Tamagui + CDK + Lucide. 5-phase roadmap gated by SMs.</p>
+
+  <h3>The 13 custom components</h3>
+  <ol>
+    <li>Orb (5 tension states)</li>
+    <li>Connection Orb (live presence + pulse)</li>
+    <li>Equipment-Aware Logger family (6 variants)</li>
+    <li>Active Session Set Row</li>
+    <li>Branch-Scope Chip (identity switcher)</li>
+    <li>Ghost Set Row (AI suggestion)</li>
+    <li>PR Moment Composer</li>
+    <li>Recovery Orb (per-muscle readiness)</li>
+    <li>Presence Avatar Stack</li>
+    <li>Conflict Toast</li>
+    <li>Risk Banner (ACWR alert)</li>
+    <li>Session Recovery Sheet (abandonment)</li>
+    <li>Empty States set (6 surfaces)</li>
+  </ol>
+
+  <h3>5-phase implementation roadmap</h3>
+  <table>
+    <thead><tr><th>Phase</th><th>Focus</th><th>SM gates</th></tr></thead>
+    <tbody>
+      <tr><td>0 + 0.5</td><td>Foundation (tokens, Tamagui, CDK, blur, Skia, CI)</td><td>pure infra</td></tr>
+      <tr><td>1</td><td>Active Session core (the moat)</td><td>SM-1 WALS · SM-3 Co-Edit ≥ 25%</td></tr>
+      <tr><td>2</td><td>Sharing + PR loop</td><td>SM-5 share ≥ 30% · SM-C10 no-share &lt; 80%</td></tr>
+      <tr><td>3</td><td>Recovery + risk</td><td>SM-2 D7 ≥ 35% · SM-7 monitoring ≥ 50%</td></tr>
+      <tr><td>4</td><td>Multi-role + Admin Web</td><td>SM-7 + SM-8 ≥ 2/brand/week</td></tr>
+      <tr><td>5</td><td>Lifecycle + empty states</td><td>SM-6 onboarding ≥ 60% · SM-4 Solo D30 ≥ 10%</td></tr>
+    </tbody>
+  </table>
+
+  <div class="companion">
+    <div class="label">Step-11 full 13-component specs</div>
+    <div>Preview with collapsible spec cards: <a href="ux-spec-step-11-preview-2026-05-23.html">ux-spec-step-11-preview-2026-05-23.html</a></div>
+  </div>
+</section>
+
+<section id="patterns">
+  <h2><span class="num">§11</span> UX Consistency Patterns</h2>
+  <p class="lede">7 pattern categories: buttons · feedback · forms · nav · overlays · empty · search.</p>
+
+  <ul>
+    <li><strong>Button hierarchy:</strong> primary / secondary / ghost / destructive / disabled. One primary per screen.</li>
+    <li><strong>Feedback:</strong> toast (ephemeral, auto-dismiss), banner (persistent contextual), inline (per-field validation). Calm under degradation.</li>
+    <li><strong>Forms:</strong> single column, label above field, validate on blur, error red border + plain helper text.</li>
+    <li><strong>Navigation:</strong> mobile bottom-tab (4 max), web left sidebar; Branch-Scope Chip always visible; FCM tap → context restore.</li>
+    <li><strong>Overlays:</strong> modals for blocking decisions only; sheets for contextual choices; no modal stacking.</li>
+    <li><strong>Empty + loading:</strong> skeleton when structure known, spinner only otherwise. Empty states always carry a CTA.</li>
+    <li><strong>Search + filter:</strong> 200 ms debounce; filter chips scroll horizontally sticky under nav.</li>
+  </ul>
+
+  <div class="companion">
+    <div class="label">Step-12 live HTML examples using Vis tokens</div>
+    <div>Preview: <a href="ux-spec-step-12-preview-2026-05-23.html">ux-spec-step-12-preview-2026-05-23.html</a></div>
+  </div>
+</section>
+
+<section id="responsive">
+  <h2><span class="num">§12</span> Responsive Design + Accessibility</h2>
+  <p class="lede">Mobile RN = platform-native (no breakpoint adaptation). Admin Web = 4 breakpoints, desktop-primary. WCAG 2.1 AA gate.</p>
+
+  <h3>Admin Web breakpoints</h3>
+  <ul>
+    <li>Mobile fallback (320–767 px) — read-only</li>
+    <li>Tablet (768–1023 px) — front-desk staff</li>
+    <li>Desktop primary (1024–1439 px) — owner morning glance</li>
+    <li>Wide desktop (1440+ px) — whitespace, not more density</li>
+  </ul>
+
+  <h3>WCAG 2.1 AA — what Vis ships</h3>
+  <ul>
+    <li>≥ 4.5:1 body text contrast (CI-gated)</li>
+    <li>≥ 3:1 large text (Display + Title)</li>
+    <li>Keyboard navigation + screen-reader labels on every interactive element</li>
+    <li>Hit targets ≥ 44 × 44 pt mobile; ≥ 32 × 32 web</li>
+    <li>Reduce-motion + reduce-transparency support across all custom components</li>
+    <li>Color blindness: critical state distinctions never rely on color alone</li>
+    <li>Privacy ∩ a11y: health data never announced via VoiceOver outside the relevant surface</li>
+  </ul>
+
+  <div class="companion">
+    <div class="label">Step-13 full responsive + a11y detail + testing strategy</div>
+    <div>Preview: <a href="ux-spec-step-13-preview-2026-05-23.html">ux-spec-step-13-preview-2026-05-23.html</a></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">Next</span> Suggested next steps</h2>
+  <p class="lede">UX design specification is complete and ready for handoff. Recommended next workflows:</p>
+
+  <ol>
+    <li><strong>Architecture phase</strong> — feed this spec + the PRD into <code>bmad-create-architecture</code> for solution design (data model for the multi-role identity, WebSocket transport, Tamagui token pipeline, AI proxy infrastructure).</li>
+    <li><strong>Figma high-fidelity design</strong> — translate the design directions + 13 component specs into a Figma library that mirrors the token system. Use the <code>figma-generate-design</code> skill.</li>
+    <li><strong>Epics + stories</strong> — break the 5-phase roadmap into epics and stories via <code>bmad-create-epics-and-stories</code>.</li>
+    <li><strong>Implementation readiness check</strong> — validate PRD + UX + Architecture cohesion via <code>bmad-check-implementation-readiness</code>.</li>
+  </ol>
+
+  <p style="margin-top: 18px;">All decision aids, party-mode critiques, and preview artifacts are listed in the sidebar — keep them with the source spec for full audit trail.</p>
+</section>
+
+<div class="complete-banner">
+  <h2>🎉 UX Design Specification — Complete</h2>
+  <div class="sub">14 of 14 steps · Source: <code style="color: rgba(255,246,234,0.95);">ux-design-specification.md</code> · 13 companion artifacts in this folder.</div>
+</div>
+
+</main>
+
+</div>
+
+</body>
+</html>

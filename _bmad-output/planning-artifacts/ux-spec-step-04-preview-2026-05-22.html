@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 04 preview · Desired Emotional Response · 2026-05-22</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --vis-cream: #FFF3E8;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-good: #1F7A4A;
+    --gc-avoid: #B53A1A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --vis-cream: #1A1310;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --gc-shadow-soft: 0 2px 8px rgba(0,0,0,0.4), 0 12px 28px -8px rgba(255,106,0,0.10);
+      --gc-shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(255,106,0,0.12);
+      --gc-good: #6BD49A;
+      --gc-avoid: #F58A6A;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg);
+    color: var(--gc-text);
+    line-height: 1.65;
+    font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  header.page {
+    display: flex; flex-direction: column; gap: 4px;
+    padding-bottom: 24px; margin-bottom: 28px;
+    border-bottom: 1px solid var(--gc-border);
+  }
+  header.page .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 11px; font-weight: 600;
+    color: var(--vis-amber-primary);
+  }
+  header.page h1 {
+    margin: 6px 0 2px;
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract {
+    margin-top: 12px;
+    font-size: 14.5px; color: var(--gc-text-muted);
+    max-width: 760px;
+  }
+
+  nav.toc {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    box-shadow: var(--gc-shadow-card);
+    margin-bottom: 28px;
+    font-size: 13.5px;
+  }
+  nav.toc ol { margin: 6px 0 0; padding-left: 22px; }
+  nav.toc li { margin: 3px 0; }
+  nav.toc a { color: var(--gc-text); text-decoration: none; }
+  nav.toc a:hover { color: var(--vis-amber-primary); }
+  nav.toc .label {
+    font-weight: 600; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--vis-amber-primary);
+  }
+
+  section { margin-top: 36px; }
+  section > h2 {
+    margin: 0 0 8px;
+    font-size: 21px; font-weight: 600;
+    letter-spacing: -0.01em;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  section > h2 .num {
+    color: var(--vis-amber-primary);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  section > .lede {
+    color: var(--gc-text-muted);
+    font-size: 14.5px;
+    margin: 0 0 14px;
+  }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  strong { color: var(--vis-amber-primary); }
+
+  /* Primary-goal cards */
+  .goal-grid {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .goal {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: var(--gc-shadow-card);
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .goal::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--vis-amber-highlight) 0%, transparent 30%),
+                radial-gradient(circle at 50% 70%, var(--vis-amber-primary) 0%, var(--vis-amber-deep) 60%, var(--vis-amber-shadow) 100%);
+    opacity: 0.55;
+    filter: blur(2px);
+    box-shadow: 0 0 30px rgba(255,106,0,0.25);
+    pointer-events: none;
+  }
+  .goal .num {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--vis-amber-primary);
+    font-weight: 600;
+  }
+  .goal h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    max-width: 78%;
+  }
+  .goal .desc { color: var(--gc-text-muted); font-size: 14px; line-height: 1.55; max-width: 92%; }
+
+  /* Journey table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--gc-border);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--gc-text-muted);
+    border-bottom: 1px solid var(--vis-amber-primary);
+    background: rgba(255,106,0,0.02);
+  }
+  tbody tr:hover { background: rgba(255,106,0,0.04); }
+  td .persona {
+    display: inline-block;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    background: rgba(196,81,0,0.10);
+    color: var(--vis-amber-primary);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  /* Micro-emotion columns */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 760px) { .two-col { grid-template-columns: 1fr; } }
+  .col-card {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: var(--gc-shadow-card);
+  }
+  .col-card.good { border-left: 3px solid var(--gc-good); }
+  .col-card.avoid { border-left: 3px solid var(--gc-avoid); }
+  .col-card h3 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .col-card.good h3 { color: var(--gc-good); }
+  .col-card.avoid h3 { color: var(--gc-avoid); }
+  .col-card ul { padding-left: 18px; margin: 0; }
+  .col-card li { margin: 6px 0; }
+  .col-card li strong { color: var(--gc-text); font-weight: 600; }
+
+  /* Principles */
+  .num-list { display: grid; gap: 10px; }
+  .num-card {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-primary);
+    border-radius: 10px;
+    padding: 12px 16px;
+    box-shadow: var(--gc-shadow-soft);
+  }
+  .num-card .badge {
+    display: inline-flex; align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--vis-amber-primary);
+    color: white;
+    font-size: 12px; font-weight: 600;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .num-card .title { font-weight: 600; font-size: 15px; }
+  .num-card .desc { color: var(--gc-text-muted); font-size: 14px; margin-top: 4px; }
+
+  footer.cta {
+    margin-top: 40px;
+    padding: 20px 22px;
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  .menu-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .menu-row .opt {
+    flex: 1 1 200px;
+    background: var(--gc-bg);
+    border: 1px solid var(--gc-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+  }
+  .menu-row .opt .key {
+    display: inline-block;
+    width: 22px; height: 22px;
+    background: var(--vis-amber-primary);
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 22px;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: rgba(196,81,0,0.08); color: var(--vis-amber-primary); padding: 1px 6px; border-radius: 4px; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 04 preview</div>
+  <h1>Desired Emotional Response — proposed content</h1>
+  <div class="meta">2026-05-22 · Author: Gauravprakashshinde · Will be appended to ux-design-specification.md after [C]</div>
+  <div class="abstract">
+    What Vis should make people <em>feel</em>. Three primary emotional goals, a 14-stage emotional journey across personas, micro-emotions to engineer for + avoid, emotion-to-UX mappings, and five emotional design principles. Tied to the anchors locked in earlier steps: cinematic restraint, orb truth, presence without surveillance.
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="label">In this preview</div>
+  <ol>
+    <li><a href="#sec1">Primary Emotional Goals — 3</a></li>
+    <li><a href="#sec2">Emotional Journey Mapping — 14 stages</a></li>
+    <li><a href="#sec3">Micro-Emotions — engineer for vs avoid</a></li>
+    <li><a href="#sec4">Design Implications — emotion → UX choice</a></li>
+    <li><a href="#sec5">Emotional Design Principles — 5</a></li>
+  </ol>
+</nav>
+
+<section id="sec1">
+  <h2><span class="num">§1</span> Primary Emotional Goals</h2>
+  <p class="lede">Three feelings Vis is built to produce. Every screen should serve at least one.</p>
+  <div class="goal-grid">
+    <div class="goal">
+      <span class="num">Goal 1</span>
+      <h3>Quiet competence</h3>
+      <div class="desc">The user feels capable, in control, like the equipment in front of them is theirs to command. Not "performing." Not "celebrated." <strong>Earned, owned.</strong> Vis dignifies the work, never flatters the worker.</div>
+    </div>
+    <div class="goal">
+      <span class="num">Goal 2</span>
+      <h3>Coached presence + Solitary focus</h3>
+      <div class="desc">PT-attached: accompanied without being managed. Solo: focused without being lonely. <strong>Vis carries both modes</strong> — trainer cursor is information, not monitoring; solo streak heatmap is recognition, not gamification.</div>
+    </div>
+    <div class="goal">
+      <span class="num">Goal 3</span>
+      <h3>Earned trust in the tool</h3>
+      <div class="desc">The orb doesn't lie. The data doesn't disappear. The AI doesn't condescend. <strong>Trust compounds with usage</strong> — every reconcile, every PR confirmation, every offline survival adds to the bank.</div>
+    </div>
+  </div>
+</section>
+
+<section id="sec2">
+  <h2><span class="num">§2</span> Emotional Journey Mapping</h2>
+  <p class="lede">14 stages across personas. Each stage names the persona most exposed and the desired feeling at that beat.</p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:30%;">Stage</th>
+        <th style="width:18%;">Persona</th>
+        <th>Desired feeling</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Discovery / sign-up</td><td><span class="persona">All</span></td><td>Intrigue + low-stakes ("free, no card"). Not "another fitness app" fatigue.</td></tr>
+      <tr><td>Onboarding Questionnaire</td><td><span class="persona">All</span></td><td>Brisk, dignified. Not interrogated. Skippable advanced fields signal respect.</td></tr>
+      <tr><td>First trainer browse (gym path)</td><td><span class="persona">Tarly</span></td><td>Confidence in choice — three verified rating dimensions, certs, language, response time. Not overwhelmed.</td></tr>
+      <tr><td>First template pick (solo path)</td><td><span class="persona">Greyjoy</span></td><td>"I know what I'm doing" — respect for prior knowledge. Not held-by-hand.</td></tr>
+      <tr><td>First Set logged</td><td><span class="persona">All</span></td><td>Magic / "huh" — the Logger gesture feels like the equipment. The first "this is different" beat.</td></tr>
+      <tr><td>First Co-Edit moment</td><td><span class="persona">Tarly + Tarth</span></td><td>Connected — trainer's edit lands on screen with provenance. Both feel <em>in sync</em>. Not surveilled, not abandoned.</td></tr>
+      <tr><td>Failure / form break (mid-rep)</td><td><span class="persona">Tarly</span></td><td>Held — trainer flips assistance flag in real time without breaking flow. Dignity preserved.</td></tr>
+      <tr><td>PR detection + share</td><td><span class="persona">All</span></td><td>Earned — cinematic restraint. User wants to share because the moment is worth it, not because of a hook.</td></tr>
+      <tr><td>Offline drop</td><td><span class="persona">All</span></td><td>Calm — orb says "queued," not "broken." Trust intact.</td></tr>
+      <tr><td>Return D7</td><td><span class="persona">All</span></td><td>Recognised — Vis remembers last-Set, weekly volume, recovery state. Streak heatmap visible. Feels resumed, not reset.</td></tr>
+      <tr><td>Plan-block expiry (T-2 day)</td><td><span class="persona">Tarth</span></td><td>Anticipated — FCM lands before client's last Session in block. Trainer feels professional, prepared.</td></tr>
+      <tr><td>Owner morning glance</td><td><span class="persona">Lannister</span></td><td>Confident overview — revenue + branches + leaderboard + churn-risk in one screen. The chain runs without daily presence.</td></tr>
+      <tr><td>Trainer-AI override (rejection)</td><td><span class="persona">Tarth</span></td><td>Heard — long-press override doesn't argue, doesn't re-prompt. AI learns. Trainer stays in command.</td></tr>
+      <tr><td>Skipped Set (abandonment)</td><td><span class="persona">Tarly</span></td><td>Non-judged — "Why?" reason capture is offered, not demanded. No guilt UX.</td></tr>
+      <tr><td>PT relationship ending</td><td><span class="persona">Tarly + Tarth</span></td><td>Honoured — prior trainer keeps read-only history; client carries plan + AI history forward with consent. Dignified close.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="sec3">
+  <h2><span class="num">§3</span> Micro-Emotions — engineer for vs avoid</h2>
+  <p class="lede">The small feelings that decide whether the product feels considered or careless.</p>
+  <div class="two-col">
+    <div class="col-card good">
+      <h3>✓ Engineer for</h3>
+      <ul>
+        <li><strong>Confidence over confusion</strong> — every screen answers "what next?" in ≤ 200 ms of scan. No empty-state fog.</li>
+        <li><strong>Trust over skepticism</strong> — orb truth principle. Every state has a named signal. Never silently swallow a write.</li>
+        <li><strong>Accomplishment over frustration</strong> — failure modes are designed (offline, AI cold path, conflict). Set-save shows committed state.</li>
+        <li><strong>Dignity over shame</strong> — skipped Sets, missed PRs, low-adherence weeks never moralised. Plain data, peach-tinted shadows.</li>
+        <li><strong>Belonging vs solitude (path-aware)</strong> — PT-attached: Connection Orb visible. Solo: streak heatmap + curated template marketplace.</li>
+        <li><strong>Restraint over stimulation</strong> — cinematic amber, not gaming neon. PR cinematic ≤ 1.5 s. No infinite feeds.</li>
+      </ul>
+    </div>
+    <div class="col-card avoid">
+      <h3>✕ Actively avoid</h3>
+      <ul>
+        <li><strong>Notification fatigue</strong> — FCM cadence tuned (T-2 + T-0 only on expiry; no daily nags).</li>
+        <li><strong>Gamification ick</strong> — no streak-loss anxiety, no XP bars, no leaderboard shaming.</li>
+        <li><strong>Surveillance feel (PT-attached)</strong> — trainer cursor presence is information, not monitoring. Debounced cursor render.</li>
+        <li><strong>Tech-debt visibility</strong> — offline state shown calmly, never as red alert.</li>
+        <li><strong>Performative celebration</strong> — no celebration animation fires without a server-confirmed event (per Principle 3 of §5).</li>
+        <li><strong>Beginner shaming</strong> — Tarly's first Sets are dignified by the same UI as Greyjoy's PR — load + reps + RIR. No "newbie" branding.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="sec4">
+  <h2><span class="num">§4</span> Design Implications — emotion → UX choice</h2>
+  <p class="lede">Eight emotion-to-UX mappings. Each is a specific design move, not a vibe.</p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:28%;">Emotion</th>
+        <th>UX choice</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Quiet competence</strong></td><td>Equipment-Aware Logger as gesture vocabulary; minimal chrome on Set rows; cinematic typography (Geist) with restraint.</td></tr>
+      <tr><td><strong>Earned trust</strong></td><td>Orb states tied to named signals (Core Principle 4); Set-row provenance avatar + timestamp; offline state explicit; idempotent writes by client UUID.</td></tr>
+      <tr><td><strong>Coached presence</strong></td><td>Connection Orb in Active Session header; prescribed-vs-actual divergence tint; trainer cursor presence with debounce so it doesn't feel jittery / monitored.</td></tr>
+      <tr><td><strong>Solitary focus</strong></td><td>Solo home gives a single Today's Plan card; no live elements except Recovery Orb; AI ghost is opt-in tier-2 v1; no fake-social hooks.</td></tr>
+      <tr><td><strong>Dignity</strong></td><td>Skip-Set reason capture optional, never required; no guilt copy on missed Sessions; ACWR alert phrased "consider deload," never "you're overtraining."</td></tr>
+      <tr><td><strong>Earned celebration</strong></td><td>PR cinematic ≤ 1.5 s; dismissible; never on optimistic write; restraint over confetti; watermark default-on but togglable.</td></tr>
+      <tr><td><strong>Recognition on return</strong></td><td>Home greets with last-Set summary; weekly streak heatmap; Recovery Orb state delta vs prior week; no day-zero reset feel after first Session.</td></tr>
+      <tr><td><strong>Confidence in choice (trainer browse)</strong></td><td>Three independent rating dimensions (Experience / Feedback / Progress) instead of one star score; verified cert badge prominent; response-time stat shown.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="sec5">
+  <h2><span class="num">§5</span> Emotional Design Principles</h2>
+  <p class="lede">Five guiding rules for emotional posture. Each is testable in design crit.</p>
+  <div class="num-list">
+    <div class="num-card"><span class="badge">1</span><span class="title">Earned over celebrated.</span><div class="desc">No animation, badge, or moment fires without something the user did + the server confirmed. (Already in §5 Core Experience as Principle 3; restated here as emotional posture.)</div></div>
+    <div class="num-card"><span class="badge">2</span><span class="title">Calm under degradation.</span><div class="desc">Offline, network drop, AI cold path, conflict — every degraded state has a calm, named, visible UX. <strong>Anxiety is a bug.</strong></div></div>
+    <div class="num-card"><span class="badge">3</span><span class="title">Dignity in failure.</span><div class="desc">Missed Set, skipped Session, low adherence, AI override — never moralised. Plain data + neutral phrasing.</div></div>
+    <div class="num-card"><span class="badge">4</span><span class="title">Presence without surveillance.</span><div class="desc">PT-attached users feel accompanied; trainer cursor is information, not monitoring. Solo users feel focused; no fake-social hooks.</div></div>
+    <div class="num-card"><span class="badge">5</span><span class="title">Recognition over reset.</span><div class="desc">Returning users see continuity (last-Set, weekly heatmap, recovery state). New-day-zero feel is forbidden after the first Session.</div></div>
+  </div>
+</section>
+
+<footer class="cta">
+  <p><strong>What now?</strong> Choose in chat:</p>
+  <div class="menu-row">
+    <div class="opt"><span class="key">A</span><strong>Advanced Elicitation</strong> — Socratic / pre-mortem on emotional design choices before saving.</div>
+    <div class="opt"><span class="key">P</span><strong>Party Mode</strong> — multi-agent critique of emotional posture (Sally + John + Winston + Mary).</div>
+    <div class="opt"><span class="key">C</span><strong>Continue</strong> — append to <code>ux-design-specification.md</code> and advance to step-05 (Inspiration Analysis).</div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

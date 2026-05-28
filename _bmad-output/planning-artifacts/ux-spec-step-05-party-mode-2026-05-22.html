@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 05 Party-Mode Critique · 2026-05-22</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --gc-shadow-soft: 0 2px 8px rgba(0,0,0,0.4), 0 12px 28px -8px rgba(255,106,0,0.10);
+      --gc-shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(255,106,0,0.12);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg);
+    color: var(--gc-text);
+    line-height: 1.65;
+    font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page {
+    display: flex; flex-direction: column; gap: 4px;
+    padding-bottom: 24px; margin-bottom: 30px;
+    border-bottom: 1px solid var(--gc-border);
+  }
+  header.page .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 11px; font-weight: 600;
+    color: var(--vis-amber-primary);
+  }
+  header.page h1 {
+    margin: 6px 0 2px;
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract {
+    margin-top: 14px;
+    font-size: 14.5px; color: var(--gc-text-muted);
+    max-width: 760px;
+  }
+  .warn {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: rgba(255,106,0,0.06);
+    border: 1px solid var(--vis-amber-primary);
+    border-radius: 10px;
+    font-size: 13.5px;
+    color: var(--gc-text);
+  }
+  .warn strong { color: var(--vis-amber-primary); }
+
+  h2 { margin: 36px 0 12px; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
+  h3 { margin: 18px 0 8px; font-size: 15.5px; font-weight: 600; }
+
+  .decision-grid {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    margin-top: 14px;
+  }
+  .decision {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    box-shadow: var(--gc-shadow-card);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .decision.recommended {
+    border-color: var(--vis-amber-primary);
+    box-shadow:
+      0 0 0 1px var(--vis-amber-primary) inset,
+      0 0 20px rgba(255,106,0,0.10),
+      var(--gc-shadow-card);
+  }
+  .decision .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    align-self: flex-start;
+    background: rgba(224,99,19,0.10);
+    color: var(--vis-amber-primary);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .decision h3 { margin: 0; font-size: 16px; }
+  .decision .body { color: var(--gc-text-muted); font-size: 13.5px; line-height: 1.55; }
+  .decision .label { font-size: 12.5px; font-weight: 600; color: var(--vis-amber-primary); margin-top: 2px; }
+
+  .consensus {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    padding: 18px 22px;
+    box-shadow: var(--gc-shadow-card);
+    margin-top: 12px;
+  }
+  .consensus h3 { margin-top: 8px; margin-bottom: 4px; color: var(--vis-amber-primary); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .consensus ul { margin: 4px 0 12px; padding-left: 22px; }
+  .consensus li { margin: 4px 0; }
+  .tension {
+    background: linear-gradient(180deg, rgba(255,106,0,0.05), rgba(255,106,0,0));
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-primary);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 14px;
+  }
+  .tension strong { color: var(--vis-amber-primary); }
+
+  .agent {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 14px;
+    padding: 4px 18px;
+    margin: 10px 0;
+    box-shadow: var(--gc-shadow-soft);
+  }
+  .agent summary {
+    cursor: pointer; list-style: none;
+    padding: 14px 0;
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 600; font-size: 15.5px;
+  }
+  .agent summary::-webkit-details-marker { display: none; }
+  .agent summary::after {
+    content: "▾";
+    margin-left: auto;
+    color: var(--gc-text-muted);
+    transition: transform 0.2s ease;
+  }
+  .agent[open] summary::after { transform: rotate(180deg); }
+  .agent .avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--vis-amber-highlight) 0%, transparent 20%),
+                radial-gradient(circle at 50% 70%, var(--vis-amber-primary) 0%, var(--vis-amber-deep) 60%, var(--vis-amber-shadow) 100%);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    box-shadow: 0 0 12px rgba(255, 106, 0, 0.25);
+    flex-shrink: 0;
+  }
+  .agent.missing summary {
+    color: var(--gc-text-muted);
+    font-weight: 500;
+  }
+  .agent.missing .avatar { opacity: 0.4; }
+  .agent .role { font-weight: 400; font-size: 12.5px; color: var(--gc-text-muted); margin-left: 2px; }
+  .agent-body { padding: 0 0 16px; }
+  .agent-body ul { padding-left: 22px; }
+  .agent-body li { margin: 6px 0; }
+  .agent-body strong { color: var(--vis-amber-primary); }
+  .agent-body p { margin: 8px 0; }
+
+  table.edits { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+  table.edits th, table.edits td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  table.edits th {
+    font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--gc-text-muted);
+    border-bottom: 1px solid var(--vis-amber-primary);
+  }
+  table.edits td.action {
+    width: 92px;
+    font-weight: 600;
+    color: var(--vis-amber-primary);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  table.edits tbody tr:hover { background: rgba(255,106,0,0.04); }
+  table.edits .target {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    color: var(--vis-amber-primary);
+    background: rgba(196,81,0,0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-right: 6px;
+  }
+
+  .agree-row {
+    display: inline-flex; gap: 4px;
+    background: rgba(224,99,19,0.10);
+    color: var(--vis-amber-primary);
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 11px; font-weight: 600;
+  }
+
+  footer.cta {
+    margin-top: 40px;
+    padding: 20px 22px;
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: rgba(196,81,0,0.08);
+    color: var(--vis-amber-primary);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 05 · Party-Mode Critique</div>
+  <h1>Critique of Inspiration & Pattern Strategy</h1>
+  <div class="meta">2026-05-22 · Author: Gauravprakashshinde · Attendees: 🎨 Sally · 📋 John · 🏗️ Winston · ⚠️ Mary (session limit)</div>
+  <div class="abstract">
+    Three of four agents reviewed the step-05 Inspiration draft. Strong consensus on three big moves: defer the user-themable accent system to v1.1 (with token plumbing day 1), prune the Pattern Transfer table to FR-anchored rows only, and rebalance inspirations (demote Bevel, elevate Motra, add Strong + Linear/Figma multiplayer).
+  </div>
+  <div class="warn">
+    <strong>⚠️ Mary unavailable.</strong> Hit session limit (resets 3 PM Asia/Calcutta). Strategic-positioning lens is missing from this round. Sally, John, Winston cover UX / PM / architecture angles; Mary's competitive-dilution check on Bevel + Motra borrowing is not in this critique. Can re-spawn later if needed.
+  </div>
+</header>
+
+<section>
+  <h2>Pick one to proceed</h2>
+  <div class="decision-grid">
+
+    <div class="decision recommended">
+      <span class="pill">★ Recommended</span>
+      <div class="label">Option 1 · Full apply</div>
+      <h3>Apply all consensus + defer themable accent to v1.1</h3>
+      <div class="body">
+        Defer the 6-preset accent UI to v1.1 but ship the two-layer token architecture day 1 (so v1.1 lands without re-architecture). Cut accent from preview to a "design-system reservation" note. Prune Pattern Transfer to FR-anchored rows. Add Strong (compact set rows, ambient rest timer, thumb-zone) and Linear/Figma multiplayer (SM-3 Co-Edit). Demote Bevel to "AI-confidence pattern only." Elevate Motra to #1. Add 2 anti-patterns (Strava feed gravity, Whoop metric overload). Fix Mindbody principle citation. Specify Apple Health interaction (pinch / tap-callout / swipe) — not just chart style.
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 2 · Consensus minus deferral</div>
+      <h3>Apply all consensus BUT keep accent UI in v1</h3>
+      <div class="body">
+        All other consensus edits. Keep the user-themable accent UI in v1 with hard constraints: ship Layer-A/Layer-B token system + accent on non-text affordances only + WCAG contrast CI gate + 4 presets (drop sage + plum per Sally). Requires a stated FR + SM target per John. Accept the v1 test-matrix burden.
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 3 · Cherry-pick</div>
+      <h3>You name which recs to apply</h3>
+      <div class="body">
+        Walk through the 14 concrete edits below and mark in/out. Precise but slower. Useful if Option 1/2 don't quite fit.
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="label">Option 4 · Ignore feedback</div>
+      <h3>Save Inspiration as drafted (6 presets, current Bevel framing)</h3>
+      <div class="body">
+        Commit the preview unchanged, advance to step-06 (Design System). Party-mode session logged in this HTML. Mary critique can be added later if needed.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>Where the three agents agreed</h2>
+  <div class="consensus">
+    <h3>Strong consensus</h3>
+    <ul>
+      <li><strong>Defer the themable accent UI to v1.1.</strong> John: no FR-coverage, no SM lift, real v1 test-matrix burden. Winston: needs Layer A/B token system + WCAG contrast CI gate before any preset ships. Sally: 6 presets spans 270° of the hue wheel — sage / plum will fight the locked amber orb. Compromise: <strong>ship the two-layer token architecture day 1</strong> so v1.1 lands without re-architecture; defer preset UI.</li>
+      <li><strong>Two-layer token architecture (Winston).</strong> Layer A = raw (<code>--vis-amber-primary</code>, <code>--preset-ember-500</code>); never consumed by components. Layer B = semantic (<code>--accent</code>, <code>--accent-on</code>, <code>--accent-muted</code>, <code>--accent-emphasis</code>, <code>--brand-locked</code>); what components reference. Switching preset rewrites Layer B → Layer A. Shared <code>tokens.ts</code> as workspace package consumed by RN ThemeProvider + Angular CSS variables.</li>
+      <li><strong>Accent on non-text affordances only.</strong> Fills, icons ≥ 24 px, chart strokes, focus rings. Text uses <code>--accent-on</code> precomputed per preset, validated at token-build time with a contrast script (fail CI if &lt; 4.5:1). No preset touches body text colour. Hard architectural constraint.</li>
+      <li><strong>Prune Pattern Transfer to FR-anchored rows.</strong> John: every row must answer "Which FR? Which SM?" — kill anything blank. Sally: "Calm holistic dashboard" too vague; "Trainerize ref-to-beat" is a competitive note not a pattern; "Line-chart rendering" duplicates the Apple Health row. Result: 10 rows → ~6 FR-anchored rows.</li>
+      <li><strong>Demote Bevel.</strong> Sally: holistic dashboard + biological-age earned-metric don't map; only the AI confidence display transfers. Winston: even the confidence chip should defer to v1.1 because calibrated probability + dismissal feedback loop needs new FR coverage. Recommendation: keep Bevel on the inspiration list but scope strictly to "AI suggestion confidence pattern (reserved for v1.1)."</li>
+      <li><strong>Elevate Motra to #1.</strong> Sally: strongest fit for Vis context. Compact Set row with inline RIR/RPE is direct adoption for the Active Session view.</li>
+      <li><strong>Add Strong app to inspiration list (Sally).</strong> Gold standard for compact set rows, rest-timer-as-ambient, and one-handed thumb operation. Skipping it means re-deriving the same patterns worse.</li>
+      <li><strong>Add Linear / Figma multiplayer cursors (John, Sally).</strong> Directly serves SM-3 Co-Edit. Real-time presence model + cursor pattern is exactly what the Connection Orb needs visual ancestry for.</li>
+      <li><strong>Specify Apple Health interaction, not just chart style (Sally).</strong> What transfers: pinch-to-zoom timeline, tap-a-point-for-callout, swipe between metrics on the same axis. Without this, the row is decoration.</li>
+      <li><strong>Add two anti-patterns (Sally, John).</strong> <em>Strava-style social feed / leaderboards</em> — Vis is private 1:1 coaching, not feed; trips SM-5 if PR-share feels like leaderboard chore. <em>Whoop metric overload on home</em> — trips SM-2 D7 by burying the one number that matters.</li>
+      <li><strong>Fix Mindbody/Glofox principle citation (Sally).</strong> Currently cites "cross-app brand parity" but the real violation is Emotional Principle #4 (Presence without surveillance — dense ops UI = surveillance posture) plus Principle #1 (Earned over celebrated — admin chrome over member story).</li>
+      <li><strong>Motra recovery shading needs a backend signal (Winston).</strong> <code>recovery_score</code> (0–100) currently has no FR. Options: (a) compute client-side from HealthKit / Health Connect read-only HRV + sleep already in scope, or (b) add <code>GET /recovery</code> endpoint. Flag to PM before shipping the visual.</li>
+    </ul>
+  </div>
+
+  <div class="tension">
+    <strong>Tension #1 · User wants themable accent v1; all three agents say defer.</strong>
+    <p style="margin: 6px 0 0;">User explicitly requested the accent customization in v1 ("the highlight color can defaulted to tangerine, deep amber but user would be able to change it"). John, Winston, Sally all push defer-to-v1.1 with token plumbing only in v1. <strong>Option 1</strong> = defer per agents. <strong>Option 2</strong> = honour user's stated v1 intent, ship 4 presets (drop sage/plum) with token + contrast CI constraints. Your call.</p>
+  </div>
+
+  <div class="tension">
+    <strong>Tension #2 · Replace "own prototype" inspiration card?</strong>
+    <p style="margin: 6px 0 0;">John says swap card 4 — "own prototype" doesn't move an SM, replace with something that serves SM-3 (Linear/Figma multiplayer). Sally agrees on adding Linear/Figma but treats the prototype card as visual-identity locked-in (not really an "inspiration"). <strong>Compromise:</strong> remove the prototype from the inspiration list (move to a separate "Locked-in visual identity" note in step-06), add Linear/Figma multiplayer cursor as the SM-3-serving inspiration.</p>
+  </div>
+</section>
+
+<section>
+  <h2>14 concrete edits proposed (cross-agent)</h2>
+  <table class="edits">
+    <thead>
+      <tr>
+        <th>Action</th>
+        <th>Where</th>
+        <th>What</th>
+        <th>Agreed by</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="action">Defer</td>
+        <td><span class="target">§4 accent</span></td>
+        <td>User-themable accent presets UI → v1.1. Ship Layer A + B token architecture day 1 only. WCAG contrast CI gate as precondition.</td>
+        <td><span class="agree-row">Sally · John · Winston</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§4 tokens</span></td>
+        <td>Two-layer token system: Layer A raw (<code>--vis-amber-*</code>, <code>--preset-*</code>); Layer B semantic (<code>--accent</code>, <code>--accent-on</code>, <code>--accent-muted</code>, <code>--accent-emphasis</code>, <code>--brand-locked</code>). Shared <code>tokens.ts</code> workspace package, consumed by RN ThemeProvider + Angular CSS vars.</td>
+        <td><span class="agree-row">Winston</span></td>
+      </tr>
+      <tr>
+        <td class="action">Constrain</td>
+        <td><span class="target">§4 accent</span></td>
+        <td>Accent applies to non-text affordances only (fills, icons ≥ 24 px, chart strokes, focus rings). Body text uses <code>--accent-on</code> precomputed; CI fails if &lt; 4.5:1 contrast.</td>
+        <td><span class="agree-row">Winston</span></td>
+      </tr>
+      <tr>
+        <td class="action">Cut</td>
+        <td><span class="target">§4 accent</span></td>
+        <td>Reduce 6 presets to 4: keep Tangerine (default), Ember red, Rust gold, Slate teal. Drop Sage green, Dusk plum (270° hue spread fights locked amber orb).</td>
+        <td><span class="agree-row">Sally</span></td>
+      </tr>
+      <tr>
+        <td class="action">Demote</td>
+        <td><span class="target">§1</span></td>
+        <td>Bevel → "AI suggestion confidence pattern only" (reserved for v1.1). Drop holistic dashboard + biological-age-metric takeaways (don't map to Vis context).</td>
+        <td><span class="agree-row">Sally · Winston</span></td>
+      </tr>
+      <tr>
+        <td class="action">Promote</td>
+        <td><span class="target">§1</span></td>
+        <td>Motra to inspiration #1 — strongest fit for Vis (compact Set row, inline RIR/RPE, exercise-history-first home).</td>
+        <td><span class="agree-row">Sally</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§1</span></td>
+        <td>Strong app — compact set rows, rest-timer-as-ambient, one-handed thumb operation during a working set. Gold standard for FR-8 logger.</td>
+        <td><span class="agree-row">Sally</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add / Swap</td>
+        <td><span class="target">§1</span></td>
+        <td>Linear / Figma multiplayer cursor pattern — directly serves SM-3 (Co-Edit ≥ 25%). Visual ancestor for Connection Orb + trainer-cursor presence. Swap "own prototype" card to make room (move prototype to a separate "Locked-in visual identity" note).</td>
+        <td><span class="agree-row">Sally · John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Specify</td>
+        <td><span class="target">§2</span></td>
+        <td>Apple Health row — name the interaction (pinch-to-zoom timeline, tap-for-callout, swipe between metrics on same axis), not just "line-chart style."</td>
+        <td><span class="agree-row">Sally</span></td>
+      </tr>
+      <tr>
+        <td class="action">Cut</td>
+        <td><span class="target">§2</span></td>
+        <td>Hollow rows: "Calm holistic dashboard" (vague), "Trainerize ref-to-beat" (competitive note, not pattern), "Line-chart rendering" (duplicates Apple Health). Result: 10 → ~6 FR-anchored rows.</td>
+        <td><span class="agree-row">Sally · John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Constrain</td>
+        <td><span class="target">§2</span></td>
+        <td>Audit every row: "Which FR does this pattern serve? Which SM does the FR move?" Kill rows where either column is blank.</td>
+        <td><span class="agree-row">John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§3</span></td>
+        <td>Anti-pattern: Strava-style social feed / leaderboards. Vis is private 1:1 coaching; feed gravity trips SM-5 by making PR-share feel like leaderboard chore.</td>
+        <td><span class="agree-row">Sally · John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Add</td>
+        <td><span class="target">§3</span></td>
+        <td>Anti-pattern: Whoop-style metric overload on home. Buries the one number that matters; trips SM-2 D7.</td>
+        <td><span class="agree-row">John</span></td>
+      </tr>
+      <tr>
+        <td class="action">Fix</td>
+        <td><span class="target">§3</span></td>
+        <td>Mindbody/Glofox principle citation. Currently "cross-app brand parity." Real violations: Emotional Principle #4 (Presence without surveillance — dense ops UI is surveillance posture) + Principle #1 (Earned over celebrated — admin chrome over member story).</td>
+        <td><span class="agree-row">Sally</span></td>
+      </tr>
+      <tr>
+        <td class="action">Flag</td>
+        <td><span class="target">§2 Motra</span></td>
+        <td>Recovery shading needs <code>recovery_score</code> (0–100) signal. No FR currently. Options: (a) client-side from HealthKit / Health Connect HRV + sleep, or (b) new <code>GET /recovery</code> endpoint. Decision needed before shipping the visual.</td>
+        <td><span class="agree-row">Winston</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Each agent's full take</h2>
+
+  <details class="agent">
+    <summary>
+      <span class="avatar">🎨</span>
+      Sally — UX Designer
+      <span class="role">interaction grammar · gesture · pattern transfer</span>
+    </summary>
+    <div class="agent-body">
+      <p><strong>1. Four inspirations — two weak.</strong> Bevel is mis-cast: only the AI confidence display transfers; holistic dashboard + biological-age don't map. Demote to "AI-suggestion confidence pattern only." Apple Health is right but underspecified — name the interaction (pinch-zoom timeline, tap-for-callout, swipe between metrics). Motra is the strongest, should be #1, not #3. Missing: Strong app (gold-standard compact set rows, ambient rest timer, one-handed thumb operation). Add it. Also add Linear for the workspace switcher / branch-scope chip lineage.</p>
+      <p><strong>2. Pattern transfers — three hollow.</strong> "Calm holistic dashboard" — vague. Cut or rename to "single hero metric + 2 supporting tiles, no grid-of-12." "Trainerize ref-to-beat" — competitive note, not a UX pattern; move to anti-pattern or strategy section. "Line-chart rendering" — duplicates Apple Health row; merge.</p>
+      <p><strong>3. Anti-pattern citations.</strong> MyFitnessPal → Dignity ✅. Mindbody/Glofox → cross-app brand parity ⚠️ weak; real violation is Presence without surveillance + Earned over celebrated. Bodyspace → Presence without surveillance ✅. Fitbod → Earned over celebrated ✅. Missing: Strava social pressure / leaderboards — call it out before someone pitches a feed.</p>
+      <p><strong>4. Six accent presets — too many, hue spread incoherent.</strong> 270° of color wheel; orb stays amber while user picks plum is two brands fighting. 4 presets in warm-to-neutral range — Tangerine, Ember, Rust gold, Slate teal. Drop sage and plum. Cardinality 4 also fits a single row of swatches in Profile without wrapping.</p>
+    </div>
+  </details>
+
+  <details class="agent">
+    <summary>
+      <span class="avatar">📋</span>
+      John — Product Manager
+      <span class="role">PRD intent · SM coverage · scope discipline</span>
+    </summary>
+    <div class="agent-body">
+      <p><strong>1. Inspiration → SM mapping.</strong> Bevel ties to SM-2 + SM-6 (one number that matters → D7 + onboarding). Apple Health ties to SM-1 + SM-7 (hierarchy → trainer morning sweep). Motra ties to SM-5 (PR celebration → share trigger). <em>"Own prototype" doesn't move a number — replace with Linear/Figma multiplayer to serve SM-3 Co-Edit, currently under-served.</em></p>
+      <p><strong>2. User-themable accent — defer to v1.1.</strong> Scope creep, no SM lift. FR coverage: zero. 6 presets × light/dark × accessibility = real test burden. Conflicts with PRD's tone-locked brand surface claim. <em>Defer behind a feature flag; if user insists on v1, demand a named FR (FR-Personalization-01) + target SM. No FR, no ship.</em></p>
+      <p><strong>3. Pattern Transfer Table — 10 is 2 too many.</strong> Audit every row: which FR + which SM? Blank either column → cut.</p>
+      <p><strong>4. Anti-patterns — add 2.</strong> Strava social-feed gravity (SM-5 trip). Whoop metric overload on home (SM-2 D7 trip). Name them so nobody pitches a feed or a metric-firehose dashboard later.</p>
+    </div>
+  </details>
+
+  <details class="agent">
+    <summary>
+      <span class="avatar">🏗️</span>
+      Winston — System Architect
+      <span class="role">tokens · theming · WCAG · RN×Angular parity</span>
+    </summary>
+    <div class="agent-body">
+      <p><strong>1. Accent across RN + Angular — two-layer token system.</strong> Layer A raw (<code>--vis-amber-primary</code>, <code>--preset-sage-500</code>); never consumed by components. Layer B semantic (<code>--accent</code>, <code>--accent-on</code>, <code>--accent-muted</code>, <code>--accent-emphasis</code>, <code>--brand-locked</code>); what components reference. Switching preset rewrites Layer B → Layer A. Angular: <code>:root[data-accent="sage"]</code>. RN: ThemeProvider + <code>useTheme()</code>; shared <code>tokens.ts</code> workspace package.</p>
+      <p><strong>2. WCAG AA is the real risk.</strong> Sage green and slate teal on warm ivory will fail 4.5:1 body text; dusk plum on dark fails similarly. <em>Accent on non-text affordances only (fills, icons ≥ 24 px, chart strokes, focus rings). Body text uses <code>--accent-on</code> precomputed; CI fails if &lt; 4.5:1.</em> Hard architectural constraint — write into PRD now.</p>
+      <p><strong>3. Brand-locked naming.</strong> Reserve <code>--vis-amber-*</code> exclusively for locked surfaces (orb, wordmark, PR watermark). User-themable surfaces read <code>--accent</code>. Two namespaces, zero ambiguity. Rename anything currently mixing the two before save.</p>
+      <p><strong>4. Bevel AI confidence display — scope add.</strong> Needs calibrated probability + dismissal feedback loop persisted to backend (no FR yet). Defer chip to v1.1; reserve <code>--ai-confidence-low/med/high</code> tokens so visual lands without re-architecture later.</p>
+      <p><strong>5. Motra recovery shading — needs backend signal.</strong> <code>recovery_score</code> (0–100) has no FR. Either compute client-side from HealthKit/Health Connect HRV + sleep already read-only synced, or add <code>GET /recovery</code> endpoint. Flag to PM before shipping the visual.</p>
+    </div>
+  </details>
+
+  <details class="agent missing">
+    <summary>
+      <span class="avatar">📊</span>
+      Mary — Business Analyst
+      <span class="role">⚠️ session limit hit · resets 3 PM Asia/Calcutta</span>
+    </summary>
+    <div class="agent-body">
+      <p>Mary's strategic-positioning lens was not available this round. Specifically uncovered: whether borrowing from two direct Cluster-A competitors (Bevel + Motra) dilutes Vis's positioning, and whether the 4-vs-6 accent preset spread maps to user-segment intent or is decorative variation.</p>
+      <p>Can re-spawn after 3 PM if competitive-defensibility critique is needed before step-06.</p>
+    </div>
+  </details>
+</section>
+
+<footer class="cta">
+  <strong>Next.</strong> Return to chat and pick Option 1 (recommended), 2, 3, or 4. Option 1 = apply all consensus + defer themable accent to v1.1 (with token plumbing day 1). Once chosen, the main thread rewrites Inspiration accordingly and saves to <code>ux-design-specification.md</code>, then loads step-06 (Design System).
+</footer>
+
+</div>
+</body>
+</html>

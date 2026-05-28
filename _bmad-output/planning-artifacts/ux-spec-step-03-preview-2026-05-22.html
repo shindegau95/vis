@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 03 preview · Core User Experience · 2026-05-22</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-ember: #F26200;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --vis-amber-glow: #FF6A00;
+    --vis-cream: #FFF3E8;
+    --vis-smoke: #EFE1D5;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-ember: #D9590B;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --vis-cream: #1A1310;
+      --vis-smoke: #2A1812;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --gc-shadow-soft: 0 2px 8px rgba(0,0,0,0.4), 0 12px 28px -8px rgba(255,106,0,0.10);
+      --gc-shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(255,106,0,0.12);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg);
+    color: var(--gc-text);
+    line-height: 1.65;
+    font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page {
+    display: flex; flex-direction: column; gap: 4px;
+    padding-bottom: 24px; margin-bottom: 28px;
+    border-bottom: 1px solid var(--gc-border);
+  }
+  header.page .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 11px; font-weight: 600;
+    color: var(--vis-amber-primary);
+  }
+  header.page h1 {
+    margin: 6px 0 2px;
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract {
+    margin-top: 12px;
+    font-size: 14.5px; color: var(--gc-text-muted);
+    max-width: 760px;
+  }
+
+  /* TOC */
+  nav.toc {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    box-shadow: var(--gc-shadow-card);
+    margin-bottom: 28px;
+    font-size: 13.5px;
+  }
+  nav.toc ol { margin: 6px 0 0; padding-left: 22px; }
+  nav.toc li { margin: 3px 0; }
+  nav.toc a { color: var(--gc-text); text-decoration: none; }
+  nav.toc a:hover { color: var(--vis-amber-primary); }
+  nav.toc .label {
+    font-weight: 600; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--vis-amber-primary);
+  }
+
+  /* Sections */
+  section { margin-top: 36px; }
+  section > h2 {
+    margin: 0 0 8px;
+    font-size: 21px; font-weight: 600;
+    letter-spacing: -0.01em;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  section > h2 .num {
+    color: var(--vis-amber-primary);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  section > .lede {
+    color: var(--gc-text-muted);
+    font-size: 14.5px;
+    margin: 0 0 14px;
+  }
+  .card {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    box-shadow: var(--gc-shadow-card);
+  }
+  .card + .card { margin-top: 14px; }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  strong { color: var(--vis-amber-primary); }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--gc-border);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--gc-text-muted);
+    border-bottom: 1px solid var(--vis-amber-primary);
+  }
+  tbody tr:hover { background: rgba(255,106,0,0.04); }
+
+  /* Numbered cards (success moments, principles) */
+  .num-list { display: grid; gap: 10px; }
+  .num-card {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-primary);
+    border-radius: 10px;
+    padding: 12px 16px;
+    box-shadow: var(--gc-shadow-soft);
+  }
+  .num-card .badge {
+    display: inline-flex; align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--vis-amber-primary);
+    color: white;
+    font-size: 12px; font-weight: 600;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .num-card .title { font-weight: 600; font-size: 15px; }
+  .num-card .desc { color: var(--gc-text-muted); font-size: 14px; margin-top: 4px; }
+
+  .pill {
+    display: inline-flex; align-items: center;
+    background: rgba(224,99,19,0.10);
+    color: var(--vis-amber-primary);
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-left: 8px;
+  }
+
+  /* CTA */
+  footer.cta {
+    margin-top: 40px;
+    padding: 20px 22px;
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 16px;
+    box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  .menu-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .menu-row .opt {
+    flex: 1 1 200px;
+    background: var(--gc-bg);
+    border: 1px solid var(--gc-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+  }
+  .menu-row .opt .key {
+    display: inline-block;
+    width: 22px; height: 22px;
+    background: var(--vis-amber-primary);
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 22px;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: rgba(196,81,0,0.08); color: var(--vis-amber-primary); padding: 1px 6px; border-radius: 4px; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 03 preview</div>
+  <h1>Core User Experience — proposed content for ux-design-specification.md</h1>
+  <div class="meta">2026-05-22 · Author: Gauravprakashshinde · Will be appended after [C]</div>
+  <div class="abstract">
+    Five sub-sections defining the heart of the Vis experience: the core loop, platform strategy across three apps, the interactions that must feel effortless, the make-or-break success moments, and five guiding principles every UX decision must respect. Built from the Executive Summary anchors (Equipment-Aware Logger fidelity + real-time co-edit + multi-role context) and the PRD's FRs / SMs.
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="label">In this preview</div>
+  <ol>
+    <li><a href="#sec1">Defining Experience — the core loop</a></li>
+    <li><a href="#sec2">Platform Strategy — 3 apps, 2 paradigms, 1 brand</a></li>
+    <li><a href="#sec3">Effortless Interactions — 9 zero-cognitive-load surfaces</a></li>
+    <li><a href="#sec4">Critical Success Moments — 8 make-or-break moments mapped to SMs</a></li>
+    <li><a href="#sec5">Experience Principles — 5 guiding rules</a></li>
+  </ol>
+</nav>
+
+<section id="sec1">
+  <h2><span class="num">§1</span> Defining Experience</h2>
+  <p class="lede">The single most-frequently-performed action and the loops that surround it.</p>
+  <div class="card">
+    <p><strong>The Vis core loop, expressed once:</strong></p>
+    <p style="font-size: 17px; font-weight: 600; line-height: 1.5;">"Open the app at the equipment → see what's next → log without typing → done."</p>
+    <p>Everything else is a path to or a consequence of this loop. The single most-frequently-performed action is <strong>logging a Set on an Equipment-Aware Logger</strong> (FR-8). The discipline: one touch + one gesture in the common case; never typing in the happy path.</p>
+    <p>Four secondary loops form around the core:</p>
+    <ol>
+      <li><strong>Pre-session loop</strong> (Trainer) — author + assign program → review client adherence + ACWR alerts → coach.</li>
+      <li><strong>Active-session loop</strong> (Trainer + Client) — co-edit Sets in real time, prescribed-vs-actual, warm-up flag, failure intent, assistance tagging.</li>
+      <li><strong>Post-session loop</strong> (Client) — Progression Index update, e1RM graph tick, Recovery Orb refresh, PR detection.</li>
+      <li><strong>Ops loop</strong> (Staff + Owner) — member CSV → PT activation → payment logging → reminder cadence → branch dashboards.</li>
+    </ol>
+    <p>If the Equipment-Aware Logger action breaks, every loop breaks. If it works, the moat compounds.</p>
+  </div>
+</section>
+
+<section id="sec2">
+  <h2><span class="num">§2</span> Platform Strategy</h2>
+  <p class="lede">Three apps, two paradigms (touch-mobile + browser-dense), one brand language.</p>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>App</th>
+          <th>Platform</th>
+          <th>Primary input</th>
+          <th>User posture</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Client App</strong></td>
+          <td>React Native (iOS + Android)</td>
+          <td>touch, single-hand thumb arc</td>
+          <td>mid-session, sweaty, distracted, sometimes offline</td>
+        </tr>
+        <tr>
+          <td><strong>Trainer App</strong></td>
+          <td>React Native (iOS + Android)</td>
+          <td>touch, two-hand authoring + one-hand in-session</td>
+          <td>high context-switch rate (8 sessions/day)</td>
+        </tr>
+        <tr>
+          <td><strong>Admin Web</strong></td>
+          <td>Angular (browser)</td>
+          <td>mouse/keyboard, dense tables, dashboards</td>
+          <td>seated at front-desk or office; spreadsheet-replacement posture</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 style="font-size: 14px; margin: 14px 0 4px; color: var(--vis-amber-primary); letter-spacing: 0.04em; text-transform: uppercase;">Cross-app constraints</h3>
+    <ul>
+      <li><strong>Offline-first</strong> mandatory on Client + Trainer mobile apps. NFR §7.5 idempotency UUID is the architectural lever; UX renders queued-vs-committed state per Set row.</li>
+      <li><strong>Online-only</strong> acceptable on Admin Web; ops surfaces don't need disconnection survival.</li>
+      <li><strong>WebSocket transport</strong> for Co-Edit Sessions on mobile; polling fallback at 10 s.</li>
+      <li><strong>Real-time UI on Admin Web</strong> not required v1 — dashboards refresh on page load or explicit reload.</li>
+      <li><strong>Light + dark theme parity</strong> v1 across all three apps (quality bar, not moat).</li>
+      <li><strong>WCAG 2.1 AA</strong> on Admin Web; mobile equivalent = VoiceOver/TalkBack labels on every interactive element + 44×44 pt hit targets + reduce-motion/reduce-transparency fallback (NFR §7.7).</li>
+      <li><strong>Cold start ≤ 2.0 s</strong> mid-tier Android (Pixel 6a / Galaxy A54). Set-save → server commit <code>p95 ≤ 250 ms</code>.</li>
+      <li><strong>i18n</strong> structured day 1 (English-only translation v1, kg/lb + m/ft toggles, per-locale dates, time zones, INR-ready data model, RTL stub).</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec3">
+  <h2><span class="num">§3</span> Effortless Interactions</h2>
+  <p class="lede">Where the user feels zero cognitive load. Nine surfaces.</p>
+  <div class="num-list">
+    <div class="num-card"><span class="badge">1</span><span class="title">Logging a Set on the equipment in front of you.</span><div class="desc">Tap exercise → logger pre-loads last-used load → adjust by gesture (drag pin, snap plate, slide slider) → tap Done. No typing. No remembering last week's weight. Voice fallback for trainer in-session if hands occupied.</div></div>
+    <div class="num-card"><span class="badge">2</span><span class="title">Knowing what to do next.</span><div class="desc">Today's Plan card on Client home. Today's schedule on Trainer home. No menus. The next session is always one tap away.</div></div>
+    <div class="num-card"><span class="badge">3</span><span class="title">Switching identity context.</span><div class="desc">Trainer multi-brand: tap branch chip in nav → identity swaps. Owner cross-branch: same chip → drill-down or aggregate. Zero menu-diving.</div></div>
+    <div class="num-card"><span class="badge">4</span><span class="title">Reflecting prescribed-vs-actual.</span><div class="desc">Trainer types prescribed; client lifts actual; UI shows both with a divergence cue (subtle tint). Neither party reformats anything.</div></div>
+    <div class="num-card"><span class="badge">5</span><span class="title">Reading recovery status.</span><div class="desc">Recovery Orb on home colour-codes per-muscle readiness from last session — green / amber / red — at a glance.</div></div>
+    <div class="num-card"><span class="badge">6</span><span class="title">AI suggestion acceptance.</span><div class="desc">Ghost overlay shows next-prescribed load on the logger. One tap = accept. Long-press = override. <code>ai_locked</code> autopilot toggle removes the override surface for clients who want full automation.</div></div>
+    <div class="num-card"><span class="badge">7</span><span class="title">Detecting a PR.</span><div class="desc">Set save → PR detection runs server-side → cinematic moment screen fires automatically. User doesn't compute or trigger anything.</div></div>
+    <div class="num-card"><span class="badge">8</span><span class="title">Reconciling offline writes.</span><div class="desc">Connection Orb shows offline state without alarm. Reconnect = 5 s drain, no user intervention.</div></div>
+    <div class="num-card"><span class="badge">9</span><span class="title">Onboarding via QR (gym path).</span><div class="desc">Front-desk QR → sign in → roster matched → trainer browse → first session pre-loaded. No manual data entry beyond the Questionnaire.</div></div>
+  </div>
+</section>
+
+<section id="sec4">
+  <h2><span class="num">§4</span> Critical Success Moments</h2>
+  <p class="lede">The make-or-break moments that decide whether the user stays. Each maps to a PRD success metric where it exists.</p>
+  <div class="num-list">
+    <div class="num-card"><span class="badge">1</span><span class="title">First Set logged (D0). <span class="pill">SM-C8</span></span><div class="desc">Onboarding → first exercise → first Logger touch. If this fails (logger > 200 ms, crash, requires typing), the user churns same-day. <strong>SM-C8 watches new-signup-no-log > 50%.</strong></div></div>
+    <div class="num-card"><span class="badge">2</span><span class="title">First Co-Edit moment (UJ-1, D1–D7 PT-attached). <span class="pill">SM-3</span></span><div class="desc">Trainer + Client both editing the same Set on two devices. The first time they see the other side's write appear with the Connection Orb pulsing — that's the moat moment. <strong>SM-3 ≥ 25% of Trainer-led Sessions with bidirectional Co-Edit writes by D90.</strong></div></div>
+    <div class="num-card"><span class="badge">3</span><span class="title">First PR detection (D7–D30). <span class="pill">SM-5</span></span><div class="desc">Working set clears prior e1RM → cinematic Moment screen fires → composer offers share. If it lands well, we get social-channel reach. <strong>SM-5 PR-card share rate ≥ 30% by D180.</strong></div></div>
+    <div class="num-card"><span class="badge">4</span><span class="title">First reconcile after offline drop. <span class="pill">Gates SM-2</span></span><div class="desc">Mid-session WebSocket disconnect → app shows offline banner without alarm → reconnect drains queue → no data lost. "8 sets just vanished" = product trust evaporates. <strong>No SM directly, but it gates SM-2 D7 retention.</strong></div></div>
+    <div class="num-card"><span class="badge">5</span><span class="title">First trainer-AI-accept. <span class="pill">SM-C5</span></span><div class="desc">Trainer sees ghost overlay; one-tap accept feels right; suggestion was sane. If the first AI suggestion is laughable, trainer disables AI for that client forever. <strong>SM-C5 watches trainer-override rate > 70%.</strong></div></div>
+    <div class="num-card"><span class="badge">6</span><span class="title">First PT-renewal decision (D28-ish).</span><div class="desc">PT block approaching expiry; client's Progression Index trending up; trainer's renewal nudge is the moment. Vis success = renewal; failure = client lapses to general member. Drives the underlying business model.</div></div>
+    <div class="num-card"><span class="badge">7</span><span class="title">Branch-switch identity context (Trainer multi-brand).</span><div class="desc">When a Solo+Gym trainer switches from Brand A morning session to Brand B afternoon, the branch-scope chip must obviously reflect the new context. A wrong-scope write here is a data-bug at the interaction layer.</div></div>
+    <div class="num-card"><span class="badge">8</span><span class="title">Owner morning glance (daily). <span class="pill">SM-7 / SM-8</span></span><div class="desc">One screen shows: yesterday's revenue, branch-by-branch active count, trainer leaderboard delta, churn-risk list. If owner has to drill into 7 tabs, the dashboard fails its job.</div></div>
+  </div>
+</section>
+
+<section id="sec5">
+  <h2><span class="num">§5</span> Experience Principles</h2>
+  <p class="lede">Five guiding rules. Every UX decision must serve at least one; if it violates one, it needs a stated reason.</p>
+  <div class="num-list">
+    <div class="num-card"><span class="badge">1</span><span class="title">No typing in the happy path.</span><div class="desc">Numeric keypad exists as fallback only. The default flow uses gesture (drag, snap, slide, tap). Survives even when v2 ships voice input as a Tier-1 modality.</div></div>
+    <div class="num-card"><span class="badge">2</span><span class="title">Visible presence + provenance over silent state.</span><div class="desc">When two parties (Trainer + Client) touch the same data, both see who-did-what immediately. The Connection Orb is the canonical surface. Silent state is a bug.</div></div>
+    <div class="num-card"><span class="badge">3</span><span class="title">Earned over celebrated.</span><div class="desc">PR Moments use cinematic restraint, not gamified confetti. Streaks are heatmaps, not loud badges. The orb dignifies progress; it never patronizes.</div></div>
+    <div class="num-card"><span class="badge">4</span><span class="title">One icon, layered semantic.</span><div class="desc">The orb is the only repeating visual motif across all three apps. Each tension state ties to a backend data source (per Challenge 12). Decoration without data is forbidden.</div></div>
+    <div class="num-card"><span class="badge">5</span><span class="title">Branch-scope chip always present, always glanceable.</span><div class="desc">Multi-role / multi-brand / multi-branch identity is a structural feature of the Vis user. The current scope must be inspectable in ≤ 200 ms of eye-travel from any screen.</div></div>
+    <div class="num-card" style="border-left-color: var(--vis-amber-deep);"><span class="badge" style="background: var(--vis-amber-deep);">+</span><span class="title">Bonus (operational): Offline-first means the orb doesn't lie.</span><div class="desc">If the device is queued, the orb says queued. If the WebSocket dropped, the orb says disconnected. Trust in the orb's state is trust in the app.</div></div>
+  </div>
+</section>
+
+<footer class="cta">
+  <p><strong>What now?</strong> Choose in the chat:</p>
+  <div class="menu-row">
+    <div class="opt"><span class="key">A</span><strong>Advanced Elicitation</strong> — Socratic / first-principles / pre-mortem refinement on this content.</div>
+    <div class="opt"><span class="key">P</span><strong>Party Mode</strong> — multi-agent critique (Sally + John + Winston + Mary again) on this content.</div>
+    <div class="opt"><span class="key">C</span><strong>Continue</strong> — append this to <code>ux-design-specification.md</code> and advance to step-04 (Emotional Response).</div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

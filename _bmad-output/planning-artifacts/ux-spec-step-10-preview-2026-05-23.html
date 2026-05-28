@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 10 preview · User Journeys · 2026-05-23</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+    --good: #1F7A4A;
+    --avoid: #B53A1A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --good: #6BD49A;
+      --avoid: #F58A6A;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg); color: var(--gc-text);
+    line-height: 1.6; font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page { padding-bottom: 22px; margin-bottom: 28px; border-bottom: 1px solid var(--gc-border); }
+  header.page .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 600; color: var(--vis-amber-primary); }
+  header.page h1 { margin: 6px 0 2px; font-size: 28px; font-weight: 600; letter-spacing: -0.015em; }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract { margin-top: 12px; font-size: 14px; color: var(--gc-text-muted); max-width: 760px; }
+
+  nav.toc {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 14px 18px;
+    box-shadow: var(--gc-shadow-card); margin-bottom: 28px; font-size: 13.5px;
+  }
+  nav.toc ol { margin: 6px 0 0; padding-left: 22px; }
+  nav.toc li { margin: 3px 0; }
+  nav.toc a { color: var(--gc-text); text-decoration: none; }
+  nav.toc a:hover { color: var(--vis-amber-primary); }
+  nav.toc .label { font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--vis-amber-primary); }
+
+  section { margin-top: 36px; }
+  h2 {
+    margin: 0 0 8px; font-size: 20px; font-weight: 600;
+    letter-spacing: -0.01em;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  h2 .num { color: var(--vis-amber-primary); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+  .lede { color: var(--gc-text-muted); font-size: 14px; margin: 0 0 14px; }
+  h3 { margin: 16px 0 8px; font-size: 14.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--vis-amber-primary); }
+  p { margin: 6px 0; }
+  ul { padding-left: 22px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  strong { color: var(--vis-amber-primary); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: rgba(196,81,0,0.08); color: var(--vis-amber-primary); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+
+  /* Journey card */
+  .journey {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 18px; padding: 20px 24px;
+    box-shadow: var(--gc-shadow-card);
+    margin-bottom: 24px;
+  }
+  .journey .head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .journey .head h3 { color: var(--gc-text); font-size: 17px; text-transform: none; letter-spacing: -0.005em; margin: 0; }
+  .journey .head .badge {
+    background: rgba(224,99,19,0.12); color: var(--vis-amber-primary);
+    padding: 3px 10px; border-radius: 6px;
+    font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .journey .persona { font-size: 12.5px; color: var(--gc-text-muted); margin: 4px 0 12px; font-style: italic; }
+
+  /* Flow board */
+  .flow {
+    display: flex; gap: 0; align-items: stretch;
+    overflow-x: auto;
+    padding: 6px 0 12px;
+    margin: 8px 0;
+  }
+  .step {
+    background: var(--gc-bg); border: 1px solid var(--gc-border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    min-width: 140px; max-width: 200px;
+    font-size: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    flex-shrink: 0;
+  }
+  .step .stage {
+    font-size: 9.5px; font-weight: 600; color: var(--vis-amber-primary);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 3px;
+  }
+  .step .title { font-weight: 600; font-size: 12.5px; margin-bottom: 2px; }
+  .step .meta { font-size: 11px; color: var(--gc-text-muted); }
+  .step.decision { border: 1px dashed var(--vis-amber-primary); background: rgba(255,106,0,0.04); }
+  .step.success { border-color: var(--good); background: rgba(31,122,74,0.05); }
+  .step.error { border-color: var(--avoid); background: rgba(181,58,26,0.05); }
+  .arrow {
+    align-self: center;
+    color: var(--vis-amber-primary);
+    font-size: 18px;
+    margin: 0 6px;
+    flex-shrink: 0;
+  }
+
+  /* Edge case list */
+  .edges {
+    background: linear-gradient(180deg, rgba(255,106,0,0.04), rgba(255,106,0,0));
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-soft);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+  .edges strong { color: var(--vis-amber-primary); }
+
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  th {
+    font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--gc-text-muted);
+    border-bottom: 1px solid var(--vis-amber-primary);
+    background: rgba(255,106,0,0.02);
+  }
+  tbody tr:hover { background: rgba(255,106,0,0.04); }
+
+  .patterns {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 18px 22px;
+    box-shadow: var(--gc-shadow-card);
+  }
+
+  footer.cta {
+    margin-top: 40px; padding: 20px 22px;
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 16px; box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  .menu-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .menu-row .opt {
+    flex: 1 1 200px;
+    background: var(--gc-bg); border: 1px solid var(--gc-border);
+    border-radius: 10px; padding: 12px 14px; font-size: 13.5px;
+  }
+  .menu-row .opt .key {
+    display: inline-block; width: 22px; height: 22px;
+    background: var(--vis-amber-primary); color: white;
+    border-radius: 5px; text-align: center; line-height: 22px;
+    font-weight: 700; margin-right: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 10 preview</div>
+  <h1>User Journey Flows — 6 journeys with mechanics</h1>
+  <div class="meta">2026-05-23 · Author: Gauravprakashshinde · Will append to ux-design-specification.md after [C]</div>
+  <div class="abstract">
+    PRD ships UJ-1 / UJ-2 / UJ-3 as narratives. This step adds the <em>flow mechanics</em> (entry · interaction · feedback · completion · edge cases) for each — plus three additional journeys that were under-served: multi-role identity switch, owner morning glance, and offline reconcile. Six total. Each flow includes a step-by-step board, edge cases, and the components it exercises.
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="label">In this preview</div>
+  <ol>
+    <li><a href="#uj1">UJ-1 · Live Co-Edit Session — Brienne + Samwell on lat pulldown</a></li>
+    <li><a href="#uj2">UJ-2 · Solo PR + Share — Theon attempts 200 kg squat</a></li>
+    <li><a href="#uj3">UJ-3 · Gym Onboarding — Samwell signs up under Brienne</a></li>
+    <li><a href="#uj4">UJ-4 · Multi-Role Identity Switch — Davos at Brand A, then Brand B</a></li>
+    <li><a href="#uj5">UJ-5 · Owner Morning Glance + Audit Query — Tywin's daily ritual</a></li>
+    <li><a href="#uj6">UJ-6 · Offline → Reconcile — gym basement WiFi drop</a></li>
+    <li><a href="#patterns">Journey Patterns + Flow Optimization Principles</a></li>
+  </ol>
+</nav>
+
+<!-- UJ-1 -->
+<section id="uj1">
+  <h2><span class="num">UJ-1</span> Live Co-Edit Session</h2>
+  <div class="journey">
+    <div class="head">
+      <h3>Brienne (Trainer) and Samwell (PT-attached Client) co-edit a lat-pulldown Session</h3>
+      <span class="badge">FR-1 · FR-3 · FR-7 · FR-8 · SM-3</span>
+    </div>
+    <div class="persona">Brienne of Tarth = Gym Trainer. Samwell of Tarly = Gym Client beginner. Both authenticated, on the gym floor, same WebSocket session.</div>
+
+    <h3>Flow</h3>
+    <div class="flow">
+      <div class="step"><div class="stage">Entry</div><div class="title">Brienne opens Active Session</div><div class="meta">from Today's schedule</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Entry</div><div class="title">Samwell opens Active Session</div><div class="meta">joins same WS room</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Connect</div><div class="title">Connection Orb appears</div><div class="meta">intro 800 ms · tension stem at rest</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Interact</div><div class="title">Brienne drags pin → 40 kg</div><div class="meta">optimistic commit · stem pulses</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Feedback</div><div class="title">Samwell sees pin animate</div><div class="meta">≤ 500 ms</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Interact</div><div class="title">Samwell lifts · either taps Done</div><div class="meta">LWW resolves</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Feedback</div><div class="title">Green check + provenance</div><div class="meta">actor avatar + timestamp 30 s</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Interact</div><div class="title">Rest timer starts</div><div class="meta">isolation 1:00 · haptic at -10 s</div></div><div class="arrow">→</div>
+      <div class="step decision"><div class="stage">Decide</div><div class="title">PR detection?</div><div class="meta">server-side after Set save</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Climax</div><div class="title">PR Moment cinematic ≤ 1.5 s</div><div class="meta">composer offered</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Complete</div><div class="title">Either marks Session done</div><div class="meta">Progression Index recomputes</div></div>
+    </div>
+
+    <div class="edges">
+      <strong>Edge cases:</strong>
+      <ul>
+        <li><strong>Both tap Done within 50 ms</strong> → server-stamped monotonic order; later write wins; loser sees Conflict Toast ("Trainer overwrote your value 47.5 → 50. Undo?").</li>
+        <li><strong>WebSocket disconnect mid-Set</strong> → Connection Orb transitions to "Disconnected / Stale" with calm peach tint. Writes queue locally. On reconnect, 5 s drain reconciles; tension stem resumes pulsing.</li>
+        <li><strong>Polling-fallback active (WS unavailable)</strong> → telemetry does NOT count as Co-Edit moment (gates on <code>ws.readyState === OPEN && peer_presence === true</code>). UI distinguishes "co-edit live" vs "co-edit catching up."</li>
+        <li><strong>Trainer flips assistance flag mid-Set</strong> → Samwell's row updates; provenance avatar = Brienne; PR detection excludes assisted reps per Glossary.</li>
+        <li><strong>Network drop mid-PR-moment</strong> → cinematic does not fire on optimistic write; only post-server-confirm (Emotional Principle 3).</li>
+      </ul>
+    </div>
+
+    <h3>Components exercised</h3>
+    <p>Active Session header (Liquid Glass · Direction 4) · Connection Orb · Presence Avatar Stack · Set row · Provenance line · Ghost Set Row (next AI suggestion) · Rest timer · Conflict Toast · PR Moment composer.</p>
+  </div>
+</section>
+
+<!-- UJ-2 -->
+<section id="uj2">
+  <h2><span class="num">UJ-2</span> Solo PR + Share</h2>
+  <div class="journey">
+    <div class="head">
+      <h3>Theon attempts a 200 kg squat PR, solo</h3>
+      <span class="badge">FR-10 · FR-11 · SM-5 · SM-C10</span>
+    </div>
+    <div class="persona">Theon of Greyjoy = Solo Client (no PT, no gym affiliation). Running a Vis-curated 5×3 squat block in week 8.</div>
+
+    <h3>Flow</h3>
+    <div class="flow">
+      <div class="step"><div class="stage">Entry</div><div class="title">Theon opens Active Session</div><div class="meta">today's prescribed 195 × 3</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Interact</div><div class="title">Warm-up sets 1–3</div><div class="meta">long-press → flag as warm-up</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Interact</div><div class="title">Working sets 1–4 hit 195 × 3</div><div class="meta">clean</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Interact</div><div class="title">Set 5 → barbell visualizer</div><div class="meta">snap plates · auto-sum 200 kg</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Interact</div><div class="title">Lifts: 1 unassisted + 1 spotter</div><div class="meta">tap rep-quality bar</div></div><div class="arrow">→</div>
+      <div class="step decision"><div class="stage">Detect</div><div class="title">PR check runs server-side</div><div class="meta">1RM + e1RM dimensions</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Climax</div><div class="title">PR Moment cinematic</div><div class="meta">amber sweep ≤ 1.5 s · dismissible</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Compose</div><div class="title">Card composer</div><div class="meta">3 aspect ratios · watermark ON</div></div><div class="arrow">→</div>
+      <div class="step decision"><div class="stage">Decide</div><div class="title">Share?</div><div class="meta">SM-5 fires if yes; SM-C10 if no</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Complete</div><div class="title">Native share-sheet</div><div class="meta">Instagram / WA / X / camera roll</div></div>
+    </div>
+
+    <div class="edges">
+      <strong>Edge cases:</strong>
+      <ul>
+        <li><strong>Spotter-assisted rep weighting</strong> → counts as half-credit in Progression Index v1 (PRD assumption; revisit at first beta edge case).</li>
+        <li><strong>PR detected but Theon dismisses moment</strong> → card archived to profile; appears once as "you have an unshared PR" nudge; SM-C10 watches if &gt; 80% never share.</li>
+        <li><strong>Watermark toggled OFF</strong> → persists for future shares per user; SM-5 still fires.</li>
+        <li><strong>1RM PR but e1RM not</strong> → moment still fires (any of 4 PR dimensions trigger it: 1RM, e1RM, total-volume, reps-at-load).</li>
+      </ul>
+    </div>
+
+    <h3>Components exercised</h3>
+    <p>Active Session (Direction 4 even solo — Connection Orb absent / dimmed) · Equipment-Aware Logger (barbell variant) · Set row with rep-quality bar · PR Moment cinematic · PR Card composer · native share-sheet.</p>
+  </div>
+</section>
+
+<!-- UJ-3 -->
+<section id="uj3">
+  <h2><span class="num">UJ-3</span> Gym Onboarding</h2>
+  <div class="journey">
+    <div class="head">
+      <h3>Samwell signs up under Brienne in his first 7 days</h3>
+      <span class="badge">FR-25 · FR-27 · FR-28 · SM-1 · SM-6 · SM-C8</span>
+    </div>
+    <div class="persona">Samwell of Tarly = new Gym Client paying gym fee at a Vis-equipped branch. Edmure of Tully (front-desk staff) hands him a QR.</div>
+
+    <h3>Flow</h3>
+    <div class="flow">
+      <div class="step"><div class="stage">Entry</div><div class="title">Edmure imports CSV</div><div class="meta">day Samwell pays</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Entry</div><div class="title">Samwell scans QR</div><div class="meta">brand tenant URL</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Auth</div><div class="title">Sign in (Google)</div><div class="meta">Firebase JWT issued</div></div><div class="arrow">→</div>
+      <div class="step decision"><div class="stage">Match</div><div class="title">Roster matched?</div><div class="meta">by phone</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Onboard</div><div class="title">Questionnaire (~10 fields)</div><div class="meta">skippable advanced</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Choose</div><div class="title">Trainer browse</div><div class="meta">3 rating dimensions · cert badges</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Request</div><div class="title">Picks Brienne #1</div><div class="meta">+ 2 fallback priorities</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Notify</div><div class="title">FCM push to Brienne</div><div class="meta">client request inbox</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Accept</div><div class="title">Brienne reviews + accepts</div><div class="meta">PtActive state</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Plan</div><div class="title">Brienne assigns phased plan</div><div class="meta">PPL Beginner 12 wk</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Complete</div><div class="title">Samwell home unlocked</div><div class="meta">SM-6 fires</div></div>
+    </div>
+
+    <div class="edges">
+      <strong>Edge cases:</strong>
+      <ul>
+        <li><strong>Brienne doesn't respond in 24 h</strong> → next priority trainer gets the request; Samwell informed via FCM.</li>
+        <li><strong>All 3 trainers decline</strong> → marketplace browse path opens (v1.5 marketplace deferred; v1 = invite-link only via Edmure).</li>
+        <li><strong>Phone roster no match</strong> → "pending activation" screen until Edmure manually activates.</li>
+        <li><strong>Samwell abandons mid-Questionnaire</strong> → state saved; resumes from last completed field on next open.</li>
+        <li><strong>Two trainers accept simultaneously</strong> → first server-stamped accept wins; second sees "already assigned" toast.</li>
+      </ul>
+    </div>
+
+    <h3>Components exercised</h3>
+    <p>QR scanner · sign-in (Google / Apple / Phone OTP) · Onboarding Questionnaire · Trainer Public Profile Card · Trainer request flow · FCM push · PT-relationship state machine · Plan Builder (Brienne's surface) · Today's Plan card.</p>
+  </div>
+</section>
+
+<!-- UJ-4 -->
+<section id="uj4">
+  <h2><span class="num">UJ-4</span> Multi-Role Identity Switch</h2>
+  <div class="journey">
+    <div class="head">
+      <h3>Davos switches from Brand A morning session to Brand B afternoon</h3>
+      <span class="badge">FR-25 · RBAC · SM-3 · multi-role moat</span>
+    </div>
+    <div class="persona">Davos of Seaworth = Solo Trainer + Gym Trainer at 2 brands. Operating across affiliations. New journey not in PRD.</div>
+
+    <h3>Flow</h3>
+    <div class="flow">
+      <div class="step"><div class="stage">Entry</div><div class="title">Davos opens Trainer app</div><div class="meta">default: solo identity</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">View</div><div class="title">Branch-Scope Chip in nav</div><div class="meta">shows "Solo · Davos"</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Tap</div><div class="title">Chip → identity sheet</div><div class="meta">"You work at 3 brands"</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Switch</div><div class="title">Pick "Brand A · Kandivali"</div><div class="meta">audit-log scope = Brand A</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Apply</div><div class="title">App reloads Brand A context</div><div class="meta">today's schedule = Brand A clients</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Work</div><div class="title">Brienne (sub-trainer) absent today<br>Davos runs Brand A sessions</div><div class="meta">all writes scoped Brand A</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Switch</div><div class="title">Lunch · taps chip again</div><div class="meta">picks "Brand B · Borivali"</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Apply</div><div class="title">App reloads Brand B context</div><div class="meta">AI history per (Davos × client × exercise) follows trainer identity</div></div>
+    </div>
+
+    <div class="edges">
+      <strong>Edge cases:</strong>
+      <ul>
+        <li><strong>Davos writes to a Set with wrong scope</strong> → eliminated by design: branch-scope chip is always visible; write API includes scope in JWT; backend rejects mismatched scope (returns 403 with friendly error).</li>
+        <li><strong>Brand A and Brand B share a client (rare)</strong> → AI history per (trainer × client × exercise) is shared because trainer identity is the same Davos. Open Question 5 in PRD addresses this.</li>
+        <li><strong>Switch during an active Co-Edit Session</strong> → Session locks scope on start. Davos must complete or abandon current session before switching.</li>
+        <li><strong>Davos invited to a new brand mid-day</strong> → identity sheet refreshes; new brand appears with a "new" badge.</li>
+      </ul>
+    </div>
+
+    <h3>Components exercised</h3>
+    <p>Branch-Scope Chip · Identity switcher sheet · Trainer Today schedule (re-renders per brand) · Audit-log scope indicator · Empty States (if a brand has no sessions today).</p>
+  </div>
+</section>
+
+<!-- UJ-5 -->
+<section id="uj5">
+  <h2><span class="num">UJ-5</span> Owner Morning Glance + Audit Query</h2>
+  <div class="journey">
+    <div class="head">
+      <h3>Tywin's daily morning ritual — Admin Web</h3>
+      <span class="badge">FR-20 · FR-21 · FR-22 · FR-23 · FR-26 · SM-7 · SM-8</span>
+    </div>
+    <div class="persona">Tywin of Lannister = Gym Owner of Vis Fitness (7 branches in Mumbai + Tier-2). Opens Admin Web every morning to assess the chain. New journey not in PRD.</div>
+
+    <h3>Flow</h3>
+    <div class="flow">
+      <div class="step"><div class="stage">Entry</div><div class="title">Tywin opens Admin Web</div><div class="meta">desktop, 8:30 AM</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">View</div><div class="title">Owner Dashboard loads</div><div class="meta">Direction 6 layout</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Glance</div><div class="title">3-up KPI grid</div><div class="meta">Revenue · Active PT · WALS</div></div><div class="arrow">→</div>
+      <div class="step decision"><div class="stage">Notice</div><div class="title">Anomaly: Borivali churn ↑</div><div class="meta">3 active PT churning</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Drill</div><div class="title">Click branch → Borivali detail</div><div class="meta">trainer leaderboard · client list</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Query</div><div class="title">Audit-log query "payment edits last 7d"</div><div class="meta">SM-8 increments</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Insight</div><div class="title">Spots a staff member's pattern</div><div class="meta">3 payment voids same shift</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Action</div><div class="title">Sends message to branch manager</div><div class="meta">WhatsApp template generated</div></div>
+    </div>
+
+    <div class="edges">
+      <strong>Edge cases:</strong>
+      <ul>
+        <li><strong>All branches green</strong> → no anomaly highlights; KPI grid + branches list calmly shown; Owner skims for &lt; 30 s. Counter-metric: if no anomalies for 14 days, audit-log query usage may dip below SM-8 threshold; encourage via weekly digest.</li>
+        <li><strong>Audit log query returns 0 rows</strong> → empty state ("no entries match your filter") with retry / broaden suggestions.</li>
+        <li><strong>Multi-brand owner (future)</strong> → Brand selector chip at top; cross-brand visibility forbidden by RBAC.</li>
+        <li><strong>Tywin tries to edit a logged audit entry</strong> → rejected (append-only); shown as "audit log is read-only."</li>
+      </ul>
+    </div>
+
+    <h3>Components exercised</h3>
+    <p>Owner Dashboard (Direction 6) · KPI cards with sparkline · Branches list · Trainer Leaderboard · Audit-log query input · Empty States · WhatsApp template generator.</p>
+  </div>
+</section>
+
+<!-- UJ-6 -->
+<section id="uj6">
+  <h2><span class="num">UJ-6</span> Offline → Reconcile</h2>
+  <div class="journey">
+    <div class="head">
+      <h3>Gym-basement WiFi drop mid-session — Brienne and Samwell</h3>
+      <span class="badge">FR-1 · NFR §7.2 · NFR §7.5 · gates SM-2 D7</span>
+    </div>
+    <div class="persona">Same actors as UJ-1. Gym basement has spotty WiFi. Reliability journey — under-served in PRD. Critical for retention.</div>
+
+    <h3>Flow</h3>
+    <div class="flow">
+      <div class="step"><div class="stage">Entry</div><div class="title">Mid-Co-Edit Session</div><div class="meta">2 phones, WS connected</div></div><div class="arrow">→</div>
+      <div class="step error"><div class="stage">Event</div><div class="title">WiFi drops on Samwell's phone</div><div class="meta">router glitch</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Detect</div><div class="title">WS heartbeat fails &gt; 5 s</div><div class="meta"><code>ws.readyState !== OPEN</code></div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">UI</div><div class="title">Connection Orb → Disconnected/Stale</div><div class="meta">calm peach tint · no alarm</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Continue</div><div class="title">Samwell finishes set + taps Done</div><div class="meta">write queued locally · UUID stamped</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">UI</div><div class="title">Set row "queued" badge</div><div class="meta">local ack ≤ 100 ms</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Reconnect</div><div class="title">WiFi returns</div><div class="meta">WS reopens</div></div><div class="arrow">→</div>
+      <div class="step"><div class="stage">Drain</div><div class="title">Offline queue drains</div><div class="meta">≤ 5 s · server-stamped order</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Resolve</div><div class="title">Connection Orb resumes pulsing</div><div class="meta">"committed" badges land</div></div><div class="arrow">→</div>
+      <div class="step decision"><div class="stage">Conflict?</div><div class="title">Trainer wrote during the gap?</div><div class="meta">monotonic stamp resolves</div></div><div class="arrow">→</div>
+      <div class="step success"><div class="stage">Complete</div><div class="title">Session continues — no data lost</div><div class="meta">trust preserved</div></div>
+    </div>
+
+    <div class="edges">
+      <strong>Edge cases:</strong>
+      <ul>
+        <li><strong>Both sides offline simultaneously</strong> → both queue locally; reconciliation on whoever reconnects first; conflicts surface as one-line Conflict Toast.</li>
+        <li><strong>Reconnect takes &gt; 30 s</strong> → app remains usable in offline mode; Connection Orb stays "Disconnected"; Set row badges stay "queued" until reconnect.</li>
+        <li><strong>App force-closed during offline</strong> → queue persists in local storage; on next open, Session Recovery Sheet offers "Resume" with partial-set preview.</li>
+        <li><strong>Write fails server-side (idempotency UUID rejected as duplicate)</strong> → no double-write; UI confirms prior commit silently.</li>
+        <li><strong>Network restored but server rejects write (e.g. validation)</strong> → set row badge transitions to "stale" with retry / dismiss options.</li>
+      </ul>
+    </div>
+
+    <h3>Components exercised</h3>
+    <p>Connection Orb (Disconnected / Stale state) · Set row "queued" badge · Set row "committed" badge · Idempotency UUID infrastructure · Conflict Toast · Session Recovery Sheet.</p>
+  </div>
+</section>
+
+<!-- Patterns -->
+<section id="patterns">
+  <h2><span class="num">§</span> Journey Patterns + Flow Optimization Principles</h2>
+  <p class="lede">Reusable patterns that recur across the six journeys, plus the optimization rules they imply.</p>
+
+  <div class="patterns">
+    <h3>Reusable patterns</h3>
+    <table>
+      <thead><tr><th style="width: 170px;">Pattern</th><th>Recurs in</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Branch-Scope Chip identity</strong></td><td>UJ-1 · UJ-4 · UJ-5</td><td>Always visible in nav. Single source of truth for "who am I, where am I." Tap = identity sheet. Trainer multi-brand and Owner cross-branch both use this.</td></tr>
+        <tr><td><strong>Connection Orb presence</strong></td><td>UJ-1 · UJ-6</td><td>Visible link between two parties on the same Session. Tension stem pulses on every remote write. Tints to "Disconnected / Stale" on network loss.</td></tr>
+        <tr><td><strong>Provenance line</strong></td><td>UJ-1 · UJ-4 · UJ-6</td><td>Set row badge = actor avatar + timestamp. Visible within 500 ms of write commit. Fades after 30 s of no further writes.</td></tr>
+        <tr><td><strong>Prefill cascade</strong></td><td>UJ-1 · UJ-2 · UJ-3 · UJ-4</td><td>Logger never opens empty. Order: AI ghost → trainer prescribed → last-Set → AI bootstrap → empty + keypad.</td></tr>
+        <tr><td><strong>Cinematic moment post-server-confirm</strong></td><td>UJ-1 · UJ-2</td><td>PR Moment fires only after server confirms detection. Optimistic celebrations forbidden (Emotional Principle 3).</td></tr>
+        <tr><td><strong>Queued vs committed visual state</strong></td><td>UJ-6</td><td>Set-row badge changes: "queued" (local ack) → "committed" (server ack) → "stale" (failed reconcile). Tied to <code>(ws.readyState, offline_queue.depth, last_server_ack_at)</code> tuple.</td></tr>
+        <tr><td><strong>Non-modal conflict surfaces</strong></td><td>UJ-1 · UJ-6</td><td>Conflict Toast is a one-line non-blocking notification. Never modals mid-Set. Tappable revert; ignored = remote write stands.</td></tr>
+        <tr><td><strong>FCM notification → context restore</strong></td><td>UJ-3 · UJ-5</td><td>Tapping a push notification (trainer-request, ACWR alert, plan-block expiry) opens app to the exact relevant surface with branch scope already correct.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Flow Optimization Principles</h3>
+    <ol>
+      <li><strong>Minimise steps to first Set logged.</strong> UJ-3 onboarding has 11 steps; first Set should follow within 24 h of completion (SM-6 + SM-C8). Onboarding fields skippable where not strictly required.</li>
+      <li><strong>Reduce cognitive load at every decision point.</strong> UJ-4 identity switch presents the chip — not a settings menu dive. UJ-5 owner dashboard surfaces anomalies (Borivali churn) without requiring a query first.</li>
+      <li><strong>Provide visible progress at every step.</strong> UJ-2 PR detection shows running compute; UJ-3 onboarding shows "X of 10 fields"; UJ-6 reconcile shows "queued / committed" per Set row.</li>
+      <li><strong>Create moments of delight only when earned.</strong> UJ-1 + UJ-2 PR Moment fires only on server-confirmed detection. No celebratory animation on optimistic write.</li>
+      <li><strong>Handle edge cases gracefully.</strong> Every journey above lists 4–6 edge cases. The UI degrades to a calm explicit state — never a silent failure.</li>
+      <li><strong>Persist state across drops.</strong> UJ-3 abandons mid-Questionnaire = resume from last field. UJ-6 force-close offline = Session Recovery Sheet on next open. State trust > re-derivation.</li>
+    </ol>
+  </div>
+</section>
+
+<footer class="cta">
+  <p><strong>What now?</strong> Choose in chat:</p>
+  <div class="menu-row">
+    <div class="opt"><span class="key">A</span><strong>Advanced Elicitation</strong> — Socratic / pre-mortem on the 6 journeys before saving.</div>
+    <div class="opt"><span class="key">P</span><strong>Party Mode</strong> — multi-agent critique on journey mechanics.</div>
+    <div class="opt"><span class="key">C</span><strong>Continue</strong> — append to <code>ux-design-specification.md</code> and advance to step-11 (Component Strategy).</div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

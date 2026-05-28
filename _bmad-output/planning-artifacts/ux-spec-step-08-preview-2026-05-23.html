@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 08 preview · Visual Foundation · 2026-05-23</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --gc-shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(255,106,0,0.12);
+      --gc-shadow-soft: 0 2px 8px rgba(0,0,0,0.4), 0 12px 28px -8px rgba(255,106,0,0.10);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg); color: var(--gc-text);
+    line-height: 1.6; font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page { padding-bottom: 22px; margin-bottom: 28px; border-bottom: 1px solid var(--gc-border); }
+  header.page .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 600; color: var(--vis-amber-primary); }
+  header.page h1 { margin: 6px 0 2px; font-size: 28px; font-weight: 600; letter-spacing: -0.015em; }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract { margin-top: 12px; font-size: 14px; color: var(--gc-text-muted); max-width: 760px; }
+
+  nav.toc {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 14px 18px;
+    box-shadow: var(--gc-shadow-card); margin-bottom: 28px; font-size: 13.5px;
+  }
+  nav.toc ol { margin: 6px 0 0; padding-left: 22px; }
+  nav.toc li { margin: 3px 0; }
+  nav.toc a { color: var(--gc-text); text-decoration: none; }
+  nav.toc a:hover { color: var(--vis-amber-primary); }
+  nav.toc .label { font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--vis-amber-primary); }
+
+  section { margin-top: 36px; }
+  section > h2 {
+    margin: 0 0 8px; font-size: 20px; font-weight: 600;
+    letter-spacing: -0.01em;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  section > h2 .num { color: var(--vis-amber-primary); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+  section > .lede { color: var(--gc-text-muted); font-size: 14px; margin: 0 0 14px; }
+  h3 { margin: 18px 0 8px; font-size: 14.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--vis-amber-primary); }
+  p { margin: 6px 0; }
+  ul { padding-left: 22px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  strong { color: var(--vis-amber-primary); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: rgba(196,81,0,0.08); color: var(--vis-amber-primary); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+  /* Color swatch grid */
+  .swatch-grid {
+    display: grid; gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    margin-top: 8px;
+  }
+  .sw {
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-shadow: var(--gc-shadow-soft);
+    font-size: 12px;
+  }
+  .sw .chip { width: 100%; height: 38px; border-radius: 8px; margin-bottom: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  .sw .name { font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; color: var(--vis-amber-primary); }
+  .sw .meta { color: var(--gc-text-muted); font-size: 10.5px; margin-top: 2px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  th {
+    font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--gc-text-muted);
+    border-bottom: 1px solid var(--vis-amber-primary);
+    background: rgba(255,106,0,0.02);
+  }
+  tbody tr:hover { background: rgba(255,106,0,0.04); }
+  td.tok { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; color: var(--vis-amber-primary); width: 200px; }
+
+  /* Type scale demo */
+  .type-row {
+    display: grid; grid-template-columns: 1fr 100px 80px 100px;
+    gap: 12px; align-items: baseline;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--gc-border);
+  }
+  .type-row:last-child { border-bottom: none; }
+  .type-row.head { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gc-text-muted); font-weight: 600; }
+  .type-row .sample { font-family: -apple-system, "SF Pro Display", "Segoe UI", system-ui; font-weight: 500; }
+  .type-row .meta { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; color: var(--gc-text-muted); }
+
+  /* Spacing demo */
+  .spacing-row {
+    display: flex; gap: 8px; align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+  }
+  .spacing-row .bar {
+    background: var(--vis-amber-primary);
+    height: 8px; border-radius: 4px;
+  }
+  .spacing-row .label { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; width: 40px; color: var(--vis-amber-primary); font-weight: 600; }
+
+  footer.cta {
+    margin-top: 40px; padding: 20px 22px;
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 16px; box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  .menu-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .menu-row .opt {
+    flex: 1 1 200px;
+    background: var(--gc-bg); border: 1px solid var(--gc-border);
+    border-radius: 10px; padding: 12px 14px; font-size: 13.5px;
+  }
+  .menu-row .opt .key {
+    display: inline-block; width: 22px; height: 22px;
+    background: var(--vis-amber-primary); color: white;
+    border-radius: 5px; text-align: center; line-height: 22px;
+    font-weight: 700; margin-right: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 08 preview</div>
+  <h1>Visual Foundation — colors · type · spacing · accessibility</h1>
+  <div class="meta">2026-05-23 · Author: Gauravprakashshinde · Brand guidelines exist (CLAUDE.md) — this consolidates + extends</div>
+  <div class="abstract">
+    Vis already has a brand palette, typography pair (Geist + Geist Mono), spacing scale, and orb recipe in CLAUDE.md. This step consolidates them into the two-layer token system from step-05 and adds the v1.1 preset palette + accessibility decisions made earlier. All values below are <strong>locked</strong> unless explicitly flagged "new in this step."
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="label">In this preview</div>
+  <ol>
+    <li><a href="#sec1">Color System — Layer A raw + Layer B semantic + v1.1 presets</a></li>
+    <li><a href="#sec2">Typography System — Geist + Geist Mono + 7-level type scale</a></li>
+    <li><a href="#sec3">Spacing &amp; Layout Foundation — fixed scale + grid + card composition</a></li>
+    <li><a href="#sec4">Accessibility Considerations — WCAG 2.1 AA + motion / transparency / color-blindness fallbacks</a></li>
+  </ol>
+</nav>
+
+<section id="sec1">
+  <h2><span class="num">§1</span> Color System</h2>
+  <p class="lede">Two layers + preset variants. Layer A holds raw values (never consumed by components). Layer B holds semantic names (what components reference).</p>
+
+  <h3>Layer A — Raw amber palette (from CLAUDE.md)</h3>
+  <div class="swatch-grid">
+    <div class="sw"><div class="chip" style="background:#FF7A1A;"></div><div class="name">--vis-amber-primary</div><div class="meta">dark #FF7A1A · light #E06313</div></div>
+    <div class="sw"><div class="chip" style="background:#FF5E00;"></div><div class="name">--vis-amber-deep</div><div class="meta">dark #FF5E00 · light #FF5500</div></div>
+    <div class="sw"><div class="chip" style="background:#D9590B;"></div><div class="name">--vis-amber-ember</div><div class="meta">dark #D9590B · light #F26200</div></div>
+    <div class="sw"><div class="chip" style="background:#FF9B4A;"></div><div class="name">--vis-amber-soft</div><div class="meta">dark #FF9B4A · light #FFA366</div></div>
+    <div class="sw"><div class="chip" style="background:#FFC27A;"></div><div class="name">--vis-amber-highlight</div><div class="meta">dark #FFC27A · light #FFE3C2</div></div>
+    <div class="sw"><div class="chip" style="background:#A94400;"></div><div class="name">--vis-amber-shadow</div><div class="meta">dark #A94400 · light #C45100</div></div>
+    <div class="sw"><div class="chip" style="background:#FFF3E8;"></div><div class="name">--vis-cream</div><div class="meta">dark #1A1310 · light #FFF3E8</div></div>
+    <div class="sw"><div class="chip" style="background:#F9F6F0; border: 1px solid var(--gc-border);"></div><div class="name">--gc-bg</div><div class="meta">dark #050505 · light #F9F6F0 (never pure white)</div></div>
+  </div>
+
+  <h3>Layer B — Semantic tokens (what components consume)</h3>
+  <table>
+    <thead><tr><th>Token</th><th>Maps to</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td class="tok">--accent</td><td>--vis-amber-primary (v1) · active preset (v1.1)</td><td>CTAs, focus rings, selected-state tints, ghost-overlay color, chart accents</td></tr>
+      <tr><td class="tok">--accent-on</td><td>precomputed per preset for ≥ 4.5:1 contrast</td><td>Text rendered on top of <code>--accent</code> surface</td></tr>
+      <tr><td class="tok">--accent-muted</td><td><code>rgba(--accent, 0.15)</code></td><td>Hover tints, secondary chip backgrounds</td></tr>
+      <tr><td class="tok">--accent-emphasis</td><td>--vis-amber-deep (v1) · preset emphasis (v1.1)</td><td>Hero CTA, primary action emphasis</td></tr>
+      <tr><td class="tok">--brand-locked-primary</td><td>--vis-amber-primary (immutable)</td><td>Orb fill, Vis wordmark, PR-card watermark — never themable</td></tr>
+      <tr><td class="tok">--brand-locked-deep</td><td>--vis-amber-deep (immutable)</td><td>Orb deep emissive</td></tr>
+      <tr><td class="tok">--brand-locked-shadow</td><td>--vis-amber-shadow (immutable)</td><td>Orb cast shadow</td></tr>
+    </tbody>
+  </table>
+
+  <h3>v1.1 preset palette — <strong>new in this step</strong></h3>
+  <div class="swatch-grid">
+    <div class="sw"><div class="chip" style="background: radial-gradient(circle at 35% 30%, #FFC27A 0%, transparent 30%), radial-gradient(circle at 50% 70%, #FF7A1A 0%, #FF5500 60%, #A94400 100%);"></div><div class="name">Tangerine (default)</div><div class="meta">--accent #E06313 · --accent-on #FFF6EA</div></div>
+    <div class="sw"><div class="chip" style="background: radial-gradient(circle at 35% 30%, #FF8E70 0%, transparent 30%), radial-gradient(circle at 50% 70%, #D63B1F 0%, #8E1A0F 100%);"></div><div class="name">Ember red</div><div class="meta">--accent #B22F18 · --accent-on #FFF0EC</div></div>
+    <div class="sw"><div class="chip" style="background: radial-gradient(circle at 35% 30%, #F4D08A 0%, transparent 30%), radial-gradient(circle at 50% 70%, #B8830C 0%, #6B4A07 100%);"></div><div class="name">Rust gold</div><div class="meta">--accent #8E6209 · --accent-on #FFF8E8</div></div>
+    <div class="sw"><div class="chip" style="background: radial-gradient(circle at 35% 30%, #A8D4D8 0%, transparent 30%), radial-gradient(circle at 50% 70%, #3F7A85 0%, #234148 100%);"></div><div class="name">Slate teal</div><div class="meta">--accent #2E5961 · --accent-on #E8F4F6</div></div>
+  </div>
+  <p style="font-size: 13px; color: var(--gc-text-muted); margin-top: 8px;">Each preset's <code>--accent</code> + <code>--accent-on</code> pair validated at token-build time against the warm-ivory and dark backgrounds. CI fails if any pair drops below 4.5:1.</p>
+
+  <h3>Semantic state colors</h3>
+  <table>
+    <thead><tr><th>State</th><th>Light</th><th>Dark</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td>Success (Set commit, recovery)</td><td><code>#1F7A4A</code></td><td><code>#6BD49A</code></td><td>Green check, recovered-muscle chip</td></tr>
+      <tr><td>Warning (ACWR amber alert)</td><td><code>--vis-amber-soft</code></td><td><code>--vis-amber-soft</code></td><td>ACWR &gt; 1.5 chip / banner</td></tr>
+      <tr><td>Danger (ACWR red alert)</td><td><code>#B53A1A</code></td><td><code>#F58A6A</code></td><td>ACWR &gt; 2.0 chip / banner — auto-deload suggestion</td></tr>
+      <tr><td>Disabled / muted</td><td colspan="2"><code>rgba(--gc-text, 0.5)</code></td><td>Inactive controls, placeholder text</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="sec2">
+  <h2><span class="num">§2</span> Typography System</h2>
+  <p class="lede">Geist for display + UI; Geist Mono for tabular numerics. Self-hosted via @fontsource — no external CDN.</p>
+
+  <h3>Typefaces</h3>
+  <table>
+    <thead><tr><th>Token</th><th>Family</th><th>Weights</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td class="tok">--vis-font-display</td><td>Geist</td><td>600 / 500</td><td>Display + UI headings</td></tr>
+      <tr><td class="tok">--vis-font-ui</td><td>Geist</td><td>400 / 500 / 600</td><td>Body, captions, controls</td></tr>
+      <tr><td class="tok">--vis-font-mono</td><td>Geist Mono</td><td>500</td><td>Tabular numerics — weights, RIR/RPE, time, dates in tables</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Type scale (4 px baseline grid)</h3>
+  <div style="background: var(--gc-bg-elevated); border: 1px solid var(--gc-border); border-radius: 10px; padding: 4px 12px; box-shadow: var(--gc-shadow-soft);">
+    <div class="type-row head"><div>Sample</div><div>Token</div><div>Weight</div><div>Use</div></div>
+    <div class="type-row"><div class="sample" style="font-size: 40px; line-height: 44px; font-weight: 600; letter-spacing: -0.02em;">Display XL</div><div class="meta">40 / 44</div><div class="meta">600</div><div class="meta">Owner hero only</div></div>
+    <div class="type-row"><div class="sample" style="font-size: 28px; line-height: 32px; font-weight: 600; letter-spacing: -0.015em;">Display</div><div class="meta">28 / 32</div><div class="meta">600</div><div class="meta">Active Session header</div></div>
+    <div class="type-row"><div class="sample" style="font-size: 20px; line-height: 26px; font-weight: 600; letter-spacing: -0.01em;">Title</div><div class="meta">20 / 26</div><div class="meta">600</div><div class="meta">Card / screen titles</div></div>
+    <div class="type-row"><div class="sample" style="font-size: 15px; line-height: 22px; font-weight: 400;">Body — default text for everything readable.</div><div class="meta">15 / 22</div><div class="meta">400</div><div class="meta">Default</div></div>
+    <div class="type-row"><div class="sample" style="font-size: 13px; line-height: 18px; font-weight: 500; letter-spacing: 0.005em;">Caption — secondary metadata.</div><div class="meta">13 / 18</div><div class="meta">500</div><div class="meta">Secondary labels</div></div>
+    <div class="type-row"><div class="sample" style="font-size: 11px; line-height: 14px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;">Eyebrow Label</div><div class="meta">11 / 14</div><div class="meta">600</div><div class="meta">Section labels, units</div></div>
+    <div class="type-row"><div class="sample" style="font-family: ui-monospace, Menlo, monospace; font-weight: 500; font-size: 17px;">120.0 kg · 8 reps · RIR 2</div><div class="meta">varies</div><div class="meta">500</div><div class="meta">Tabular numeric (Geist Mono)</div></div>
+  </div>
+
+  <h3>Anti-aliasing + reading constraints</h3>
+  <ul>
+    <li><code>-webkit-font-smoothing: antialiased</code> + <code>text-rendering: optimizeLegibility</code> on all surfaces.</li>
+    <li>Max line-length for body text: <strong>72 characters</strong> on Admin Web (~640 px at body 15 px).</li>
+    <li>Mobile line-length follows screen width; minimum 18 characters per line.</li>
+    <li>Vertical rhythm: body line-height (22 px) is the base unit for vertical spacing inside cards.</li>
+  </ul>
+</section>
+
+<section id="sec3">
+  <h2><span class="num">§3</span> Spacing &amp; Layout Foundation</h2>
+  <p class="lede">Fixed spacing scale (no off-grid values). Grid on web; vertical stack on mobile. Layout principles already locked from prior steps.</p>
+
+  <h3>Spacing scale</h3>
+  <p>Only valid values: <code>4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 56 · 72</code> (px, per CLAUDE.md). No off-grid (no 7, no 10, no 18). Enforced by ESLint custom rule blocking arbitrary spacing literals.</p>
+  <div style="background: var(--gc-bg-elevated); border: 1px solid var(--gc-border); border-radius: 10px; padding: 14px 18px; box-shadow: var(--gc-shadow-soft);">
+    <div class="spacing-row"><div class="label">4</div><div class="bar" style="width: 4px;"></div></div>
+    <div class="spacing-row"><div class="label">8</div><div class="bar" style="width: 8px;"></div></div>
+    <div class="spacing-row"><div class="label">12</div><div class="bar" style="width: 12px;"></div></div>
+    <div class="spacing-row"><div class="label">16</div><div class="bar" style="width: 16px;"></div></div>
+    <div class="spacing-row"><div class="label">20</div><div class="bar" style="width: 20px;"></div></div>
+    <div class="spacing-row"><div class="label">24</div><div class="bar" style="width: 24px;"></div></div>
+    <div class="spacing-row"><div class="label">32</div><div class="bar" style="width: 32px;"></div></div>
+    <div class="spacing-row"><div class="label">40</div><div class="bar" style="width: 40px;"></div></div>
+    <div class="spacing-row"><div class="label">56</div><div class="bar" style="width: 56px;"></div></div>
+    <div class="spacing-row"><div class="label">72</div><div class="bar" style="width: 72px;"></div></div>
+  </div>
+
+  <h3>Grid (Admin Web)</h3>
+  <ul>
+    <li>12-column grid · 80 px max column · 24 px gutter</li>
+    <li>Page content max-width 1280 px · centered</li>
+    <li>Card content max-width 760 px for prose; full-width for tables and dashboards</li>
+  </ul>
+
+  <h3>Layout (mobile RN apps)</h3>
+  <ul>
+    <li>No grid system — vertical stack of cards with consistent spacing (16 px between cards; 20 px card padding)</li>
+    <li>Safe-area insets respected on iOS + Android</li>
+    <li>Bottom-tab nav reserves 56 px; content lives above</li>
+    <li>Thumb-zone discipline: primary Set-row controls live in bottom 50% of screen on common phone form factors (per step-02 Challenge 8)</li>
+  </ul>
+
+  <h3>Card composition</h3>
+  <ul>
+    <li>Padding: <code>20</code> mobile (16 outside + 4 internal gap before title); <code>24</code> web</li>
+    <li>Radius: <code>16</code> mobile, <code>20</code> web hero cards</li>
+    <li>Shadow: 3-layer peach-tinted falloff per CLAUDE.md — <code>0 0 20px rgba(255,106,0,0.35), 0 0 60px rgba(255,106,0,0.18), 0 0 120px rgba(255,122,26,0.12)</code> for hero; smaller stack for standard cards</li>
+  </ul>
+
+  <h3>Layout principles</h3>
+  <ul>
+    <li><strong>One number that matters per screen.</strong> Home leads with Today's Plan card. Trainer Today leads with today's schedule. Owner Dashboard leads with revenue + branch breakdown. Never grid-of-12.</li>
+    <li><strong>Content leads, chrome follows.</strong> Tables + dense data stay on solid surfaces; Liquid Glass blur reserved for nav + Active Session hero only.</li>
+    <li><strong>Single-column primary axis on mobile.</strong> No side-by-side columns under 768 px.</li>
+    <li><strong>Vertical rhythm = 4 px unit.</strong> Every vertical gap is a multiple of 4. No 7 px, no 10 px.</li>
+  </ul>
+</section>
+
+<section id="sec4">
+  <h2><span class="num">§4</span> Accessibility Considerations</h2>
+  <p class="lede">Target = WCAG 2.1 AA on Admin Web v1. Mobile equivalent enforced by spec. Tamagui + Angular CDK handle primitives; Vis components ship explicit ARIA labels.</p>
+
+  <h3>Contrast</h3>
+  <ul>
+    <li>Body text ≥ 4.5:1 against all background tokens. Token-build-time validation; CI fails build on drift.</li>
+    <li>Large text (Display + Title) ≥ 3:1.</li>
+    <li>Non-text affordances (icons ≥ 24 px, focus rings, chart strokes) follow the same <code>--accent</code> / <code>--accent-on</code> precomputed contrast pair.</li>
+  </ul>
+
+  <h3>Hit targets</h3>
+  <ul>
+    <li>Mobile: ≥ 44 × 44 pt per interactive element (Apple HIG + Material aligned).</li>
+    <li>Web: ≥ 32 × 32 px clickable target; ≥ 24 px touch target on mobile-formatted admin views.</li>
+  </ul>
+
+  <h3>Screen-reader labels</h3>
+  <ul>
+    <li>VoiceOver (iOS) + TalkBack (Android) labels on every interactive element. Tamagui ARIA primitives + Angular CDK <code>cdkAriaLive</code> provide this where supported.</li>
+    <li>Custom Vis components ship explicit ARIA labels — Orb state announced as "Recovery: 78%, increasing"; Logger announced as "cable, slab 8, 40 kilograms."</li>
+  </ul>
+
+  <h3>Motion + transparency</h3>
+  <ul>
+    <li><code>prefers-reduced-motion: reduce</code> → orb breathing loop stops; PR cinematic collapses to a static frame; Connection Orb pulse becomes a 1-frame fade; intro animations skip.</li>
+    <li><code>prefers-reduced-transparency: reduce</code> → Liquid Glass collapses to solid warm-tinted surface (<code>#1A1310</code> dark, <code>#FFF3E8</code> light); blur removed entirely.</li>
+  </ul>
+
+  <h3>Color blindness</h3>
+  <ul>
+    <li>Critical state distinctions never rely on color alone. Recovery Orb colour-coding chips also carry text labels ("Recovered" / "28h"). Conflict Toast carries an "Overwritten by trainer" caption, not just a tint.</li>
+  </ul>
+
+  <h3>Touch alternatives</h3>
+  <ul>
+    <li>Voice fallback for trainer in-session (v1.1 spike).</li>
+    <li>Hardware keyboard on Admin Web fully navigable; CDK focus-trap handles modals.</li>
+  </ul>
+
+  <h3>Privacy ∩ accessibility</h3>
+  <ul>
+    <li>Body measurements + biometric reads never announced via VoiceOver unless the user is on the specific surface (avoid passing health info to nearby observers).</li>
+  </ul>
+</section>
+
+<footer class="cta">
+  <p><strong>What now?</strong> Choose in chat:</p>
+  <div class="menu-row">
+    <div class="opt"><span class="key">A</span><strong>Advanced Elicitation</strong> — refine before saving.</div>
+    <div class="opt"><span class="key">P</span><strong>Party Mode</strong> — multi-agent critique on visual foundation choices.</div>
+    <div class="opt"><span class="key">C</span><strong>Continue</strong> — append to <code>ux-design-specification.md</code> and advance to step-09 (Design Directions).</div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

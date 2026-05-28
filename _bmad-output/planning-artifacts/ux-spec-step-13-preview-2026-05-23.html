@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 13 preview · Responsive + A11y · 2026-05-23</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+    --good: #1F7A4A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --good: #6BD49A;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg); color: var(--gc-text);
+    line-height: 1.6; font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page { padding-bottom: 22px; margin-bottom: 28px; border-bottom: 1px solid var(--gc-border); }
+  header.page .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 600; color: var(--vis-amber-primary); }
+  header.page h1 { margin: 6px 0 2px; font-size: 28px; font-weight: 600; letter-spacing: -0.015em; }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract { margin-top: 12px; font-size: 14px; color: var(--gc-text-muted); max-width: 760px; }
+
+  nav.toc {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 14px 18px;
+    box-shadow: var(--gc-shadow-card); margin-bottom: 28px; font-size: 13.5px;
+  }
+  nav.toc ol { margin: 6px 0 0; padding-left: 22px; }
+  nav.toc a { color: var(--gc-text); text-decoration: none; }
+  nav.toc a:hover { color: var(--vis-amber-primary); }
+  nav.toc .label { font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--vis-amber-primary); }
+
+  section { margin-top: 36px; }
+  h2 { margin: 0 0 8px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; display: flex; align-items: baseline; gap: 12px; }
+  h2 .num { color: var(--vis-amber-primary); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+  .lede { color: var(--gc-text-muted); font-size: 14px; margin: 0 0 14px; }
+  h3 { margin: 18px 0 8px; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--vis-amber-primary); }
+  p { margin: 8px 0; }
+  ul { padding-left: 22px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  strong { color: var(--vis-amber-primary); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: rgba(196,81,0,0.08); color: var(--vis-amber-primary); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+
+  .card { background: var(--gc-bg-elevated); border: 1px solid var(--gc-border); border-radius: 14px; padding: 18px 22px; box-shadow: var(--gc-shadow-card); }
+
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  th { font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gc-text-muted); border-bottom: 1px solid var(--vis-amber-primary); background: rgba(255,106,0,0.02); }
+  tbody tr:hover { background: rgba(255,106,0,0.04); }
+
+  /* Breakpoint visual */
+  .bp-grid { display: flex; gap: 8px; margin: 12px 0; }
+  .bp {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 10px; padding: 12px;
+    flex: 1; min-width: 0; box-shadow: var(--gc-shadow-soft);
+    font-size: 12.5px;
+  }
+  .bp .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--vis-amber-primary); font-weight: 600; }
+  .bp .range { font-family: ui-monospace, Menlo, monospace; font-size: 13px; margin: 4px 0; color: var(--gc-text); }
+  .bp .name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .bp .desc { color: var(--gc-text-muted); font-size: 12px; }
+
+  .a11y-check { background: rgba(31,122,74,0.06); border: 1px solid var(--good); border-radius: 8px; padding: 12px 16px; margin: 8px 0; font-size: 13.5px; }
+  .a11y-check::before { content: '✓ '; color: var(--good); font-weight: 700; }
+
+  footer.cta {
+    margin-top: 40px; padding: 20px 22px;
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 16px; box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  .menu-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .menu-row .opt { flex: 1 1 200px; background: var(--gc-bg); border: 1px solid var(--gc-border); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
+  .menu-row .opt .key { display: inline-block; width: 22px; height: 22px; background: var(--vis-amber-primary); color: white; border-radius: 5px; text-align: center; line-height: 22px; font-weight: 700; margin-right: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 13 preview · final content step</div>
+  <h1>Responsive Design + Accessibility — strategy + testing + implementation</h1>
+  <div class="meta">2026-05-23 · Author: Gauravprakashshinde · Consolidates a11y decisions from step-08 + step-12 + adds breakpoints + testing strategy</div>
+  <div class="abstract">
+    Vis is 3 apps with two different responsive postures: <strong>mobile RN apps</strong> are platform-native (fixed phone form factor, no breakpoint adaptation beyond safe-area), and <strong>Admin Web</strong> is desktop-primary with tablet + mobile fallback. WCAG 2.1 AA target on Admin Web; mobile equivalent enforced. This step adds the breakpoint table, testing strategy, and consolidated implementation guidelines.
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="label">In this preview</div>
+  <ol>
+    <li><a href="#sec1">Responsive Strategy — per app + posture</a></li>
+    <li><a href="#sec2">Breakpoint Strategy — 4 breakpoints for Admin Web</a></li>
+    <li><a href="#sec3">Accessibility Strategy — WCAG 2.1 AA target</a></li>
+    <li><a href="#sec4">Testing Strategy — automated + manual + user</a></li>
+    <li><a href="#sec5">Implementation Guidelines — for Dev agent</a></li>
+  </ol>
+</nav>
+
+<section id="sec1">
+  <h2><span class="num">§1</span> Responsive Strategy</h2>
+  <p class="lede">Per app, per posture. The 3 Vis apps have different responsive needs.</p>
+  <div class="card">
+    <table>
+      <thead><tr><th>App</th><th>Platform</th><th>Posture</th><th>Responsive strategy</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Client App</strong></td><td>React Native (iOS + Android)</td><td>mobile, one-handed, mid-session</td><td>No breakpoint responsive. Vertical stack adapts to safe-area insets (notch / Dynamic Island, bottom nav). Optimised for portrait. Landscape supported on Active Session for tablet-sized phones; otherwise locked.</td></tr>
+        <tr><td><strong>Trainer App</strong></td><td>React Native (iOS + Android)</td><td>mobile, two-hand authoring + one-hand in-session</td><td>Same as Client — no breakpoint responsive. Tablet support v1.1 (iPad: 2-column on Trainer Today with schedule left + client detail right).</td></tr>
+        <tr><td><strong>Admin Web</strong></td><td>Angular (browser)</td><td>desktop primary, mouse / keyboard</td><td>Desktop-primary responsive. 4 breakpoints (see §2). Owner Cockpit (Direction 6) optimised for desktop; degrades cleanly to tablet (collapses 3-up KPI grid to 2-up); mobile fallback for read-only access (full edit on desktop only).</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Cross-app principles</h3>
+    <ul>
+      <li><strong>Safe-area insets respected</strong> on iOS + Android — no content under notch / bottom-bar.</li>
+      <li><strong>Bottom-tab nav reserves 56 px</strong> on mobile RN apps — content lives above.</li>
+      <li><strong>Thumb-zone discipline</strong> on mobile — primary Set-row controls live in bottom 50% of screen on common phone form factors (Pixel 6a, Galaxy A54, iPhone 14).</li>
+      <li><strong>Web fluid layout</strong> via Tailwind utility classes + CSS clamp() for typography scale.</li>
+      <li><strong>No magic-number media queries</strong> — only the 4 breakpoints in §2 are valid; documented in <code>tokens.css</code> as CSS custom properties.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec2">
+  <h2><span class="num">§2</span> Breakpoint Strategy (Admin Web)</h2>
+  <p class="lede">Desktop-primary. Four breakpoints. Mobile-fallback for the read-only ops view.</p>
+  <div class="card">
+    <div class="bp-grid">
+      <div class="bp">
+        <div class="label">Breakpoint 1</div>
+        <div class="name">Mobile fallback</div>
+        <div class="range">320 - 767 px</div>
+        <div class="desc">Single column. Tables stack as cards. KPI grid 1-up. Read-only mode (no edit / no audit query). For emergency owner check on phone.</div>
+      </div>
+      <div class="bp">
+        <div class="label">Breakpoint 2</div>
+        <div class="name">Tablet</div>
+        <div class="range">768 - 1023 px</div>
+        <div class="desc">2-column where applicable. KPI grid 2-up. Edit enabled. Front-desk Staff (Edmure) uses this at the desk.</div>
+      </div>
+      <div class="bp">
+        <div class="label">Breakpoint 3</div>
+        <div class="name">Desktop (primary)</div>
+        <div class="range">1024 - 1439 px</div>
+        <div class="desc">Full layout. KPI grid 3-up. Sidebar fully expanded. Owner morning glance happens here.</div>
+      </div>
+      <div class="bp">
+        <div class="label">Breakpoint 4</div>
+        <div class="name">Wide desktop</div>
+        <div class="range">1440 px+</div>
+        <div class="desc">Page content max-width 1280 px centered. No content stretches infinitely. Wide screens get more whitespace, not more density.</div>
+      </div>
+    </div>
+
+    <h3>Rules</h3>
+    <ul>
+      <li><strong>Mobile-first CSS</strong> using min-width media queries. Default styles target Breakpoint 1.</li>
+      <li><strong>Use relative units</strong> (<code>rem</code>, <code>%</code>, <code>vw</code>) over fixed pixels in Admin Web Tailwind config.</li>
+      <li><strong>Page content max-width 1280 px</strong> regardless of screen — wide screens get whitespace, not more content.</li>
+      <li><strong>Card content max-width 760 px</strong> for prose; full-width for tables and dashboards.</li>
+      <li><strong>Image / asset optimisation</strong> via Angular's lazy-loading + WebP. Avatars: SVG when possible.</li>
+      <li><strong>No horizontal scroll except on filter chip rows</strong> (intentional, sticky).</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec3">
+  <h2><span class="num">§3</span> Accessibility Strategy</h2>
+  <p class="lede">WCAG 2.1 AA target on Admin Web v1. Mobile equivalent enforced by spec. Already specced extensively in step-08 + step-12 — this consolidates.</p>
+  <div class="card">
+    <h3>WCAG 2.1 AA — what Vis ships</h3>
+    <div class="a11y-check"><strong>Color contrast ≥ 4.5:1</strong> body text against all background tokens. Token-build-time validation; CI fails on drift.</div>
+    <div class="a11y-check"><strong>Large text ≥ 3:1</strong> (Display + Title sizes).</div>
+    <div class="a11y-check"><strong>Keyboard navigation</strong> fully supported on Admin Web; mobile via VoiceOver gestures / TalkBack swipes.</div>
+    <div class="a11y-check"><strong>Screen-reader labels</strong> on every interactive element (Tamagui ARIA + Angular CDK + explicit labels on Vis-custom components).</div>
+    <div class="a11y-check"><strong>Hit targets ≥ 44 × 44 pt mobile</strong>; ≥ 32 × 32 web.</div>
+    <div class="a11y-check"><strong>Focus indicators</strong> always visible — 2 px outline in <code>--accent</code>, never <code>outline: none</code>.</div>
+    <div class="a11y-check"><strong>Reduce-motion</strong> support — orb breathing, PR cinematic, Connection Orb pulse, AI ghost slide-in all degrade gracefully.</div>
+    <div class="a11y-check"><strong>Reduce-transparency</strong> support — Liquid Glass collapses to solid warm-tinted surface; blur removed.</div>
+    <div class="a11y-check"><strong>Color blindness</strong> — critical state distinctions never rely on color alone. Recovery Orb chips carry text labels; Conflict Toast carries caption.</div>
+    <div class="a11y-check"><strong>Skip links</strong> on Admin Web (skip to main content, skip to nav).</div>
+    <div class="a11y-check"><strong>Form labels</strong> always above field, never floating, with explicit <code>for / id</code> association.</div>
+
+    <h3>What Vis does NOT target v1</h3>
+    <ul>
+      <li><strong>WCAG 2.1 AAA</strong> — not required v1; AA is industry standard for fitness apps.</li>
+      <li><strong>Full braille display support</strong> — relies on platform screen reader pass-through.</li>
+      <li><strong>Audio description for video</strong> — no video content v1.</li>
+    </ul>
+
+    <h3>Custom Vis accessibility</h3>
+    <ul>
+      <li><strong>Orb state announcement.</strong> Plain-language ARIA — "Recovery: 78%, increasing" not "Orb state: green-amber-2."</li>
+      <li><strong>Equipment-Aware Logger ARIA.</strong> "Cable, slab 8, 40 kilograms" on focus. Drag gestures have keyboard equivalents (arrow keys = slab ± 1).</li>
+      <li><strong>Connection Orb live region.</strong> "Trainer is editing. Last edit by Brienne, 12 seconds ago." Throttled to avoid spam.</li>
+      <li><strong>Privacy ∩ accessibility.</strong> Body measurements + biometric reads NEVER announced via VoiceOver unless user is on the specific surface — avoid passing health info to nearby observers.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec4">
+  <h2><span class="num">§4</span> Testing Strategy</h2>
+  <p class="lede">Automated CI + manual review + user testing. Cost-tiered by frequency.</p>
+  <div class="card">
+    <h3>Automated (CI on every PR)</h3>
+    <ul>
+      <li><strong>pa11y-ci</strong> on Angular Admin Web. Checks Page-level a11y rules. Fails build on AA violations.</li>
+      <li><strong>wcag-contrast Node script</strong> on RN tokens. Reads <code>tokens.contrast-matrix.json</code>; fails if any (text, bg) pair drops below 4.5:1.</li>
+      <li><strong>ESLint a11y plugin</strong> (eslint-plugin-jsx-a11y for RN, @angular-eslint/eslint-plugin-template for Angular). Catches missing alt text, role mismatch, etc.</li>
+      <li><strong>Lighthouse</strong> on Admin Web routes — accessibility score ≥ 95 gate.</li>
+      <li><strong>Tamagui accessibility lint</strong> — built-in dev warnings for missing labels.</li>
+    </ul>
+
+    <h3>Manual (before each release)</h3>
+    <ul>
+      <li><strong>Screen-reader testing.</strong> VoiceOver (iOS), TalkBack (Android), NVDA (Windows) on Admin Web. Walk core flows: Active Session, Onboarding Questionnaire, Owner Dashboard.</li>
+      <li><strong>Keyboard-only navigation.</strong> Admin Web — every CTA reachable without mouse. Tab order respects logical reading order.</li>
+      <li><strong>Color-blindness simulation.</strong> Chrome DevTools rendering emulation (protanopia, deuteranopia, tritanopia). Walk Recovery Orb + ACWR banner + Conflict Toast — confirm legible without color cue.</li>
+      <li><strong>Device testing.</strong> Real hardware: Pixel 6a, Galaxy A54, iPhone 14, iPad mini (v1.1 tablet check). Network throttled to 3G to validate set-save p95 under degraded conditions.</li>
+      <li><strong>Reduce-motion + reduce-transparency.</strong> Toggle both in iOS / Android settings + verify all Vis-custom components degrade.</li>
+    </ul>
+
+    <h3>User testing (post-MVP, ongoing)</h3>
+    <ul>
+      <li><strong>Include users with disabilities</strong> in beta testing cohorts. Specifically: low-vision users (test contrast + screen-reader), motor-impaired users (test thumb-zone + voice fallback).</li>
+      <li><strong>India-specific testing.</strong> Test on common Indian device profiles — Redmi 12, Realme phones, OPPO mid-tier. India's 3G/4G transition network conditions.</li>
+      <li><strong>Trainer cohort testing.</strong> Test Active Session under realistic gym-floor conditions (sweaty hands, noise, phone propped on bench).</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec5">
+  <h2><span class="num">§5</span> Implementation Guidelines</h2>
+  <p class="lede">For Dev agent + future contributors. Consolidates rules from prior steps.</p>
+  <div class="card">
+    <h3>Responsive development</h3>
+    <ul>
+      <li>Mobile-first CSS via Tailwind min-width media queries.</li>
+      <li>Use relative units (<code>rem</code>, <code>%</code>, <code>vw</code>) over fixed pixels in Admin Web. Mobile RN uses StyleSheet with point-based sizing per platform conventions.</li>
+      <li>Test touch targets ≥ 44 × 44 pt with Reactotron / Flipper inspector — failing targets flag in dev console.</li>
+      <li>Image / asset optimisation: SVG for icons, WebP for photos, lazy-load below-fold. Avatars: prefer SVG initials over photo when bandwidth-constrained.</li>
+      <li>Cold-start budget: ≤ 2.0 s on Pixel 6a / Galaxy A54 — verify via Tamagui Babel plugin telemetry (per step-06).</li>
+    </ul>
+
+    <h3>Accessibility development</h3>
+    <ul>
+      <li><strong>Semantic HTML</strong> on Admin Web — <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code>. Tamagui RN components ship correct accessibility roles by default.</li>
+      <li><strong>ARIA labels</strong> on every interactive element. Custom Vis components: explicit <code>accessibilityLabel</code> (RN) / <code>aria-label</code> (Angular). Live regions via <code>cdkAriaLive</code> + Tamagui equivalent.</li>
+      <li><strong>Keyboard navigation</strong> via Angular CDK <code>FocusKeyManager</code>. Custom logic for Equipment-Aware Logger drag gestures (arrow keys = step ±1; Enter = commit).</li>
+      <li><strong>Focus management:</strong> on modal open → trap focus inside; on modal close → restore focus to trigger. Angular CDK <code>FocusTrap</code> handles this; RN via Tamagui <code>Dialog</code> primitive.</li>
+      <li><strong>Skip links</strong> on Admin Web — first interactive element on page is "Skip to main content."</li>
+      <li><strong>High-contrast mode</strong> support via <code>prefers-contrast: more</code> media query — increases border weights, removes subtle gradients.</li>
+      <li><strong>Reduce-motion</strong> via <code>prefers-reduced-motion: reduce</code> — all orb loops, PR cinematic, Connection Orb pulse, AI ghost slide-in degrade to static. Only enter / exit fades remain.</li>
+      <li><strong>Reduce-transparency</strong> via <code>prefers-reduced-transparency: reduce</code> — Liquid Glass collapses to solid warm-tinted surface; backdrop-filter removed entirely.</li>
+    </ul>
+
+    <h3>Per-feature workflow (already in step-06)</h3>
+    <ul>
+      <li>21st-magic MCP scaffold → 5-step adapt-to-Vis-tokens checklist (hex → tokens, shadow stack, brand-ref PNG check, WCAG contrast, light + dark screenshot diff). No merge without all 5.</li>
+      <li>Reviewer assesses accessibility as part of code review — required questions: "Does this work with VoiceOver / TalkBack? Does this respect reduce-motion?"</li>
+      <li>QA validates on real hardware before each release.</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="cta">
+  <p><strong>What now?</strong> Choose in chat:</p>
+  <div class="menu-row">
+    <div class="opt"><span class="key">A</span><strong>Advanced Elicitation</strong> — refine breakpoints / testing / implementation guidelines.</div>
+    <div class="opt"><span class="key">P</span><strong>Party Mode</strong> — multi-agent critique on responsive + a11y strategy.</div>
+    <div class="opt"><span class="key">C</span><strong>Continue</strong> — append to <code>ux-design-specification.md</code> and advance to step-14 (Complete + Finalize).</div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 11 preview · Component Strategy · 2026-05-23</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg); color: var(--gc-text);
+    line-height: 1.6; font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page { padding-bottom: 22px; margin-bottom: 28px; border-bottom: 1px solid var(--gc-border); }
+  header.page .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 600; color: var(--vis-amber-primary); }
+  header.page h1 { margin: 6px 0 2px; font-size: 28px; font-weight: 600; letter-spacing: -0.015em; }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract { margin-top: 12px; font-size: 14px; color: var(--gc-text-muted); max-width: 760px; }
+
+  nav.toc {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 14px 18px;
+    box-shadow: var(--gc-shadow-card); margin-bottom: 28px; font-size: 13.5px;
+  }
+  nav.toc ol { margin: 6px 0 0; padding-left: 22px; }
+  nav.toc li { margin: 3px 0; }
+  nav.toc a { color: var(--gc-text); text-decoration: none; }
+  nav.toc a:hover { color: var(--vis-amber-primary); }
+  nav.toc .label { font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--vis-amber-primary); }
+
+  section { margin-top: 36px; }
+  h2 { margin: 0 0 8px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; display: flex; align-items: baseline; gap: 12px; }
+  h2 .num { color: var(--vis-amber-primary); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+  .lede { color: var(--gc-text-muted); font-size: 14px; margin: 0 0 14px; }
+  h3 { margin: 16px 0 8px; font-size: 14.5px; font-weight: 600; }
+  p { margin: 6px 0; }
+  ul { padding-left: 22px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  strong { color: var(--vis-amber-primary); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: rgba(196,81,0,0.08); color: var(--vis-amber-primary); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  th {
+    font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--gc-text-muted);
+    border-bottom: 1px solid var(--vis-amber-primary);
+    background: rgba(255,106,0,0.02);
+  }
+  tbody tr:hover { background: rgba(255,106,0,0.04); }
+
+  /* Foundation block */
+  .foundation {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 18px 22px;
+    box-shadow: var(--gc-shadow-card);
+  }
+
+  /* Component spec card */
+  .comp {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 4px 18px;
+    margin: 10px 0; box-shadow: var(--gc-shadow-soft);
+  }
+  .comp summary {
+    cursor: pointer; list-style: none; padding: 14px 0;
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 600; font-size: 15.5px;
+  }
+  .comp summary::-webkit-details-marker { display: none; }
+  .comp summary::after { content: "▾"; margin-left: auto; color: var(--gc-text-muted); transition: transform 0.2s ease; font-size: 14px; }
+  .comp[open] summary::after { transform: rotate(180deg); }
+  .comp .badge {
+    background: rgba(224,99,19,0.12); color: var(--vis-amber-primary);
+    padding: 2px 8px; border-radius: 6px;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    margin-left: auto; margin-right: 12px;
+  }
+  .comp-body { padding: 0 0 16px; font-size: 13.5px; }
+  .comp-body dt { font-weight: 600; color: var(--vis-amber-primary); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 10px; }
+  .comp-body dd { margin: 2px 0 0; color: var(--gc-text); }
+  .comp-body dd code { font-size: 12px; }
+
+  /* Roadmap */
+  .roadmap {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin-top: 12px;
+  }
+  .phase {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-primary);
+    border-radius: 12px; padding: 14px 16px;
+    box-shadow: var(--gc-shadow-soft);
+  }
+  .phase .label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--vis-amber-primary); font-weight: 600; }
+  .phase h4 { margin: 4px 0 6px; font-size: 14px; }
+  .phase ul { font-size: 13px; padding-left: 18px; margin: 0; }
+  .phase .gates { margin-top: 8px; font-size: 11px; color: var(--gc-text-muted); }
+
+  footer.cta {
+    margin-top: 40px; padding: 20px 22px;
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 16px; box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  .menu-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .menu-row .opt {
+    flex: 1 1 200px;
+    background: var(--gc-bg); border: 1px solid var(--gc-border);
+    border-radius: 10px; padding: 12px 14px; font-size: 13.5px;
+  }
+  .menu-row .opt .key {
+    display: inline-block; width: 22px; height: 22px;
+    background: var(--vis-amber-primary); color: white;
+    border-radius: 5px; text-align: center; line-height: 22px;
+    font-weight: 700; margin-right: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 11 preview</div>
+  <h1>Component Strategy — foundation, custom, roadmap</h1>
+  <div class="meta">2026-05-23 · Author: Gauravprakashshinde · 13 custom components specced + 5-phase roadmap</div>
+  <div class="abstract">
+    Foundation components come from Tamagui (React Native) + Angular CDK + Lucide + Geist. Custom components are the Vis-original surfaces that define the moat. This step specs the 13 most critical custom components (purpose, anatomy, states, variants, a11y) and sequences them across a 5-phase build roadmap from Phase 0.5 (foundation) through Phase 5 (lifecycle).
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="label">In this preview</div>
+  <ol>
+    <li><a href="#sec1">Foundation components — Tamagui · CDK · Lucide</a></li>
+    <li><a href="#sec2">Custom components — 13 spec cards (collapsible)</a></li>
+    <li><a href="#sec3">Implementation strategy — token discipline + a11y workflow</a></li>
+    <li><a href="#sec4">Roadmap — 5 phases gated by SMs</a></li>
+  </ol>
+</nav>
+
+<section id="sec1">
+  <h2><span class="num">§1</span> Foundation Components</h2>
+  <p class="lede">What comes from libraries underneath the brand layer. Not custom — adapted to Vis tokens.</p>
+  <div class="foundation">
+    <table>
+      <thead><tr><th>Surface</th><th>Library</th><th>What it provides</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tamagui</strong> (RN)</td><td>self-themed primitives</td><td>Button, Input, Dialog, Sheet, Toast, Popover, ScrollView, FlatList wrapper, Avatar, Spinner, Animated views (via Reanimated 3)</td></tr>
+        <tr><td><strong>Angular CDK</strong></td><td>headless a11y primitives</td><td>Overlay, FocusTrap, FocusMonitor, A11yModule (LiveAnnouncer, FocusKeyManager), Drag-Drop, Portal, Layout (BreakpointObserver)</td></tr>
+        <tr><td><strong>Tailwind</strong> (Angular)</td><td>utility-class styling</td><td>spacing, color, typography utilities driven by shared <code>tokens.css</code>; <code>preflight</code> reset scoped away from <code>.cdk-overlay-container</code></td></tr>
+        <tr><td><strong>Lucide</strong></td><td>icon library</td><td>~1400 line icons; RN + Angular ports; one stroke weight; no brand mark (orb is the only Vis illustration)</td></tr>
+        <tr><td><strong>Victory Native</strong> (RN)</td><td>charts</td><td>line, area, bar charts for Progress Tab; consumes Vis tokens; respects reduce-motion</td></tr>
+        <tr><td><strong>Apache ECharts</strong> (Angular)</td><td>charts</td><td>Owner Dashboard KPI charts, branch performance graphs, audit-log timeline</td></tr>
+        <tr><td><strong>@react-native-community/blur</strong></td><td>Liquid Glass</td><td>UIVisualEffectView on iOS, RenderEffect on Android 12+; gradient overlay fallback on Android &lt; 12</td></tr>
+        <tr><td><strong>react-native-skia</strong></td><td>orb hero only</td><td>Gradient morphing + shape distortion for the central orb; +2 MB bundle, scoped to hero surfaces only</td></tr>
+        <tr><td><strong>@fontsource/geist</strong></td><td>typography</td><td>Geist + Geist Mono self-hosted, no external CDN</td></tr>
+        <tr><td><strong>21st-dev/magic MCP</strong></td><td>component scaffolding</td><td>Generates JSX/TSX scaffold from intent; output adapted via 5-step Vis-tokens checklist before merge</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="sec2">
+  <h2><span class="num">§2</span> Custom Components — 13 spec cards</h2>
+  <p class="lede">Vis-original components that the brand layer depends on. Each card collapses; expand for purpose, anatomy, states, variants, a11y, interaction behavior.</p>
+
+  <!-- 1. Orb -->
+  <details class="comp">
+    <summary>1. Orb (5 tension states) <span class="badge">brand-locked</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>The signature visual — a backend-signal-driven sphere that conveys session state, recovery, and presence at a glance. Never decoration.</dd>
+        <dt>Anatomy</dt><dd>3-layer gradient: radial peach top-highlight + linear amber body + smoked-glass overlay. 3-layer peach-tinted shadow stack. <code>--brand-locked-*</code> tokens; never themable by accent preset.</dd>
+        <dt>States</dt><dd><strong>At rest</strong> (no active Session in 24h) · <strong>Under load</strong> (<code>ws.readyState === OPEN &amp;&amp; session.active</code>) · <strong>Peak tension</strong> (<code>last_set.is_working &amp;&amp; intent === 'failure'</code>) · <strong>Recovered</strong> (<code>session.completed_at</code> + post-session timer) · <strong>Disconnected / Stale</strong> (<code>ws.readyState !== OPEN OR offline_queue.depth &gt; 0</code>).</dd>
+        <dt>Variants</dt><dd>Hero (110 × 110 px Direction 1) · Medium (56 px Direction 4 header) · Small (32 px nav corner) · X-large (150 px PR Moment cinematic).</dd>
+        <dt>A11y</dt><dd>ARIA label announces state plain-language ("Recovery: 78%, increasing" / "Session active with Brienne"). Reduce-motion: breathing loop stops; state still readable in static frame. Reduce-transparency: gradient collapses to solid amber.</dd>
+        <dt>Interaction</dt><dd>Non-interactive on most surfaces. On Recovery Orb (Direction 1 + 5 home), tap opens muscle-group breakdown sheet.</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 2. Connection Orb -->
+  <details class="comp">
+    <summary>2. Connection Orb (live trainer ↔ client tension stem) <span class="badge">brand-locked</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>Visualises the live WebSocket bond between trainer and client during a Co-Edit Session. Makes the moat visible.</dd>
+        <dt>Anatomy</dt><dd>Two avatar circles linked by a horizontal tension stem (gradient amber). Stem brightness encodes presence; pulse on remote write.</dd>
+        <dt>States</dt><dd><strong>Idle</strong> (both connected, no recent writes — stem dim amber) · <strong>Active</strong> (one party has written within 60s — stem mid-bright) · <strong>Live mutual</strong> (both wrote within 60s — stem bright + slight glow pulse) · <strong>Pulsing</strong> (800ms pulse animation on each remote write) · <strong>Disconnected</strong> (WS down — stem fades to peach tint, avatar greyed).</dd>
+        <dt>Variants</dt><dd>Header dock (Active Session, ~88 px wide) · Inline (FCM notification preview, ~44 px).</dd>
+        <dt>A11y</dt><dd>"Trainer is connected. Last edit by Brienne, 12 seconds ago." Announced via <code>cdkAriaLive</code> on state change; throttled to avoid spam.</dd>
+        <dt>Interaction</dt><dd>Tap → presence detail sheet (who's online, last write timestamp per party, reconnect time if applicable).</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 3. Equipment-Aware Logger family -->
+  <details class="comp">
+    <summary>3. Equipment-Aware Logger family (6 variants) <span class="badge">FR-8 · gesture moat</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>Set logging via equipment-shaped gestures. No typing in the happy path.</dd>
+        <dt>Anatomy</dt><dd>Per variant: <strong>Cable</strong> = vertical pin-stack with draggable pin · <strong>Barbell</strong> = bar with two-sided plate-snap targets, auto-sum total · <strong>Dumbbell</strong> = number-line slider with snap increments · <strong>Machine pin-stack</strong> = same as cable · <strong>Bodyweight</strong> = silhouette + optional vest field · <strong>Kettlebell</strong> = discrete-step picker matching standard weights · <strong>Bands</strong> = colour-coded tier picker.</dd>
+        <dt>States</dt><dd>Idle (prefilled per cascade) · Active (gesture in progress) · Committed (server-ack + green check) · Queued (offline) · Stale (failed reconcile) · AI-suggested (ghost overlay visible).</dd>
+        <dt>Variants</dt><dd>All 6 share a common interface: <code>onCommit(load, reps, source)</code>, <code>prefill</code>, <code>variant: 'cable' | 'barbell' | ...</code>. Numeric-keypad fallback always available via long-press.</dd>
+        <dt>A11y</dt><dd>Logger announces "cable, slab 8, 40 kilograms" on focus. Drag gestures have keyboard equivalents (arrow keys = slab ± 1). Hit targets ≥ 44 × 44 pt. Reduce-motion: gestures still work; settle animation removed.</dd>
+        <dt>Interaction</dt><dd>Drag / snap / slide / pick / toggle. Long-press = numeric keypad fallback. First-time tap = 2s animated hint that dismisses after first successful gesture.</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 4. Active Session Set Row -->
+  <details class="comp">
+    <summary>4. Active Session Set Row <span class="badge">FR-1 · FR-3</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>Single-row representation of a Set with prescribed-vs-actual, warm-up, failure intent, per-rep assistance, and provenance.</dd>
+        <dt>Anatomy</dt><dd>From left: warm-up checkbox · prescribed (load × reps × RPE in mono) · actual (load × reps × RPE in mono, accent-tinted on divergence) · rep-quality bar (per-rep dots: unassisted / spotter / forced) · Done toggle · provenance avatar + timestamp.</dd>
+        <dt>States</dt><dd>Empty (no actual yet) · Active (gesture in progress) · Committed (green check) · Queued (offline badge) · Conflict (Conflict Toast spawn) · Edit mode (long-press → fields editable, audit-log entry on save).</dd>
+        <dt>Variants</dt><dd>Mobile (full-width single row, 64 px height) · Tablet (wider, 56 px height). PT-attached: includes Presence Avatar Stack at right.</dd>
+        <dt>A11y</dt><dd>Reads as "Set 3, prescribed 50 kilograms 10 reps, actual 47 point 5 kilograms 10 reps." Each field independently focusable. Long-press = context menu (keyboard: Enter on focus).</dd>
+        <dt>Interaction</dt><dd>Tap any field = edit via appropriate Logger. Long-press row = Edit / Mark warm-up / Mark abandoned context menu.</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 5. Branch-Scope Chip -->
+  <details class="comp">
+    <summary>5. Branch-Scope Chip (identity switcher) <span class="badge">FR-25 · multi-role moat</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>Always-visible nav element showing current identity + branch scope. Tap to switch (trainer multi-brand, owner cross-branch).</dd>
+        <dt>Anatomy</dt><dd>Pill shape · small orb glyph + brand initial + branch name. Right-side chevron when multiple options available.</dd>
+        <dt>States</dt><dd>Single-scope (no chevron, informational only) · Multi-scope (chevron, tap opens identity sheet) · Active switching (loading spinner during context swap) · All-branches view (Owner only — shows "All Branches" with brand mark).</dd>
+        <dt>Variants</dt><dd>Mobile nav corner (32 × 32 with collapsed text) · Web nav left-side (full pill with branch name) · Identity sheet variant (full list of available identities + brands).</dd>
+        <dt>A11y</dt><dd>"Current scope: Brand A, Kandivali. Tap to switch." Live region announces "Switched to Brand B, Borivali" on change.</dd>
+        <dt>Interaction</dt><dd>Tap → identity sheet appears as bottom-sheet (mobile) or dropdown (web). During active Co-Edit Session, chip is read-only (blocks switch with explanation).</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 6. Ghost Set Row -->
+  <details class="comp">
+    <summary>6. Ghost Set Row (AI suggestion) <span class="badge">FR-12 · FR-14</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>Greyed-out, AI-suggested next Set rendered below the current Set row. Tap = accept; long-press = override.</dd>
+        <dt>Anatomy</dt><dd>Same field structure as Set row, but rendered at 50% opacity in <code>--accent</code> color. Confidence indicator on right (reserved <code>--ai-confidence-low/med/high</code> token; component lands v1.1).</dd>
+        <dt>States</dt><dd>Pending (skeleton during Claude proxy call, up to 6s cold path) · Loaded (suggestion visible) · Accepted (transitions to live Set row) · Dismissed (slides out + records override in trainer-AI-override telemetry) · Stale (suggestion arrived after user logged → self-dismiss with "stale-ai" badge).</dd>
+        <dt>Variants</dt><dd>Solo client: visible per FR-13 AI Bootstrap defaults but not for full per-set AI v1. Trainer: full AI-suggested per-set v1.</dd>
+        <dt>A11y</dt><dd>"AI suggests 52 kilograms 10 reps. Tap to accept, long-press to override." First time: inline coachmark that fades after first interaction.</dd>
+        <dt>Interaction</dt><dd>Tap = accept; long-press = open numeric override. AI-locked clients lose the override surface (autopilot mode).</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 7. PR Moment Composer -->
+  <details class="comp">
+    <summary>7. PR Moment Composer <span class="badge">FR-10 · FR-11 · SM-5</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>Cinematic detection + share composer for personal records.</dd>
+        <dt>Anatomy</dt><dd>Full-screen overlay: amber emissive sweep (≤ 1.5 s) → headline "200 kg × 1 — your new best" → composer with 3 aspect-ratio templates (square, 9:16, 4:5) → native share-sheet trigger.</dd>
+        <dt>States</dt><dd>Detection-pending (server compute) · Detected (cinematic fires) · Composing (preview templates) · Sharing (native sheet open) · Dismissed (archived to profile, one nudge per unshared PR).</dd>
+        <dt>Variants</dt><dd>Solo: full cinematic. PT-attached: same cinematic + co-shared with trainer's PR feed. ACWR-triggered demote: no PR cinematic if recent volume spike (avoid celebration on overtraining edge).</dd>
+        <dt>A11y</dt><dd>Cinematic dismissible via tap or system back. ARIA labels on each share target. Reduce-motion: cinematic collapses to static frame.</dd>
+        <dt>Interaction</dt><dd>Detection auto-fires; user can immediately share or dismiss. Watermark toggle persists per user (default ON). Counter-metric SM-C10 if &gt; 80% no-share — investigate composer copy.</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 8. Recovery Orb -->
+  <details class="comp">
+    <summary>8. Recovery Orb (per-muscle readiness) <span class="badge">FR-35 · FR-36</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>At-a-glance per-muscle-group recovery status on Client Home.</dd>
+        <dt>Anatomy</dt><dd>Central orb with 12 small chip-segments arranged radially (12 muscle groups per PRD §14). Each chip colour-coded green / amber / red based on time since last training that group.</dd>
+        <dt>States</dt><dd>All recovered (all green) · Mixed (segments multi-colored) · Heavy load (red segments warn against training that group today) · Cold start (insufficient history; "baseline-building, day X / 14").</dd>
+        <dt>Variants</dt><dd>Home (Direction 1 — large) · Progress Tab (smaller summary) · Pre-session check (shown before Active Session opens if any segment is red).</dd>
+        <dt>A11y</dt><dd>"Chest: recovered. Back: 28 hours remaining. Quads: 2 hours remaining." Tap = full muscle-group breakdown sheet with per-group last-trained and recommended-by date.</dd>
+        <dt>Interaction</dt><dd>Tap = sheet open. Long-press on a segment = jump to that muscle's history. Reduce-motion: segment fills are instant, not animated.</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 9. Presence Avatar Stack -->
+  <details class="comp">
+    <summary>9. Presence Avatar Stack <span class="badge">FR-1 · FR-25</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>Overlapping avatar dots on a Set row showing who's currently editing this Set live. Provenance at the row level.</dd>
+        <dt>Anatomy</dt><dd>Up to 3 overlapping circular avatars (current actor + recent writers). 22 × 22 px each. Order: most-recent-on-top.</dd>
+        <dt>States</dt><dd>Empty (no one editing) · Single (one party present) · Multi-presence (both trainer + client) · Recent-write fade (avatar persists 30s after commit, then fades).</dd>
+        <dt>Variants</dt><dd>Set-row-level (small, inline) · Active Session header level (medium, with name labels) · Owner audit log (large with role labels).</dd>
+        <dt>A11y</dt><dd>"Brienne is editing. Last edit by Samwell, 8 seconds ago." Throttled live region updates.</dd>
+        <dt>Interaction</dt><dd>Tap stack = presence-detail sheet (who's online + last write per actor + reconnect time).</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 10. Conflict Toast -->
+  <details class="comp">
+    <summary>10. Conflict Toast <span class="badge">FR-1 LWW</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>Non-modal notification when a remote write overwrote yours. Last-write-wins surfaced calmly.</dd>
+        <dt>Anatomy</dt><dd>Bottom-sheet-like single-line toast: avatar of overwriter + "[Trainer] overwrote your value 47.5 → 50" + Undo button + dismiss.</dd>
+        <dt>States</dt><dd>Visible (8 s default) · Tapped Undo (sends revert, decrements server version) · Dismissed (toast slides out, write stands).</dd>
+        <dt>Variants</dt><dd>Single-conflict (most common) · Batch (multiple overwrites in same drain — collapsed into "5 writes overwritten" with expand).</dd>
+        <dt>A11y</dt><dd>Live region announces overwrite. Toast is focusable via screen reader. Undo is a hard-target button ≥ 44 × 44 pt.</dd>
+        <dt>Interaction</dt><dd>Auto-dismiss 8 s. Tap = persistent (don't auto-dismiss). Tap Undo = revert via server-stamped order; recipient sees their own Conflict Toast.</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 11. Risk Banner -->
+  <details class="comp">
+    <summary>11. Risk Banner (ACWR alert) <span class="badge">FR-37</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>Trainer-side alert when a client's Acute:Chronic Workload Ratio crosses risk thresholds.</dd>
+        <dt>Anatomy</dt><dd>Inline banner on Trainer client-detail screen: amber tint (ACWR &gt; 1.5) or red tint (ACWR &gt; 2.0) + 1-line summary ("Samwell: ACWR 1.7 — injury-risk zone") + primary action ("Apply deload to next session") + dismiss.</dd>
+        <dt>States</dt><dd>Amber (consider deload) · Red (auto-deload suggestion fires via Ghost Set Row at 70% prescribed loads) · Cold-start ("baseline-building, day X / 14" — suppressed for first 14 days per PRD).</dd>
+        <dt>Variants</dt><dd>Inline banner (default) · Push notification (FCM, single client) · Dashboard summary (across clients in Trainer Today).</dd>
+        <dt>A11y</dt><dd>"Risk alert for Samwell. ACWR 1.7 — injury risk zone." Action button is primary focus target. Tone: "consider deload," never "you're overtraining."</dd>
+        <dt>Interaction</dt><dd>Primary action applies deload to next session (Ghost Set Row updates). Dismiss = banner hidden until next ACWR recompute (weekly).</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 12. Session Recovery Sheet -->
+  <details class="comp">
+    <summary>12. Session Recovery Sheet <span class="badge">abandonment flow</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>On next open after a Session was abandoned (last activity &gt; 30 min ago without explicit End), offer Resume or Discard with partial-Set preview.</dd>
+        <dt>Anatomy</dt><dd>Modal sheet: title "Unfinished session from 47 minutes ago" + 2-3 partial Set rows preview + Resume CTA + Discard secondary.</dd>
+        <dt>States</dt><dd>Pending (just opened) · Resume tapped (returns to Active Session with state intact) · Discard tapped (confirmation dialog, then partial Sets archived as abandoned).</dd>
+        <dt>Variants</dt><dd>Short-abandon (&lt; 2 h ago) · Long-abandon (&gt; 24 h ago — defaults to Discard preselected).</dd>
+        <dt>A11y</dt><dd>Modal traps focus. Resume + Discard both hard-target buttons. Reads as "Unfinished session from 47 minutes ago. 3 partial sets. Resume or discard?"</dd>
+        <dt>Interaction</dt><dd>Modal blocks Active Session entry until choice made. Discard has a confirmation step to prevent fat-finger data loss.</dd>
+      </dl>
+    </div>
+  </details>
+
+  <!-- 13. Empty States set -->
+  <details class="comp">
+    <summary>13. Empty States set (per surface) <span class="badge">cross-surface</span></summary>
+    <div class="comp-body">
+      <dl>
+        <dt>Purpose</dt><dd>Surface-specific empty-state illustrations + copy + next-action CTA. 21st-magic won't get these right by default.</dd>
+        <dt>Anatomy</dt><dd>Centered: small orb glyph + 1-line plain-language heading + 1-line context (why empty) + primary CTA + optional secondary link.</dd>
+        <dt>Variants</dt><dd><strong>Empty Logger</strong> (no exercise selected — "Pick an exercise to start logging") · <strong>Empty PR feed</strong> ("Your PRs will appear here") · <strong>Empty branch dashboard</strong> (Owner — "No data yet — branches will populate as members join") · <strong>Empty client list</strong> (Trainer — "Your roster is empty. Accept a client request to begin.") · <strong>Empty trainer roster</strong> (Staff — "No trainers active at this branch.") · <strong>Empty audit log</strong> (Owner — "No entries match your filter. Broaden range?").</dd>
+        <dt>A11y</dt><dd>Each empty state has descriptive ARIA + a hard-focusable CTA. No "ghost" decoration with no action.</dd>
+        <dt>Interaction</dt><dd>Primary CTA always navigates to the resolution path (e.g. Empty Logger → exercise picker).</dd>
+      </dl>
+    </div>
+  </details>
+
+</section>
+
+<section id="sec3">
+  <h2><span class="num">§3</span> Implementation Strategy</h2>
+  <p class="lede">How custom components are built on top of foundation, what guardrails apply, and how the 21st-magic workflow integrates.</p>
+  <ul>
+    <li><strong>Token discipline.</strong> Every component imports tokens through Layer B (<code>--accent</code>, <code>--brand-locked-*</code>). Components in the brand-locked allowlist (orb, wordmark, PR-watermark) may import Layer A <code>--vis-amber-*</code> directly. ESLint <code>no-restricted-syntax</code> blocks raw hex in <code>/components/**</code>.</li>
+    <li><strong>Composition over inheritance.</strong> Custom components compose Tamagui primitives — don't fork the library. If a primitive can't be styled via token, build a sibling custom component rather than overriding.</li>
+    <li><strong>21st-magic workflow.</strong> Every new component: (1) <code>21st_magic_component_inspiration</code> reference, (2) <code>21st_magic_component_builder</code> or <code>_refiner</code> scaffold, (3) 5-step "adapt to Vis tokens" checklist (hex → tokens, shadow stack, brand-ref PNG check, WCAG contrast, light + dark screenshot diff), (4) merge.</li>
+    <li><strong>Accessibility default.</strong> Tamagui + Angular CDK provide ARIA primitives; Vis-custom components ship explicit ARIA labels. CI gate via pa11y-ci + Node <code>wcag-contrast</code> script.</li>
+    <li><strong>State machine per component.</strong> Every component with &gt; 2 states has a documented state diagram. UI state is derived from backend signals where possible (orb states tied to <code>ws.readyState</code> / <code>session.active</code> / <code>offline_queue.depth</code>).</li>
+    <li><strong>Cross-platform parity.</strong> Wherever a component appears on both RN + Angular (KPI cards, Empty States, Branch-Scope Chip on Admin Web), the contract is the same: same props, same a11y labels, same state names. Visual rendering differs per platform but semantics stay identical.</li>
+  </ul>
+</section>
+
+<section id="sec4">
+  <h2><span class="num">§4</span> Implementation Roadmap</h2>
+  <p class="lede">5 phases. Each gated by the SM it unlocks. Phase 0 + 0.5 = foundation (per step-06). Feature work starts Phase 1.</p>
+  <div class="roadmap">
+
+    <div class="phase">
+      <div class="label">Phase 0 + 0.5</div>
+      <h4>Foundation</h4>
+      <ul>
+        <li>tokens.ts workspace package (Layer A + B)</li>
+        <li>Tamagui + Babel plugin (optimize: true)</li>
+        <li>Angular CDK + Tailwind config (preflight scoped)</li>
+        <li>Lucide ports both sides</li>
+        <li>Geist + Geist Mono self-hosted</li>
+        <li>Reanimated + Gesture Handler + blur + Skia on EAS dev client</li>
+        <li>WCAG contrast CI · ESLint guardrails</li>
+        <li>6 gesture maps documented</li>
+      </ul>
+      <div class="gates">Gates: nothing yet — pure infra.</div>
+    </div>
+
+    <div class="phase">
+      <div class="label">Phase 1</div>
+      <h4>Active Session core (the moat)</h4>
+      <ul>
+        <li>Orb (5 states + animations)</li>
+        <li>Connection Orb (live presence + pulsing)</li>
+        <li>6 Equipment-Aware Loggers</li>
+        <li>Active Session Set Row + Provenance line</li>
+        <li>Presence Avatar Stack</li>
+        <li>Conflict Toast</li>
+        <li>Ghost Set Row (placeholder; AI confidence chip reserved v1.1)</li>
+        <li>Rest timer</li>
+      </ul>
+      <div class="gates">Gates: SM-1 WALS, SM-3 Co-Edit ≥ 25%, SM-C6 set-save p95.</div>
+    </div>
+
+    <div class="phase">
+      <div class="label">Phase 2</div>
+      <h4>Sharing + PR loop</h4>
+      <ul>
+        <li>PR Moment cinematic</li>
+        <li>PR Card composer (3 aspect ratios)</li>
+        <li>Native share-sheet integration</li>
+        <li>Vis watermark + per-user toggle</li>
+      </ul>
+      <div class="gates">Gates: SM-5 PR-Card share ≥ 30%; SM-C10 no-share &lt; 80%.</div>
+    </div>
+
+    <div class="phase">
+      <div class="label">Phase 3</div>
+      <h4>Recovery + risk</h4>
+      <ul>
+        <li>Recovery Orb (12 muscle segments)</li>
+        <li>Per-muscle weekly set-count chip</li>
+        <li>Risk Banner (ACWR amber + red)</li>
+        <li>FCM ACWR push</li>
+        <li>Progress Tab (line charts + heatmap + sparkline)</li>
+      </ul>
+      <div class="gates">Gates: SM-2 D7 retention ≥ 35%; SM-7 trainer-monitoring ≥ 50%.</div>
+    </div>
+
+    <div class="phase">
+      <div class="label">Phase 4</div>
+      <h4>Multi-role + Admin Web</h4>
+      <ul>
+        <li>Branch-Scope Chip (identity switcher)</li>
+        <li>Owner KPI cards + sparklines</li>
+        <li>Branch dashboard tables (solid surfaces)</li>
+        <li>Audit-log query interface</li>
+        <li>Trainer Leaderboard</li>
+        <li>Staff CSV import + PT activation + payment log</li>
+      </ul>
+      <div class="gates">Gates: SM-7 + SM-8 ≥ 2/brand/week.</div>
+    </div>
+
+    <div class="phase">
+      <div class="label">Phase 5</div>
+      <h4>Lifecycle + empty states</h4>
+      <ul>
+        <li>Onboarding Questionnaire (shared component, path-aware shell)</li>
+        <li>Session Recovery Sheet (abandonment)</li>
+        <li>Empty States set (6 surfaces)</li>
+        <li>Plan-block expiry FCM cadence</li>
+        <li>PT-relationship state machine UI</li>
+      </ul>
+      <div class="gates">Gates: SM-6 onboarding ≥ 60%; SM-C8 no-log &lt; 50%; SM-4 Solo D30.</div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="cta">
+  <p><strong>What now?</strong> Choose in chat:</p>
+  <div class="menu-row">
+    <div class="opt"><span class="key">A</span><strong>Advanced Elicitation</strong> — refine specs or roadmap before saving.</div>
+    <div class="opt"><span class="key">P</span><strong>Party Mode</strong> — multi-agent critique on component strategy.</div>
+    <div class="opt"><span class="key">C</span><strong>Continue</strong> — append to <code>ux-design-specification.md</code> and advance to step-12 (UX Patterns).</div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

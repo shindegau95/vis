@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Step 05 preview · Inspiration · 2026-05-22</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+    --gc-good: #1F7A4A;
+    --gc-avoid: #B53A1A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+      --gc-shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(255,106,0,0.12);
+      --gc-shadow-soft: 0 2px 8px rgba(0,0,0,0.4), 0 12px 28px -8px rgba(255,106,0,0.10);
+      --gc-good: #6BD49A;
+      --gc-avoid: #F58A6A;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg);
+    color: var(--gc-text);
+    line-height: 1.65;
+    font-size: 15.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  header.page { padding-bottom: 24px; margin-bottom: 28px; border-bottom: 1px solid var(--gc-border); }
+  header.page .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 11px; font-weight: 600; color: var(--vis-amber-primary);
+  }
+  header.page h1 { margin: 6px 0 2px; font-size: 28px; font-weight: 600; letter-spacing: -0.015em; }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract { margin-top: 12px; font-size: 14.5px; color: var(--gc-text-muted); max-width: 760px; }
+
+  nav.toc {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 14px 18px;
+    box-shadow: var(--gc-shadow-card); margin-bottom: 28px; font-size: 13.5px;
+  }
+  nav.toc ol { margin: 6px 0 0; padding-left: 22px; }
+  nav.toc li { margin: 3px 0; }
+  nav.toc a { color: var(--gc-text); text-decoration: none; }
+  nav.toc a:hover { color: var(--vis-amber-primary); }
+  nav.toc .label { font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--vis-amber-primary); }
+
+  section { margin-top: 36px; }
+  section > h2 {
+    margin: 0 0 8px; font-size: 21px; font-weight: 600; letter-spacing: -0.01em;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  section > h2 .num { color: var(--vis-amber-primary); font-size: 14px; font-weight: 600; letter-spacing: 0.04em; }
+  section > .lede { color: var(--gc-text-muted); font-size: 14.5px; margin: 0 0 14px; }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  strong { color: var(--vis-amber-primary); }
+
+  .insp-grid {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .insp-card {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 16px 20px; box-shadow: var(--gc-shadow-card);
+  }
+  .insp-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--vis-amber-primary); font-weight: 600; }
+  .insp-card h3 { margin: 4px 0 6px; font-size: 17px; }
+  .insp-card .role { color: var(--gc-text-muted); font-size: 12.5px; margin-bottom: 8px; font-style: italic; }
+  .insp-card .takeaway-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gc-good); font-weight: 600; margin-top: 10px; }
+  .insp-card .leave-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gc-avoid); font-weight: 600; margin-top: 10px; }
+  .insp-card ul { font-size: 13.5px; margin: 4px 0 0; padding-left: 18px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  th {
+    font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--gc-text-muted); border-bottom: 1px solid var(--vis-amber-primary);
+    background: rgba(255,106,0,0.02);
+  }
+  tbody tr:hover { background: rgba(255,106,0,0.04); }
+  td.bucket { width: 110px; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--vis-amber-primary); }
+
+  .anti-list { display: grid; gap: 10px; }
+  .anti-card {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--gc-avoid);
+    border-radius: 10px; padding: 12px 16px; box-shadow: var(--gc-shadow-soft);
+  }
+  .anti-card .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--gc-avoid); color: white;
+    font-size: 12px; font-weight: 600;
+    margin-right: 10px; vertical-align: middle;
+  }
+  .anti-card .title { font-weight: 600; font-size: 15px; }
+  .anti-card .desc { color: var(--gc-text-muted); font-size: 13.5px; margin-top: 4px; }
+  .anti-card .principle { display: inline-block; margin-top: 6px; font-size: 11.5px; color: var(--vis-amber-primary); background: rgba(196,81,0,0.08); padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+
+  .strategy {
+    display: grid; gap: 14px;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  @media (max-width: 800px) { .strategy { grid-template-columns: 1fr; } }
+  .strat-card {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 16px 20px; box-shadow: var(--gc-shadow-card);
+  }
+  .strat-card.adopt { border-top: 3px solid var(--gc-good); }
+  .strat-card.adapt { border-top: 3px solid var(--vis-amber-primary); }
+  .strat-card.avoid { border-top: 3px solid var(--gc-avoid); }
+  .strat-card h3 { margin: 0 0 6px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .strat-card.adopt h3 { color: var(--gc-good); }
+  .strat-card.adapt h3 { color: var(--vis-amber-primary); }
+  .strat-card.avoid h3 { color: var(--gc-avoid); }
+  .strat-card ul { font-size: 13.5px; padding-left: 18px; margin: 6px 0 0; }
+
+  .accent-block {
+    margin-top: 20px;
+    background: var(--gc-bg-elevated);
+    border: 1px solid var(--gc-border);
+    border-left: 3px solid var(--vis-amber-deep);
+    border-radius: 14px;
+    padding: 18px 22px;
+    box-shadow: var(--gc-shadow-card);
+  }
+  .accent-block .label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--vis-amber-deep); font-weight: 600;
+  }
+  .accent-block h3 { margin: 4px 0 8px; font-size: 17px; }
+  .swatch-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .swatch {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-size: 11px; color: var(--gc-text-muted);
+  }
+  .swatch .dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .swatch.default .dot { box-shadow: 0 0 0 2px var(--vis-amber-deep), 0 4px 12px rgba(255,106,0,0.3); }
+
+  footer.cta {
+    margin-top: 40px; padding: 20px 22px;
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 16px; box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+  .menu-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .menu-row .opt {
+    flex: 1 1 200px;
+    background: var(--gc-bg); border: 1px solid var(--gc-border);
+    border-radius: 10px; padding: 12px 14px; font-size: 13.5px;
+  }
+  .menu-row .opt .key {
+    display: inline-block; width: 22px; height: 22px;
+    background: var(--vis-amber-primary); color: white;
+    border-radius: 5px; text-align: center; line-height: 22px;
+    font-weight: 700; margin-right: 8px;
+  }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: rgba(196,81,0,0.08); color: var(--vis-amber-primary); padding: 1px 6px; border-radius: 4px; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 05 preview</div>
+  <h1>UX Pattern Analysis &amp; Inspiration — proposed content</h1>
+  <div class="meta">2026-05-22 · Author: Gauravprakashshinde · Will append to ux-design-specification.md after [C]</div>
+  <div class="abstract">
+    Three inspirations confirmed (Bevel, Apple Health, Motra), two category lessons (Bevel + Trainerize), and four anti-patterns to actively reject. Vis ships a <strong>fresh new UI</strong> — inspirations are pattern donors, not visual templates. New v1 requirement captured: user-customizable accent color (default tangerine / deep amber).
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="label">In this preview</div>
+  <ol>
+    <li><a href="#sec1">Inspiring Products — what to learn, what to leave</a></li>
+    <li><a href="#sec2">Transferable UX Patterns — navigation · interaction · visual</a></li>
+    <li><a href="#sec3">Anti-Patterns to Avoid — 4 named</a></li>
+    <li><a href="#sec4">Design Inspiration Strategy — Adopt · Adapt · Avoid + accent</a></li>
+  </ol>
+</nav>
+
+<section id="sec1">
+  <h2><span class="num">§1</span> Inspiring Products Analysis</h2>
+  <p class="lede">Three explicit sources, each picked for a specific lesson. Vis ships its own visual identity — these are pattern donors, not aesthetic models.</p>
+  <div class="insp-grid">
+
+    <div class="insp-card">
+      <div class="label">Aesthetic + AI coach</div>
+      <h3>Bevel</h3>
+      <div class="role">somewhat-inspired, calm holistic dashboards</div>
+      <div class="takeaway-label">Learn:</div>
+      <ul>
+        <li>Conversational AI coach UX feels approachable, not jargon-heavy</li>
+        <li>Holistic dashboard pulls multiple metrics into one calm surface</li>
+        <li>Biological-age tracking models the "earned metric" that proves AI is working</li>
+        <li>Confidence display + dismissal grammar on AI suggestions</li>
+      </ul>
+      <div class="leave-label">Leave behind:</div>
+      <ul>
+        <li>Generalist health framing — Vis is strength-focused</li>
+        <li>Premium-priced AI coach model — Vis is free v1</li>
+        <li>Full chat surface — Vis v1 has no chat</li>
+      </ul>
+    </div>
+
+    <div class="insp-card">
+      <div class="label">Charts + data viz</div>
+      <h3>Apple Health</h3>
+      <div class="role">graph rendering language</div>
+      <div class="takeaway-label">Learn:</div>
+      <ul>
+        <li>Line-chart rendering style for Body Measurements + Strength Progress + e1RM trends</li>
+        <li>Segmented time-range control (Day / Week / Month / 6M / Year) on Progress Tab</li>
+        <li>Health categories as colour-coded chips → muscle-group recovery chips</li>
+        <li>Sparkline-on-card pattern for at-a-glance KPI cards</li>
+      </ul>
+      <div class="leave-label">Leave behind:</div>
+      <ul>
+        <li>Generic blue/red Apple semantic palette — Vis uses tangerine-amber</li>
+        <li>Forms-heavy empty-state posture</li>
+        <li>Sterile white chrome — Vis uses warm ivory bg</li>
+      </ul>
+    </div>
+
+    <div class="insp-card">
+      <div class="label">Training-specific UX</div>
+      <h3>Motra (ex-Train Fitness)</h3>
+      <div class="role">recovery-aware programming</div>
+      <div class="takeaway-label">Learn:</div>
+      <ul>
+        <li>Recovery-aware routine generation — readiness inputs shade today's prescription</li>
+        <li>Exercise-history-first home (the lift is the entity)</li>
+        <li>Compact Set row with inline RIR/RPE — no separate sheets</li>
+        <li>AI-Coach prompt design that's lift-specific, not generic</li>
+      </ul>
+      <div class="leave-label">Leave behind:</div>
+      <ul>
+        <li>Apple-Watch-only logging — wrist motion can't detect leg lifts reliably</li>
+        <li>iOS + Watch lock-in — Vis is RN cross-platform</li>
+      </ul>
+    </div>
+
+    <div class="insp-card" style="border: 1px solid var(--vis-amber-primary); box-shadow: 0 0 0 1px var(--vis-amber-primary) inset, var(--gc-shadow-card);">
+      <div class="label">Own work — locked-in</div>
+      <h3>Vis prototype + orb + wordmark</h3>
+      <div class="role">visual identity ancestor</div>
+      <div class="takeaway-label">Keep:</div>
+      <ul>
+        <li>Orb gradient stack recipe (radial + linear + smoked-glass top)</li>
+        <li>Vis wordmark glyph — orb replaces i-dot, sharp 45° v, tight s terminals</li>
+        <li>Liquid Glass material on nav + hero only (per §17.4 original spec)</li>
+        <li>Geist + Geist Mono typography pair</li>
+        <li>Warm ivory bg, peach-tinted shadows, no pure white/grey</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<section id="sec2">
+  <h2><span class="num">§2</span> Transferable UX Patterns</h2>
+  <p class="lede">Patterns to import. Source named per row. Adaptation noted where Vis context shifts the move.</p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 110px;">Bucket</th>
+        <th style="width: 30%;">Pattern</th>
+        <th>Source</th>
+        <th>Vis use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="bucket">Navigation</td>
+        <td>Bottom-tab nav (4–5 tabs, thumb-arc respect)</td>
+        <td>Apple Health, Bevel</td>
+        <td>Client + Trainer apps. 4-tab layout.</td>
+      </tr>
+      <tr>
+        <td class="bucket">Navigation</td>
+        <td>Workspace switcher pattern</td>
+        <td>Notion (pattern donor)</td>
+        <td>Adapt as <strong>branch-scope chip</strong> in nav header — trainer multi-brand + owner cross-branch.</td>
+      </tr>
+      <tr>
+        <td class="bucket">Navigation</td>
+        <td>Segmented time-range control</td>
+        <td>Apple Health</td>
+        <td>Progress Tab time controls (Day / Week / Month / 6M / Year).</td>
+      </tr>
+      <tr>
+        <td class="bucket">Interaction</td>
+        <td>Compact Set row with inline RIR/RPE</td>
+        <td>Motra</td>
+        <td>Active Session view — direct adoption, single-row no-sheet logging.</td>
+      </tr>
+      <tr>
+        <td class="bucket">Interaction</td>
+        <td>AI confidence display + dismissal grammar</td>
+        <td>Bevel coach UI</td>
+        <td>Ghost-overlay confidence on AI suggestions; long-press override.</td>
+      </tr>
+      <tr>
+        <td class="bucket">Interaction</td>
+        <td>Recovery → prescription shading (not override)</td>
+        <td>Motra</td>
+        <td>Recovery state informs trainer's next-session intensity recommendation; never auto-rewrites v1.</td>
+      </tr>
+      <tr>
+        <td class="bucket">Interaction</td>
+        <td>Modern trainer↔client async UX baseline</td>
+        <td>Trainerize 2026 redesign</td>
+        <td>Reference for what to beat on real-time co-edit; Connection Orb is the move competitors can't make.</td>
+      </tr>
+      <tr>
+        <td class="bucket">Visual</td>
+        <td>Sparkline-on-card</td>
+        <td>Apple Health</td>
+        <td>KPI cards on Trainer Today + Owner Dashboard.</td>
+      </tr>
+      <tr>
+        <td class="bucket">Visual</td>
+        <td>Calm holistic-dashboard layout</td>
+        <td>Bevel</td>
+        <td>Progress Tab + Owner Dashboard composition; calm density, generous spacing.</td>
+      </tr>
+      <tr>
+        <td class="bucket">Visual</td>
+        <td>Line-chart rendering style</td>
+        <td>Apple Health</td>
+        <td>Body measurements, e1RM curves, ACWR sparkline.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="sec3">
+  <h2><span class="num">§3</span> Anti-Patterns to Avoid</h2>
+  <p class="lede">Four named anti-patterns. Each violates a stated principle from prior steps.</p>
+  <div class="anti-list">
+    <div class="anti-card">
+      <span class="badge">1</span><span class="title">MyFitnessPal-style data interrogation</span>
+      <div class="desc">Long calorie-entry forms, judgmental "you went over your goal" copy, anxiety-inducing macro pie charts. Implication for Vis: no daily calorie tracking v1 (consistent with PRD §6.2 v2 deferrals); macro plan stays trainer-authored + client read-only.</div>
+      <span class="principle">violates Emotional Principle 3 — Dignity in failure</span>
+    </div>
+    <div class="anti-card">
+      <span class="badge">2</span><span class="title">Gym-management dense-table ops UI (Mindbody / Glofox)</span>
+      <div class="desc">Corporate-blue chrome, dated dense tables, spreadsheet feel. Implication for Vis Admin Web: tables stay solid (per Liquid Glass "content leads" rule) but on warm cream bg with amber accents and generous spacing — not white-on-grey corporate.</div>
+      <span class="principle">violates Cross-app brand parity (quality bar)</span>
+    </div>
+    <div class="anti-card">
+      <span class="badge">3</span><span class="title">Hyper-bro lifting community aesthetic (Bodyspace, /r/bodybuilding-style)</span>
+      <div class="desc">Anatomy line drawings, dark machismo, neon-yellow accents, intimidating gym-bro copy. Implication: copy tone stays gender-neutral, low-key competent; no anatomy illustrations; PR cards land restrained, not aggressive.</div>
+      <span class="principle">violates Emotional Principle 4 — Presence without surveillance</span>
+    </div>
+    <div class="anti-card">
+      <span class="badge">4</span><span class="title">Fitbod-style gamified celebration</span>
+      <div class="desc">Confetti PR animations, XP bars, "level up!" badges, streak-loss anxiety. Implication: PR cinematic ≤ 1.5 s, dismissible; no XP; streak heatmap renders as data, not as scolding.</div>
+      <span class="principle">violates Emotional Principle 1 — Earned over celebrated</span>
+    </div>
+  </div>
+</section>
+
+<section id="sec4">
+  <h2><span class="num">§4</span> Design Inspiration Strategy</h2>
+  <p class="lede">Clear stance on what to adopt, adapt, and reject. Plus the new accent-customization requirement.</p>
+  <div class="strategy">
+    <div class="strat-card adopt">
+      <h3>✓ Adopt</h3>
+      <ul>
+        <li>Apple Health graph language on Progress Tab</li>
+        <li>Bevel calm dashboard layout on Client Home + Trainer Today</li>
+        <li>Motra compact Set row with inline RIR/RPE</li>
+        <li>Apple iOS 26 Liquid Glass on nav + hero only</li>
+        <li>Own orb recipe + Vis wordmark — locked-in</li>
+      </ul>
+    </div>
+    <div class="strat-card adapt">
+      <h3>~ Adapt</h3>
+      <ul>
+        <li>Bevel AI coach UX → NOT a chat surface v1; shapes ghost-overlay confidence display + override microcopy</li>
+        <li>Motra recovery-aware programming → recovery shades trainer's recommendation, never auto-rewrites v1</li>
+        <li>Notion workspace switcher → branch-scope chip in nav</li>
+      </ul>
+    </div>
+    <div class="strat-card avoid">
+      <h3>✕ Avoid</h3>
+      <ul>
+        <li>MyFitnessPal data interrogation</li>
+        <li>Mindbody/Glofox dense ops UI</li>
+        <li>Bodyspace bro-culture aesthetic</li>
+        <li>Fitbod gamified celebration</li>
+        <li>Direct visual mimicry of Bevel/Apple Health/Motra — Vis ships a fresh new UI</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="accent-block">
+    <div class="label">★ New v1 requirement</div>
+    <h3>User-customizable accent color</h3>
+    <p>Default highlight is tangerine / deep amber (<code>--vis-amber-primary</code> / <code>--vis-amber-deep</code>). Each user can override from <strong>Profile → Appearance → Accent</strong>. Curated preset set v1 — not a full RGB picker, to preserve aesthetic coherence:</p>
+    <div class="swatch-row">
+      <div class="swatch default"><span class="dot" style="background: radial-gradient(circle at 35% 30%, #FFC27A 0%, transparent 30%), radial-gradient(circle at 50% 70%, #FF7A1A 0%, #FF5500 60%, #A94400 100%);"></span>Tangerine (default)</div>
+      <div class="swatch"><span class="dot" style="background: radial-gradient(circle at 35% 30%, #FF8E70 0%, transparent 30%), radial-gradient(circle at 50% 70%, #D63B1F 0%, #8E1A0F 100%);"></span>Ember red</div>
+      <div class="swatch"><span class="dot" style="background: radial-gradient(circle at 35% 30%, #F4D08A 0%, transparent 30%), radial-gradient(circle at 50% 70%, #B8830C 0%, #6B4A07 100%);"></span>Rust gold</div>
+      <div class="swatch"><span class="dot" style="background: radial-gradient(circle at 35% 30%, #C0E8B8 0%, transparent 30%), radial-gradient(circle at 50% 70%, #4A8C3B 0%, #2C5424 100%);"></span>Sage green</div>
+      <div class="swatch"><span class="dot" style="background: radial-gradient(circle at 35% 30%, #A8D4D8 0%, transparent 30%), radial-gradient(circle at 50% 70%, #3F7A85 0%, #234148 100%);"></span>Slate teal</div>
+      <div class="swatch"><span class="dot" style="background: radial-gradient(circle at 35% 30%, #C4A4C0 0%, transparent 30%), radial-gradient(circle at 50% 70%, #6B4673 0%, #3A2540 100%);"></span>Dusk plum</div>
+    </div>
+    <p style="margin-top: 14px;"><strong>Brand-locked surfaces stay amber regardless of user choice:</strong> the orb (all 5 tension states), the Vis wordmark, the watermark on PR cards. The override applies to CTAs, focus rings, selected-state tints, ghost-overlay color, and chart accents. CSS-variable architecture supports it day 1 via theme tokens — even if v1 ships only the default and the presets land in a follow-up.</p>
+  </div>
+</section>
+
+<footer class="cta">
+  <p><strong>What now?</strong> Choose in chat:</p>
+  <div class="menu-row">
+    <div class="opt"><span class="key">A</span><strong>Advanced Elicitation</strong> — refine inspiration choices via Socratic / pre-mortem.</div>
+    <div class="opt"><span class="key">P</span><strong>Party Mode</strong> — multi-agent critique of inspiration strategy.</div>
+    <div class="opt"><span class="key">C</span><strong>Continue</strong> — append to <code>ux-design-specification.md</code> and advance to step-06 (Design System).</div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

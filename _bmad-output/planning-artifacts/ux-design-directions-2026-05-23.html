@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vis UX Spec — Design Directions Showcase · 2026-05-23</title>
+<style>
+  :root {
+    --vis-amber-primary: #E06313;
+    --vis-amber-deep: #FF5500;
+    --vis-amber-ember: #F26200;
+    --vis-amber-soft: #FFA366;
+    --vis-amber-highlight: #FFE3C2;
+    --vis-amber-shadow: #C45100;
+    --vis-amber-glow: #FF6A00;
+    --gc-bg: #F9F6F0;
+    --gc-bg-elevated: #FFFFFF;
+    --gc-text: #1A0F08;
+    --gc-text-muted: #6B4A33;
+    --gc-border: rgba(196, 81, 0, 0.14);
+    --gc-shadow-card: 0 1px 2px rgba(50,30,15,0.04), 0 8px 24px -10px rgba(169,68,0,0.12);
+    --gc-shadow-soft: 0 2px 8px rgba(169,68,0,0.06), 0 12px 28px -8px rgba(169,68,0,0.10);
+
+    --orb-bg: radial-gradient(circle at 35% 30%, var(--vis-amber-highlight) 0%, transparent 25%),
+              radial-gradient(circle at 50% 70%, var(--vis-amber-primary) 0%, var(--vis-amber-deep) 55%, var(--vis-amber-shadow) 100%);
+    --orb-shadow: 0 0 20px rgba(255,106,0,0.30), 0 0 60px rgba(255,106,0,0.18), 0 0 120px rgba(255,122,26,0.12);
+
+    --phone-w: 280px;
+    --phone-h: 580px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary: #FF7A1A;
+      --vis-amber-deep: #FF5E00;
+      --vis-amber-soft: #FF9B4A;
+      --vis-amber-highlight: #FFC27A;
+      --vis-amber-shadow: #A94400;
+      --gc-bg: #050505;
+      --gc-bg-elevated: #0E0E0E;
+      --gc-text: #F5EFE6;
+      --gc-text-muted: #B89A82;
+      --gc-border: rgba(255, 122, 26, 0.16);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--gc-bg); color: var(--gc-text);
+    line-height: 1.55; font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 24px 80px; }
+  header.page { padding-bottom: 22px; margin-bottom: 28px; border-bottom: 1px solid var(--gc-border); }
+  header.page .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 600; color: var(--vis-amber-primary); }
+  header.page h1 { margin: 6px 0 2px; font-size: 28px; font-weight: 600; letter-spacing: -0.015em; }
+  header.page .meta { font-size: 13px; color: var(--gc-text-muted); }
+  header.page .abstract { margin-top: 12px; font-size: 14px; color: var(--gc-text-muted); max-width: 760px; }
+
+  h2 { margin: 36px 0 12px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  h3 { margin: 18px 0 8px; font-size: 16px; font-weight: 600; }
+
+  .legend {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 14px; padding: 14px 20px; box-shadow: var(--gc-shadow-card);
+    margin-bottom: 24px; font-size: 13.5px;
+  }
+  .legend strong { color: var(--vis-amber-primary); }
+
+  /* Direction card */
+  .directions {
+    display: grid; gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+  .dir {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 18px; padding: 20px;
+    box-shadow: var(--gc-shadow-card);
+  }
+  .dir .num {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--vis-amber-primary); font-weight: 600;
+  }
+  .dir h3 { margin: 4px 0 6px; font-size: 18px; }
+  .dir .tagline { color: var(--gc-text-muted); font-size: 13px; margin-bottom: 12px; font-style: italic; }
+  .dir .descr { font-size: 13.5px; color: var(--gc-text); }
+  .dir .descr p { margin: 4px 0; }
+
+  /* Phone mockup */
+  .phone {
+    width: var(--phone-w);
+    height: var(--phone-h);
+    margin: 12px auto 14px;
+    border-radius: 32px;
+    background: var(--gc-bg);
+    border: 1px solid var(--gc-border);
+    box-shadow: 0 8px 24px -8px rgba(169,68,0,0.15), 0 2px 6px rgba(50,30,15,0.05);
+    overflow: hidden;
+    position: relative;
+    font-size: 12px;
+  }
+  .phone .notch {
+    position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+    width: 80px; height: 18px; border-radius: 12px;
+    background: #050505; opacity: 0.85;
+    z-index: 10;
+  }
+  .phone .screen {
+    position: absolute; inset: 8px; border-radius: 26px;
+    background: var(--gc-bg);
+    overflow: hidden;
+    padding: 36px 14px 56px;
+    display: flex; flex-direction: column;
+    gap: 10px;
+  }
+  .phone .nav {
+    position: absolute; bottom: 8px; left: 8px; right: 8px;
+    height: 44px;
+    background: rgba(255, 243, 232, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--gc-border);
+    display: flex; justify-content: space-around; align-items: center;
+    border-radius: 0 0 26px 26px;
+    font-size: 9.5px; color: var(--gc-text-muted);
+  }
+  .phone .nav-item.active { color: var(--vis-amber-primary); font-weight: 600; }
+
+  /* Reusable phone elements */
+  .orb { border-radius: 50%; background: var(--orb-bg); box-shadow: var(--orb-shadow); flex-shrink: 0; }
+  .orb-md { width: 56px; height: 56px; }
+  .orb-lg { width: 110px; height: 110px; }
+  .orb-xl { width: 150px; height: 150px; }
+  .orb-sm { width: 32px; height: 32px; }
+  .pill {
+    display: inline-block;
+    background: rgba(224,99,19,0.12); color: var(--vis-amber-primary);
+    padding: 2px 8px; border-radius: 999px;
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-mini {
+    background: var(--gc-bg-elevated); border-radius: 12px;
+    padding: 8px 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .glass {
+    background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,243,232,0.55) 100%);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 14px;
+    padding: 10px 12px;
+  }
+  .display-num {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 30px; font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--vis-amber-primary);
+    line-height: 1;
+  }
+  .display-num-lg {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 48px; font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--gc-text);
+    line-height: 0.95;
+  }
+  .display-num-xl {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 64px; font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--gc-text);
+    line-height: 0.9;
+  }
+  .label {
+    font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--gc-text-muted); font-weight: 600;
+  }
+  .title { font-size: 13px; font-weight: 600; color: var(--gc-text); }
+  .subt { font-size: 11px; color: var(--gc-text-muted); }
+  .small { font-size: 10.5px; color: var(--gc-text-muted); }
+  .heatmap-row {
+    display: flex; gap: 3px;
+  }
+  .heatmap-cell {
+    width: 14px; height: 14px; border-radius: 3px;
+    background: rgba(255, 122, 26, 0.18);
+  }
+  .heatmap-cell.h1 { background: rgba(255, 122, 26, 0.32); }
+  .heatmap-cell.h2 { background: rgba(255, 122, 26, 0.55); }
+  .heatmap-cell.h3 { background: var(--vis-amber-primary); }
+  .chart-line {
+    height: 50px; width: 100%;
+    background: linear-gradient(180deg, rgba(255,106,0,0.12) 0%, transparent 100%);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+  .chart-line::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(45deg, transparent 60%, var(--vis-amber-primary) 60%, var(--vis-amber-primary) 62%, transparent 62%);
+    opacity: 0.7;
+  }
+  .pulse-stem {
+    position: relative;
+    width: 30px; height: 4px;
+    background: linear-gradient(90deg, var(--vis-amber-primary), var(--vis-amber-soft));
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(255,106,0,0.45);
+  }
+  .conn-orb-row {
+    display: flex; align-items: center; gap: 6px; justify-content: center;
+  }
+  .avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--orb-bg); }
+
+  .pros-cons {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    font-size: 11.5px;
+    margin-top: 8px;
+  }
+  .pros-cons h4 {
+    font-size: 10px; margin: 0 0 4px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .pros-cons .pros h4 { color: #1F7A4A; }
+  .pros-cons .cons h4 { color: #B53A1A; }
+  .pros-cons ul { margin: 0; padding-left: 16px; }
+  .pros-cons li { margin: 2px 0; }
+
+  .anchor-pill {
+    display: inline-block;
+    background: rgba(196,81,0,0.10); color: var(--vis-amber-primary);
+    padding: 3px 8px; border-radius: 6px;
+    font-size: 10px; font-weight: 600;
+    margin-right: 4px;
+  }
+
+  footer.cta {
+    margin-top: 40px; padding: 20px 22px;
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 16px; box-shadow: var(--gc-shadow-card);
+  }
+  footer.cta strong { color: var(--vis-amber-primary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">UX Spec · Step 09 · Design Directions</div>
+  <h1>6 design directions — pick one, combine, or modify</h1>
+  <div class="meta">2026-05-23 · Author: Gauravprakashshinde · Each direction = a complete visual approach within the same locked Vis tokens, typography, and orb language</div>
+  <div class="abstract">
+    All six directions use the locked-in palette, Geist + Geist Mono, 4-px spacing grid, and the orb-as-organism with backend-tied tension states. They differ on <strong>information density, hero emphasis, layout structure, and which persona they optimise for.</strong> Pick a favorite, combine elements, or call out specific modifications. Each shows the Client Home as a representative surface for comparison.
+  </div>
+</header>
+
+<div class="legend">
+  <strong>Reading the mockups:</strong> Each phone frame is a sketch of Client Home at ~50% screen scale, using real Vis tokens and gradients. The orb appears in every direction (locked brand mark) but its <em>placement, size, and visual weight</em> differ. Cards and chrome vary. Animation cannot be shown in static HTML — each direction's motion language is described in the prose below the phone.
+</div>
+
+<section>
+  <h2>The 6 directions</h2>
+  <div class="directions">
+
+    <!-- DIRECTION 1: Liquid Restraint -->
+    <div class="dir">
+      <div class="num">Direction 1</div>
+      <h3>Liquid Restraint</h3>
+      <div class="tagline">"Minimal chrome, sparse data, generous breathing room."</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="label">Tuesday · 7:42 PM</div>
+          <div class="title">Good evening, Samwell</div>
+          <div style="display: flex; justify-content: center; padding: 30px 0;">
+            <div class="orb orb-xl"></div>
+          </div>
+          <div style="text-align: center;">
+            <div class="label" style="margin-bottom: 4px;">Today's session</div>
+            <div class="title">Pull Day · 6 exercises</div>
+            <div class="subt" style="margin-top: 4px;">est. 52 min</div>
+          </div>
+          <div style="margin-top: auto; text-align: center;">
+            <div class="pill">Start Session</div>
+          </div>
+        </div>
+        <div class="nav">
+          <div class="nav-item active">Home</div><div class="nav-item">Train</div><div class="nav-item">Progress</div><div class="nav-item">Profile</div>
+        </div>
+      </div>
+      <div class="descr">
+        <p><strong>Anchor:</strong> <span class="anchor-pill">Quiet competence</span> <span class="anchor-pill">Earned trust</span></p>
+        <p><strong>Best for:</strong> Solo Client [Greyjoy] — wants focus, not noise. PT-attached client during deload week.</p>
+        <p><strong>Motion:</strong> Hero orb breathes 6 s loop (opacity 1 → 0.94). Single CTA, no other animation on Home.</p>
+        <p><strong>Inspirations:</strong> Linear restraint + Bevel calm dashboards.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>✓ Strong</h4><ul><li>Brand-pure</li><li>Distraction-free</li><li>Reduce-motion friendly</li></ul></div>
+        <div class="cons"><h4>✕ Risk</h4><ul><li>Hides progress data — power users may resent</li><li>Owner Dashboard parity hard</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DIRECTION 2: Cinematic Data -->
+    <div class="dir">
+      <div class="num">Direction 2</div>
+      <h3>Cinematic Data</h3>
+      <div class="tagline">"The big number leads. The orb supports."</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="row" style="justify-content: space-between;">
+            <div>
+              <div class="label">Progression Index</div>
+              <div class="display-num-xl">+12<span style="font-size: 28px;">%</span></div>
+            </div>
+            <div class="orb orb-md"></div>
+          </div>
+          <div class="card-mini">
+            <div class="label">Today</div>
+            <div class="title">Pull Day · 6 exercises</div>
+            <div class="subt">trainer: Brienne of Tarth</div>
+          </div>
+          <div class="card-mini">
+            <div class="label">e1RM · Squat (12 wk)</div>
+            <div class="chart-line"></div>
+          </div>
+          <div class="card-mini">
+            <div class="label">Week heatmap</div>
+            <div class="heatmap-row">
+              <div class="heatmap-cell h2"></div><div class="heatmap-cell h3"></div><div class="heatmap-cell"></div><div class="heatmap-cell h1"></div><div class="heatmap-cell h2"></div><div class="heatmap-cell"></div><div class="heatmap-cell h1"></div>
+            </div>
+          </div>
+        </div>
+        <div class="nav">
+          <div class="nav-item active">Home</div><div class="nav-item">Train</div><div class="nav-item">Progress</div><div class="nav-item">Profile</div>
+        </div>
+      </div>
+      <div class="descr">
+        <p><strong>Anchor:</strong> <span class="anchor-pill">Earned over celebrated</span> <span class="anchor-pill">Recognition over reset</span></p>
+        <p><strong>Best for:</strong> Solo Client [Greyjoy] who tracks numbers + Gym Trainer [Tarth] reviewing client progress.</p>
+        <p><strong>Motion:</strong> Number tickers count-up 360 ms on load. Charts redraw with sweeping draw-in. Orb supports as accent only.</p>
+        <p><strong>Inspirations:</strong> Apple Health graph language × cinematic amber.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>✓ Strong</h4><ul><li>Data-led, scientifically credible</li><li>Best for trainers + advanced clients</li><li>Maps cleanly to Owner Dashboard</li></ul></div>
+        <div class="cons"><h4>✕ Risk</h4><ul><li>Could feel intimidating to beginners [Tarly]</li><li>"Big number" risks alarm on low-progress days</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DIRECTION 3: Workshop / Tactile -->
+    <div class="dir">
+      <div class="num">Direction 3</div>
+      <h3>Workshop / Tactile</h3>
+      <div class="tagline">"The Logger is the hero. The brand recedes."</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="label">Cable · Lat Pulldown</div>
+          <div class="title" style="font-size: 16px;">Set 3 of 4</div>
+          <!-- Cable visualizer mockup -->
+          <div style="background: var(--gc-bg-elevated); border-radius: 16px; padding: 14px; box-shadow: var(--gc-shadow-soft); margin-top: 6px;">
+            <div style="display: flex; gap: 8px; align-items: flex-end; justify-content: center; height: 180px;">
+              <!-- Pin stack -->
+              <div style="display: flex; flex-direction: column; gap: 2px; align-items: center;">
+                <div style="width: 30px; height: 14px; background: rgba(196,81,0,0.18); border-radius: 3px;"></div>
+                <div style="width: 30px; height: 14px; background: rgba(196,81,0,0.18); border-radius: 3px;"></div>
+                <div style="width: 30px; height: 14px; background: rgba(196,81,0,0.18); border-radius: 3px;"></div>
+                <div style="width: 30px; height: 14px; background: rgba(196,81,0,0.18); border-radius: 3px;"></div>
+                <div style="width: 36px; height: 16px; background: var(--vis-amber-primary); border-radius: 4px; box-shadow: 0 0 10px rgba(255,106,0,0.6);"></div>
+                <div style="width: 30px; height: 14px; background: rgba(196,81,0,0.18); border-radius: 3px;"></div>
+                <div style="width: 30px; height: 14px; background: rgba(196,81,0,0.18); border-radius: 3px;"></div>
+                <div style="width: 30px; height: 14px; background: rgba(196,81,0,0.18); border-radius: 3px;"></div>
+              </div>
+              <div style="flex: 1; padding-left: 6px;">
+                <div class="display-num">40 kg</div>
+                <div class="small">slab 8 of 12</div>
+                <div class="small" style="margin-top: 8px;">12 reps · RIR 2</div>
+                <div class="small">prescribed by Brienne</div>
+              </div>
+            </div>
+          </div>
+          <div class="row" style="justify-content: center; margin-top: 8px;">
+            <div class="pill" style="padding: 6px 14px; font-size: 11px;">Done</div>
+          </div>
+          <div style="display: flex; justify-content: center; margin-top: 4px;">
+            <div class="orb orb-sm"></div>
+          </div>
+        </div>
+        <div class="nav">
+          <div class="nav-item">Home</div><div class="nav-item active">Train</div><div class="nav-item">Progress</div><div class="nav-item">Profile</div>
+        </div>
+      </div>
+      <div class="descr">
+        <p><strong>Anchor:</strong> <span class="anchor-pill">No typing in happy path</span> <span class="anchor-pill">Equipment-Aware Logger</span></p>
+        <p><strong>Best for:</strong> Gym Client [Tarly] mid-session — the moment of doing the lift, not browsing the app.</p>
+        <p><strong>Motion:</strong> Pin drag = direct manipulation. Set commit = 200 ms green check. Orb shrinks to corner during Logger interaction.</p>
+        <p><strong>Inspirations:</strong> Motra compact set row + Strong gestural directness.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>✓ Strong</h4><ul><li>Honors the core moment of the product</li><li>Best for FR-8 + SM-3 latency</li><li>One-hand thumb-zone friendly</li></ul></div>
+        <div class="cons"><h4>✕ Risk</h4><ul><li>Home + Progress screens need a different visual approach</li><li>Brand presence may feel diluted</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DIRECTION 4: Coach-led Companion -->
+    <div class="dir">
+      <div class="num">Direction 4</div>
+      <h3>Coach-led Companion</h3>
+      <div class="tagline">"The Connection Orb leads. The set follows."</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <!-- Connection Orb header -->
+          <div class="glass" style="text-align: center; padding: 14px;">
+            <div class="conn-orb-row">
+              <div class="avatar"></div>
+              <div class="pulse-stem"></div>
+              <div class="avatar"></div>
+            </div>
+            <div class="small" style="margin-top: 6px;">Brienne is editing · Set 3</div>
+          </div>
+          <div class="card-mini">
+            <div class="row" style="justify-content: space-between;">
+              <div>
+                <div class="title">Lat Pulldown</div>
+                <div class="small">Cable · Set 3 of 4</div>
+              </div>
+              <div class="pill">Live</div>
+            </div>
+          </div>
+          <!-- Set row with provenance -->
+          <div class="card-mini">
+            <div class="row" style="justify-content: space-between;">
+              <div>
+                <div class="label">Prescribed</div>
+                <div class="title" style="font-family: ui-monospace, Menlo, monospace;">50 kg · 10</div>
+              </div>
+              <div>
+                <div class="label">Actual</div>
+                <div class="title" style="font-family: ui-monospace, Menlo, monospace; color: var(--vis-amber-primary);">47.5 · 10</div>
+              </div>
+              <div class="row" style="gap: 4px;">
+                <div class="avatar" style="width: 16px; height: 16px;"></div>
+                <div class="small">2s ago</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-mini">
+            <div class="label">Rest</div>
+            <div class="title" style="font-family: ui-monospace, Menlo, monospace;">1:24 / 2:30</div>
+          </div>
+          <div class="card-mini" style="background: rgba(255,106,0,0.08);">
+            <div class="small">AI suggestion: <strong style="color: var(--vis-amber-primary);">52.5 × 10</strong> next · tap to accept</div>
+          </div>
+        </div>
+        <div class="nav">
+          <div class="nav-item">Home</div><div class="nav-item active">Train</div><div class="nav-item">Progress</div><div class="nav-item">Profile</div>
+        </div>
+      </div>
+      <div class="descr">
+        <p><strong>Anchor:</strong> <span class="anchor-pill">Visible presence + provenance</span> <span class="anchor-pill">Connection Orb</span></p>
+        <p><strong>Best for:</strong> Gym Client [Tarly] PT-attached + Gym Trainer [Tarth] co-edit moment. The signature surface.</p>
+        <p><strong>Motion:</strong> Tension stem pulses on each remote write. Avatar dot appears on write, fades after 30s. AI ghost row slides in from below.</p>
+        <p><strong>Inspirations:</strong> Linear/Figma multiplayer cursors + Vis's own Connection Orb concept.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>✓ Strong</h4><ul><li>Showcases the structural moat (SM-3)</li><li>Trainer + client both feel present</li><li>Provenance always visible</li></ul></div>
+        <div class="cons"><h4>✕ Risk</h4><ul><li>Solo-client UX feels lonely (no Connection Orb)</li><li>Dense — risk of overwhelm</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DIRECTION 5: Solo Athlete -->
+    <div class="dir">
+      <div class="num">Direction 5</div>
+      <h3>Solo Athlete</h3>
+      <div class="tagline">"PR moments and curves lead. Streak heatmap supports."</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="row" style="justify-content: space-between;">
+            <div>
+              <div class="label">Yesterday's PR</div>
+              <div class="title">Squat · 200 kg × 1</div>
+            </div>
+            <div class="orb orb-sm"></div>
+          </div>
+          <!-- e1RM curve -->
+          <div class="card-mini">
+            <div class="row" style="justify-content: space-between; margin-bottom: 4px;">
+              <div class="label">e1RM Squat · 12 wk</div>
+              <div class="small" style="color: var(--vis-amber-primary); font-weight: 600;">+14 kg</div>
+            </div>
+            <div class="chart-line"></div>
+          </div>
+          <!-- Streak heatmap (calendar style) -->
+          <div class="card-mini">
+            <div class="label" style="margin-bottom: 6px;">Last 4 weeks</div>
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;">
+              <div class="heatmap-cell h2"></div><div class="heatmap-cell h3"></div><div class="heatmap-cell"></div><div class="heatmap-cell h1"></div><div class="heatmap-cell h2"></div><div class="heatmap-cell"></div><div class="heatmap-cell h1"></div>
+              <div class="heatmap-cell h3"></div><div class="heatmap-cell h2"></div><div class="heatmap-cell"></div><div class="heatmap-cell h3"></div><div class="heatmap-cell h2"></div><div class="heatmap-cell"></div><div class="heatmap-cell h1"></div>
+              <div class="heatmap-cell h2"></div><div class="heatmap-cell h3"></div><div class="heatmap-cell h2"></div><div class="heatmap-cell h1"></div><div class="heatmap-cell h3"></div><div class="heatmap-cell"></div><div class="heatmap-cell h2"></div>
+              <div class="heatmap-cell h2"></div><div class="heatmap-cell h3"></div><div class="heatmap-cell h2"></div><div class="heatmap-cell h3"></div><div class="heatmap-cell h2"></div><div class="heatmap-cell"></div><div class="heatmap-cell h3"></div>
+            </div>
+          </div>
+          <div class="card-mini">
+            <div class="label">Today</div>
+            <div class="title">Bench Day · 5 ex</div>
+          </div>
+        </div>
+        <div class="nav">
+          <div class="nav-item active">Home</div><div class="nav-item">Train</div><div class="nav-item">Progress</div><div class="nav-item">Profile</div>
+        </div>
+      </div>
+      <div class="descr">
+        <p><strong>Anchor:</strong> <span class="anchor-pill">Recognition over reset</span> <span class="anchor-pill">Solitary focus</span></p>
+        <p><strong>Best for:</strong> Solo Client [Greyjoy] — independent lifter who lives in the numbers.</p>
+        <p><strong>Motion:</strong> Curves redraw on tab focus. Streak heatmap cells animate sequentially on Monday. PR moments fire cinematic ≤ 1.5 s.</p>
+        <p><strong>Inspirations:</strong> Strava activity feed restraint + Apple Health curves + Vis amber.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>✓ Strong</h4><ul><li>Honors SM-4 Solo D30 retention</li><li>PR loop visible (SM-5)</li><li>Streak heatmap = recognition not gamification</li></ul></div>
+        <div class="cons"><h4>✕ Risk</h4><ul><li>Less PT-attached value</li><li>Could feel data-heavy for beginners</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DIRECTION 6: Owner Cockpit (Admin Web slice) -->
+    <div class="dir">
+      <div class="num">Direction 6</div>
+      <h3>Owner Cockpit (Admin Web)</h3>
+      <div class="tagline">"Cross-branch glance. Drill-down on tap. Data-led, no chrome."</div>
+      <!-- Admin Web mockup as a wide card, not phone -->
+      <div style="background: var(--gc-bg); border-radius: 16px; padding: 16px; margin: 12px 0 14px; box-shadow: var(--gc-shadow-soft); border: 1px solid var(--gc-border); font-size: 11px;">
+        <div class="row" style="justify-content: space-between; margin-bottom: 8px;">
+          <div>
+            <div class="title">Vis Fitness · All Branches</div>
+            <div class="small">Tywin of Lannister · today</div>
+          </div>
+          <div class="row" style="gap: 4px;">
+            <div class="pill">Day</div><div class="pill" style="background: var(--vis-amber-primary); color: white;">Week</div><div class="pill">Month</div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+          <div class="card-mini">
+            <div class="label">Revenue</div>
+            <div class="display-num" style="font-size: 22px;">₹4.2L</div>
+            <div class="chart-line" style="height: 24px; margin-top: 4px;"></div>
+            <div class="small" style="color: #1F7A4A;">+12% vs last wk</div>
+          </div>
+          <div class="card-mini">
+            <div class="label">Active PT</div>
+            <div class="display-num" style="font-size: 22px;">147</div>
+            <div class="chart-line" style="height: 24px; margin-top: 4px;"></div>
+            <div class="small" style="color: var(--vis-amber-primary);">3 churning</div>
+          </div>
+          <div class="card-mini">
+            <div class="label">WALS</div>
+            <div class="display-num" style="font-size: 22px;">2,840</div>
+            <div class="chart-line" style="height: 24px; margin-top: 4px;"></div>
+            <div class="small" style="color: #1F7A4A;">on track</div>
+          </div>
+        </div>
+        <div class="card-mini" style="font-size: 10.5px;">
+          <div class="label" style="margin-bottom: 4px;">Branches</div>
+          <div class="row" style="justify-content: space-between;"><div>Kandivali</div><div class="small">142 · ₹1.1L</div></div>
+          <div class="row" style="justify-content: space-between;"><div>Borivali</div><div class="small">98 · ₹780k</div></div>
+          <div class="row" style="justify-content: space-between;"><div>Mira Road</div><div class="small">87 · ₹650k</div></div>
+          <div class="row" style="justify-content: space-between;"><div>Malad East</div><div class="small">75 · ₹560k</div></div>
+        </div>
+      </div>
+      <div class="descr">
+        <p><strong>Anchor:</strong> <span class="anchor-pill">Owner morning glance</span> <span class="anchor-pill">Multi-branch context</span></p>
+        <p><strong>Best for:</strong> Gym Owner [Lannister] daily ritual + Gym Staff [Tully] branch ops.</p>
+        <p><strong>Motion:</strong> KPI cards count-up 360 ms on load. Branch list animates in row-by-row. No orb on this surface — chrome reserved for owner dashboard variant of brand.</p>
+        <p><strong>Inspirations:</strong> Apple Health sparkline + Bevel dashboard restraint + warm cream bg instead of corporate white.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>✓ Strong</h4><ul><li>Maps to SM-7 + SM-8 directly</li><li>Replaces spreadsheets without feeling corporate</li><li>Demo-able to owner stakeholders</li></ul></div>
+        <div class="cons"><h4>✕ Risk</h4><ul><li>Different visual feel from mobile may break parity</li><li>Need a discipline rule for what borrows from mobile vs not</li></ul></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>How to evaluate</h2>
+  <div class="legend">
+    <p>Compare directions against these criteria:</p>
+    <ul style="margin: 8px 0; padding-left: 22px;">
+      <li><strong>Anchor priorities (locked):</strong> does the direction serve Equipment-Aware Logger fidelity + real-time co-edit + multi-role context?</li>
+      <li><strong>Persona fit:</strong> which personas does it serve best? Which does it under-serve?</li>
+      <li><strong>SM coverage:</strong> does it visibly support the success metrics (SM-1 WALS, SM-3 Co-Edit, SM-5 PR share, SM-7 Trainer monitoring, SM-8 Audit query)?</li>
+      <li><strong>Cross-surface coherence:</strong> can the direction extend cleanly to Trainer Today, Active Session, Progress Tab, Owner Dashboard?</li>
+      <li><strong>Brand discipline:</strong> does it honor cinematic restraint + warm cream + orb-as-only-icon?</li>
+    </ul>
+    <p style="margin-top: 12px;">Most projects pick <strong>one primary direction</strong> as the dominant visual approach, then borrow specific elements from others where surface-specific needs differ (e.g., Active Session might lean Direction 4 even if the rest of the app is Direction 1).</p>
+  </div>
+</section>
+
+<footer class="cta">
+  <p><strong>What to do next.</strong> In chat, tell me:</p>
+  <ul style="margin: 8px 0; padding-left: 22px; font-size: 14px;">
+    <li>Which direction is the <strong>primary</strong> visual approach for Vis?</li>
+    <li>Are there specific elements from <strong>other</strong> directions you want to borrow (e.g., "lean Direction 1 for Home, Direction 4 for Active Session, Direction 6 for Admin Web")?</li>
+    <li>Any modifications to the chosen direction (component swap, color emphasis change, layout shift)?</li>
+  </ul>
+  <p>Then choose <strong>A</strong> (refine via Socratic / pre-mortem), <strong>P</strong> (multi-agent critique on the choice), or <strong>C</strong> (lock the decision and advance to step-10 User Journeys).</p>
+</footer>
+
+</div>
+</body>
+</html>

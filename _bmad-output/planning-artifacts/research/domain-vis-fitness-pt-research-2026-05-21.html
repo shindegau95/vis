@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vis — Domain Research: Personal Training, Progressive Overload & Multi-Stakeholder Gym Ops</title>
+<style>
+  :root {
+    --vis-amber-primary:#FF7A1A; --vis-amber-deep:#FF5E00; --vis-amber-ember:#D9590B;
+    --vis-amber-soft:#FF9B4A; --vis-amber-highlight:#FFC27A; --vis-amber-shadow:#A94400;
+    --vis-amber-glow:#FF6A00;
+    --gc-bg:#F9F6F0; --gc-bg-elevated:#FFFFFF; --gc-text:#1A120B; --gc-text-soft:#4A3A2E;
+    --gc-border:#EFE1D5; --gc-accent:var(--vis-amber-primary);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --vis-amber-primary:#FF7A1A; --vis-amber-deep:#FF5E00; --vis-amber-ember:#D9590B;
+      --vis-amber-soft:#FF9B4A; --vis-amber-highlight:#FFC27A; --vis-amber-shadow:#A94400;
+      --gc-bg:#050505; --gc-bg-elevated:#0E0E0E; --gc-text:#F4ECE2; --gc-text-soft:#B5A496;
+      --gc-border:#2A1812;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    background: var(--gc-bg); color: var(--gc-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.65; font-size: 16px;
+  }
+  header.doc-head {
+    padding: 48px 32px 32px; max-width: 880px; margin: 0 auto;
+    border-bottom: 1px solid var(--gc-border);
+  }
+  header.doc-head h1 {
+    font-size: 32px; font-weight: 600; margin: 0 0 12px;
+    background: linear-gradient(135deg, var(--vis-amber-primary), var(--vis-amber-deep));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  header.doc-head .meta { color: var(--gc-text-soft); font-size: 14px; }
+  header.doc-head .abstract { margin-top: 16px; font-size: 17px; color: var(--gc-text-soft); }
+  main { max-width: 880px; margin: 0 auto; padding: 32px; }
+  section { margin: 40px 0; }
+  h2 {
+    font-size: 22px; font-weight: 600; margin: 32px 0 12px;
+    border-left: 3px solid var(--vis-amber-primary); padding-left: 12px;
+  }
+  h3 { font-size: 17px; font-weight: 600; margin: 24px 0 8px; color: var(--gc-text); }
+  p, li { color: var(--gc-text); }
+  ul, ol { padding-left: 22px; }
+  li { margin: 4px 0; }
+  table {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    border-radius: 8px; overflow: hidden; font-size: 14px;
+  }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--gc-border); vertical-align: top; }
+  th { background: rgba(255,122,26,0.08); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  code, pre { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; }
+  code { background: rgba(255,122,26,0.10); padding: 2px 6px; border-radius: 4px; }
+  pre {
+    background: var(--gc-bg-elevated); border: 1px solid var(--gc-border);
+    padding: 14px; border-radius: 8px; overflow-x: auto;
+  }
+  .pill {
+    display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px;
+    background: rgba(255,122,26,0.12); color: var(--vis-amber-shadow); margin-right: 6px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .pill { color: var(--vis-amber-highlight); }
+  }
+  .callout {
+    background: rgba(255,122,26,0.08); border-left: 3px solid var(--vis-amber-primary);
+    padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0;
+  }
+  footer { padding: 32px; text-align: center; color: var(--gc-text-soft); font-size: 13px; border-top: 1px solid var(--gc-border); }
+</style>
+</head>
+<body>
+
+<header class="doc-head">
+  <h1>Vis — Domain Research</h1>
+  <div class="meta">
+    <strong>Topic:</strong> Personal training + progressive-overload science + multi-stakeholder gym operations<br>
+    <strong>Date:</strong> 2026-05-21 &middot; <strong>Author:</strong> Gauravprakashshinde &middot; <strong>Type:</strong> Domain research
+  </div>
+  <p class="abstract">
+    Research feeding the Vis PRD, UX, and metric model. Global scope. Peer-reviewed primary +
+    practitioner secondary sources. Depth: 40% competitive scan, 35% training science + metrics,
+    25% personas + JTBD. Companion <code>.md</code> sidecar maintained for BMad workflow state at
+    <code>domain-vis-fitness-pt-research-2026-05-21.md</code>.
+  </p>
+</header>
+
+<main>
+
+<section>
+  <h2>Research Overview</h2>
+  <p>
+    Vis is a three-app fitness platform: React Native client app, React Native trainer app,
+    Angular admin web, Spring Boot backend. Multi-branch operation with four stakeholder roles
+    (client, trainer, branch staff, owner). This research grounds product decisions in current
+    domain evidence.
+  </p>
+  <h3>Depth weighting</h3>
+  <ul>
+    <li><strong>40%</strong> Competitive scan — AI-coached lifting apps + multi-stakeholder PT-business apps</li>
+    <li><strong>35%</strong> Training science + metrics</li>
+    <li><strong>25%</strong> Personas + Jobs-To-Be-Done</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Step 1 — Scope Confirmation <span class="pill">Confirmed 2026-05-21</span></h2>
+
+  <h3>Coverage areas</h3>
+  <table>
+    <thead><tr><th>Area</th><th>What gets researched</th></tr></thead>
+    <tbody>
+      <tr><td>Industry Analysis</td><td>Global fitness-app market, AI-coached lifting category, PT-SaaS category, gym-management category, competitive feature/gap matrix.</td></tr>
+      <tr><td>Training Science + Metrics</td><td>Load-progression models (linear, DUP, block, autoregulated), metrics catalog (1RM/e1RM, RPE/RIR, tonnage, volume load, set volume per muscle, ACWR, sRPE, HRV, sleep, readiness), what to surface vs hide.</td></tr>
+      <tr><td>Personas + JTBD</td><td>Client (4 archetypes), trainer (in-gym / online / hybrid), staff (front-desk / branch manager), owner (single-branch / chain). Functional + emotional + social jobs.</td></tr>
+      <tr><td>Regulatory + Data</td><td>Apple HealthKit + Google Health Connect constraints, GDPR + India DPDPA on biometrics, FCM data residency, age-of-majority.</td></tr>
+      <tr><td>Technology Trends</td><td>Auto-regulation algorithms, computer-vision form analysis, RIR/velocity-based training, wearable integration (Whoop, Oura, Garmin), AI macro/nutrition generation.</td></tr>
+      <tr><td>Economic Factors</td><td>Global gym + PT-tech market size, India context (your 7 branches), pricing patterns (subscription vs PT-mediated).</td></tr>
+      <tr><td>Value Chain</td><td>Trainer↔client engagement loop, staff/owner ops loop, churn points, retention compounders.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Methodology:</strong> every claim verified via live web search; multi-source for
+    load-bearing claims; confidence tags for uncertain items; inline citations + full reference
+    list at end of doc.
+  </div>
+</section>
+
+<section>
+  <h2>Step 2 — Industry Analysis <span class="pill">Completed 2026-05-21</span></h2>
+
+  <p>
+    Vis straddles three adjacent markets. None of them captures it alone — the
+    multi-stakeholder lens (client + trainer + staff + owner) is structurally what most
+    competitors are missing.
+  </p>
+
+  <h3>Market Size and Valuation (2026 baseline)</h3>
+  <table>
+    <thead><tr><th>Market</th><th>2026 size (global)</th><th>CAGR</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td>Consumer fitness apps</td><td>USD 12.12B (2025) → ~13.92B (2026)</td><td>13.4% (2026–2033)</td><td>Grand View Research</td></tr>
+      <tr><td>Consumer fitness apps (alt)</td><td>~USD 9.89B by 2030</td><td>1.75% (2026–2030)</td><td>Statista</td></tr>
+      <tr><td>AI Personal Trainer</td><td>USD 7.23B (2025) → 8.32B (2026) → 18.74B (2032)</td><td>14.57%</td><td>360iResearch</td></tr>
+      <tr><td>AI Personal Trainer (alt)</td><td>USD 16.86B (2025) → 48.79B (2032)</td><td>16.3%</td><td>alt market source</td></tr>
+      <tr><td>AI in Fitness &amp; Wellness</td><td>—</td><td>19.3% (2026–2035)</td><td>InsightAce Analytic</td></tr>
+      <tr><td>Gym management software</td><td>USD 2.23B (2026) → 4.02B (2032)</td><td>10.24%</td><td>Market Research Future</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Confidence:</strong> market-size figures vary widely across firms
+    (<code>MEDIUM</code>). Direction of travel — AI-coached lifting growing 1.4–2× faster than
+    baseline fitness apps — is consistent across all sources (<code>HIGH</code>).
+    <br><br>
+    <strong>Implication for Vis:</strong> the AI-coached and PT-SaaS segments are the fastest
+    growing within the broader fitness-app market. Vis's trainer-app + AI exercise/macro
+    suggestion (already in spec) sits in the highest-CAGR pocket.
+  </div>
+
+  <h3>Market Dynamics and Growth</h3>
+
+  <p><strong>Growth drivers (high confidence):</strong></p>
+  <ul>
+    <li>52% of personal trainers already use AI for programming (2026 State of the PT Industry Report). Adoption past tipping point.</li>
+    <li>Demand for individualized training + nutrition + mental-wellness bundled into one product.</li>
+    <li>Post-pandemic hybrid PT model (in-person + remote check-ins) — drives trainer-side software demand.</li>
+    <li>Wearable saturation (Apple Watch, Whoop, Oura, Garmin) creates HRV/sleep/recovery data supply.</li>
+    <li>Auto-regulation (RIR, e1RM, velocity-based) entering mainstream consumer apps via Bevel, Train Fitness AI, JuggernautAI.</li>
+  </ul>
+
+  <p><strong>Growth barriers:</strong></p>
+  <ul>
+    <li>iOS-dominant adoption (51.99% of fitness-app revenue). Android UX often deprioritized — Vis is RN, neutral.</li>
+    <li>North America 39.82% of revenue; India + APAC underserved at premium tier (opportunity for Vis given Mumbai-anchored branches).</li>
+    <li>Consumer apps churn fast; trainer-side software is sticky B2B.</li>
+    <li>Privacy regimes (GDPR, India DPDPA, US state laws) raising biometric-data compliance bar.</li>
+  </ul>
+
+  <h3>Market Structure and Segmentation</h3>
+
+  <table>
+    <thead><tr><th>Category</th><th>Representative apps</th><th>Primary user</th><th>Vis overlap</th></tr></thead>
+    <tbody>
+      <tr><td>AI-coached consumer lifting</td><td>Bevel, Train Fitness AI, Motra, Fitbod, JuggernautAI, RP Hypertrophy, Boostcamp, Caliber, Strong, Hevy</td><td>Solo lifter</td><td>Client-app + AI exercise layer</td></tr>
+      <tr><td>PT-SaaS / coaching platforms</td><td>Trainerize, TrueCoach (16k coaches), Everfit (200k coaches / 190 countries), MyPTHub, 12REPS, FitBudd, Trainero</td><td>Trainer</td><td>Trainer-app</td></tr>
+      <tr><td>Gym management / club software</td><td>Mindbody, Glofox (ABC), Zen Planner, PushPress, Wodify, Mariana Tek, Hapana, Virtuagym</td><td>Staff + owner ops</td><td>Admin-web</td></tr>
+      <tr><td>Hybrid / chain platforms</td><td>Mariana Tek, Hapana, Virtuagym, FitnessForce (India)</td><td>Multi-branch ops</td><td>Closest structural comp — but weak training-science depth</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Revenue Segmentation (Grand View, 2025)</h3>
+  <ul>
+    <li>Exercise &amp; weight loss: <strong>53.69%</strong> of fitness-app revenue (largest)</li>
+    <li>iOS platform: <strong>51.99%</strong> revenue share</li>
+    <li>Smartphones (vs wearables-primary): <strong>66.70%</strong></li>
+    <li>Geographic: North America <strong>39.82%</strong>, then Europe, then APAC</li>
+  </ul>
+
+  <div class="callout">
+    <strong>Implication for Vis:</strong> the <em>multi-stakeholder, multi-branch, AI-coached,
+    hybrid-PT</em> segment is structurally underserved. Gym-management platforms own the
+    staff/owner story but lack training-science depth. PT-SaaS owns the trainer side but
+    treats branches as a CRM tag. AI-lifting apps own the science but skip the gym institution
+    entirely. Vis is one of the few converging all three.
+  </div>
+
+  <h3>Industry Trends and Evolution (2026)</h3>
+  <ul>
+    <li><strong>AI from feature to default.</strong> Glofox shipped AI workout recommendations in 2025; Mindbody is integrating with smart equipment for real-time usage. Trainerize, Everfit, TrueCoach all shipped AI programming assistants in 2025–2026.</li>
+    <li><strong>Auto-regulation goes mainstream.</strong> RIR/RPE-based progression, velocity-based training, and e1RM-driven load suggestion moved from elite-strength niche (JuggernautAI, RTS) to consumer apps (Bevel, Train, Motra).</li>
+    <li><strong>Recovery-aware programming.</strong> HRV + sleep + soreness inputs alter same-day session prescriptions. Whoop/Oura/Garmin integrations now table-stakes for premium tier.</li>
+    <li><strong>Computer-vision form check.</strong> Bevel, Train Fitness AI, Sency-powered apps offering rep counting + bar-path + depth analysis from phone camera.</li>
+    <li><strong>Hybrid coaching dominant.</strong> Pure remote PT and pure in-person both declining as % share; in-person + remote check-ins is the growth segment — Vis is built for this from day one.</li>
+    <li><strong>Vertical integration into equipment + wearables.</strong> Mindbody × smart equipment; Apple Fitness+ × Apple Watch. Software-only platforms must integrate harder.</li>
+    <li><strong>Multi-stakeholder consolidation slow.</strong> Despite obvious benefit, very few platforms model trainer + client + staff + owner as first-class roles with role-scoped data. <strong>This is Vis's white space.</strong></li>
+  </ul>
+
+  <h3>Competitive Dynamics</h3>
+  <table>
+    <thead><tr><th>Dimension</th><th>Observation</th></tr></thead>
+    <tbody>
+      <tr><td>Market concentration</td><td>Fragmented. Trainerize, TrueCoach, Mindbody, Glofox each have meaningful share in their slice — no one owns the full stack.</td></tr>
+      <tr><td>Competitive intensity</td><td>High in PT-SaaS + AI lifting (low switching cost). Moderate in gym management (high switching cost from members/payments/schedule).</td></tr>
+      <tr><td>Barriers to entry — low</td><td>Single-stakeholder lifting tracker (commodity).</td></tr>
+      <tr><td>Barriers to entry — medium</td><td>AI programming layer (LLM cost falling; expertise differentiates).</td></tr>
+      <tr><td>Barriers to entry — high</td><td><strong>Full multi-branch + multi-role + payments + reminders + AI + wearables in one product. Vis's moat if executed.</strong></td></tr>
+      <tr><td>Innovation pressure</td><td>Quarterly cadence expected. Consumer apps ship AI features every 6–12 weeks. PT-SaaS slower (B2B).</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Vis positioning hypothesis (to validate in Step 3):</strong> closest to
+    <em>Trainerize + Mariana Tek + a slice of Bevel</em>, targeting under-served multi-branch
+    boutique gyms with on-site PT + light AI + India-localized payments. Differentiation in
+    three places: (1) trainer ↔ client real-time set logging during in-person session,
+    (2) role-scoped multi-branch ops, (3) cinematic on-brand UX (your prototype orb language)
+    — most gym-mgmt software is visually dated.
+  </div>
+
+  <h3>Sources</h3>
+  <ul>
+    <li><a href="https://www.grandviewresearch.com/industry-analysis/fitness-app-market">Grand View Research — Fitness Apps Market</a></li>
+    <li><a href="https://www.statista.com/outlook/hmo/digital-health/digital-fitness-well-being/health-wellness-coaching/fitness-apps/worldwide">Statista — Fitness Apps Worldwide</a></li>
+    <li><a href="https://www.360iresearch.com/library/intelligence/ai-personal-trainer">360iResearch — AI Personal Trainer Market</a></li>
+    <li><a href="https://www.insightaceanalytic.com/report/ai-in-fitness-and-wellness-market/2744">InsightAce Analytic — AI in Fitness and Wellness Market</a></li>
+    <li><a href="https://www.marketresearchfuture.com/reports/gym-management-software-market-26474">Market Research Future — Gym Management Software Market</a></li>
+    <li><a href="https://www.trainerize.com/blog/ai-for-personal-trainers/">Trainerize — 2026 State of the PT Industry / AI for PTs</a></li>
+    <li><a href="https://www.trainerize.com/blog/abc-trainerize-vs-everfit-vs-truecoach-vs-mypthub/">Trainerize — ABC Trainerize vs Everfit vs TrueCoach vs MyPTHub</a></li>
+    <li><a href="https://ptwill.com/blog/12reps-vs-truecoach-vs-everfit-vs-mypthub-vs-trainerize-which-fitness-app-is-actually-worth-your-money-in-2026/">ptwill.com — 12REPS vs TrueCoach vs Everfit vs MyPTHub vs Trainerize</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Step 3 — Competitive Landscape <span class="pill">Completed 2026-05-21</span></h2>
+
+  <div class="callout">
+    <strong>Naming correction:</strong> Your brief said "Motra/Train/Bevel". Confirmed via App Store:
+    <strong>Train Fitness was rebranded to Motra in 2025</strong>. Same product. So two distinct
+    competitors: <strong>Motra</strong> (= Train Fitness) and <strong>Bevel</strong>.
+  </div>
+
+  <p>Vis must beat — or absorb the best of — three clusters that today live as separate categories.</p>
+
+  <h3>Cluster A — AI-Coached Consumer Lifting (solo lifter)</h3>
+  <table>
+    <thead><tr><th>App</th><th>Differentiation</th><th>Pricing</th><th>Strength</th><th>Weakness Vis can exploit</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Motra</strong> (ex–Train Fitness)</td><td>Neural Kinetic Profiling — auto-detect 470+ exercises from Apple Watch motion. AI Coach chat. ChatGPT/Claude data export.</td><td>Free + premium</td><td>Strongest auto-tracking IP. Recovery-aware routine generation.</td><td>iOS-Watch only. Leg exercises poorly detected (wrist-only). Solo lifter — no trainer/gym layer.</td></tr>
+      <tr><td><strong>Bevel</strong></td><td>Bevel Intelligence 3.0 (rebuilt 2026-05): proactive AI coach with web search, chart gen, training plans + 700 exercises, biological-age tracking.</td><td>Core free; AI paid</td><td>Best AI-coach conversational UX. Holistic (recovery + nutrition + workouts).</td><td>Generalist health, not strength-focused. No trainer↔client model.</td></tr>
+      <tr><td><strong>Fitbod</strong></td><td>1,600+ exercise library. Auto progressive overload, RIR + Max Effort Days, recovery-driven.</td><td>$15.99/mo, $95.99/yr</td><td>Strongest auto-programming for hands-off lifter.</td><td>Solo only. Generic visuals. No coach integration.</td></tr>
+      <tr><td><strong>JuggernautAI</strong></td><td>Elite-strength autoregulation: RPE/RIR drives load + volume + de-load. Readiness inputs (sleep/soreness/motivation).</td><td>$34.99/mo, $349.99/yr</td><td>Best autoregulation engine. Chad Wesley Smith / Quinn Henoch lineage.</td><td>Powerlifter-only. UI dated. No trainer dashboard.</td></tr>
+      <tr><td><strong>RP Hypertrophy</strong></td><td>Renaissance Periodization mesocycle volume progression. RIR + post-session feedback (pump/soreness/joint pain) → next-week adjustment.</td><td>~$24.99/mo</td><td>Strongest hypertrophy science. Schoenfeld / Israetel lineage.</td><td>Hypertrophy-only. No real-time logging during in-person PT.</td></tr>
+      <tr><td><strong>Boostcamp</strong></td><td>70+ pre-built programs (PHUL, PHAT, nSuns, Reddit PPL). RPE/1RM%/volume tracking.</td><td>Free + premium</td><td>Best program library.</td><td>Library, not coaching engine. Solo.</td></tr>
+      <tr><td><strong>Hevy</strong></td><td>Lifting log + social + Hevy Trainer (B2B). Programs with progressive overload baked in. Hit target → load up, miss → hold/drop.</td><td>$2.99/mo, $74.99 lifetime</td><td>Cheapest. Strong social loop.</td><td>400+ exercises (small). Self-directed. No real PT layer.</td></tr>
+      <tr><td><strong>Strong</strong></td><td>Frictionless logger. No AI.</td><td>One-time / freemium</td><td>Fastest log UX.</td><td>Blank canvas — no progression intelligence.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Pattern:</strong> Cluster A nails science + auto-progression + recovery, fails at trainer↔client + multi-user.</p>
+
+  <h3>Cluster B — PT-SaaS / Online Coaching (trainer ↔ remote client)</h3>
+  <table>
+    <thead><tr><th>App</th><th>Differentiation</th><th>Pricing</th><th>Strength</th><th>Weakness Vis can exploit</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Trainerize</strong> (ABC)</td><td>Modern 2026 client app: unified calendar (workouts + habits + classes carousel). Real-time chat with typing indicators. Auto-tags clients (low activity, new PB, etc.). White-label client app.</td><td>~$5–$250/mo trainer</td><td>Closest analog to Vis trainer↔client architecture. Recent UX overhaul.</td><td><strong>Remote-first.</strong> No real-time in-person set-by-set collab. Branches = CRM tag. No gym-ops/admin role.</td></tr>
+      <tr><td><strong>TrueCoach</strong> (Xplor)</td><td>16,000+ coaches. Programming + messaging + video form review.</td><td>Tiered SaaS</td><td>Strong async coaching UX.</td><td>Async-first. No in-person session screen. No multi-branch hierarchy.</td></tr>
+      <tr><td><strong>Everfit</strong></td><td>200,000+ coaches / 190 countries. Workouts + meal plans + habits + community + automation.</td><td>Tiered</td><td>Broadest scope.</td><td>Remote-first. No multi-stakeholder branch model.</td></tr>
+      <tr><td><strong>MyPTHub</strong></td><td>Trainer-branded client app. Programming + nutrition + messaging.</td><td>Tiered</td><td>Cheaper white-label.</td><td>Same gaps.</td></tr>
+      <tr><td><strong>Caliber</strong></td><td>Premium 1:1 strength-focused remote coaching, science-led.</td><td>$50–$300+/mo</td><td>Strong science framing + 1:1 attention.</td><td>High price. <strong>Wearable HRV/sleep not in coaching loop (self-report only).</strong> Limited beyond strength.</td></tr>
+      <tr><td><strong>Future</strong></td><td>Generalist premium 1:1 remote PT.</td><td>~$149+/mo</td><td>Coach diversity.</td><td>Generalist. Frequent comms only — no in-session collab.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Pattern:</strong> Cluster B nails trainer↔client async loop, fails at (a) real-time in-person session collab, (b) multi-branch role hierarchy, (c) automated biometric integration into programming loop. <strong>Vis spec already addresses all three.</strong></p>
+
+  <h3>Cluster C — Multi-Location Gym/Boutique Ops (staff ↔ owner)</h3>
+  <table>
+    <thead><tr><th>App</th><th>Differentiation</th><th>Pricing</th><th>Strength</th><th>Weakness Vis can exploit</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Mariana Tek</strong> (Xplor)</td><td>Multi-location boutique-fitness ops: scheduling, billing, attendance, POS with location-specific pricing, role-based access. <strong>Launched Appointments 2026-05</strong> for 1:1 PT services.</td><td>Enterprise SaaS</td><td>Closest structural comp for Vis multi-branch admin. Just moved into 1:1 PT — validates Vis thesis.</td><td>Member-facing app thin. No training-science depth. Visually corporate. No AI programming.</td></tr>
+      <tr><td><strong>Hapana</strong></td><td>Multi-site + franchise growth focus. One software across many locations.</td><td>Enterprise SaaS</td><td>Strong franchise/chain ops.</td><td>Ops-first, training-thin.</td></tr>
+      <tr><td><strong>Mindbody</strong></td><td>Largest. Smart-equipment integrations (2025).</td><td>Enterprise SaaS</td><td>Brand + integration depth.</td><td>Dated UX. Generalist (wellness, yoga, salon). Heavyweight.</td></tr>
+      <tr><td><strong>Glofox</strong> (ABC)</td><td>AI workout recommendations (shipped 2025). Multi-location.</td><td>Enterprise SaaS</td><td>First ops platform with AI workouts.</td><td>Still ops-led — AI is bolt-on.</td></tr>
+      <tr><td><strong>Zen Planner / PushPress / Wodify</strong></td><td>CrossFit / boutique vertical.</td><td>Tiered</td><td>Vertical specialization.</td><td>Narrow vertical.</td></tr>
+      <tr><td><strong>Virtuagym</strong></td><td>Ops + member app + content.</td><td>Tiered</td><td>Bundle attempt.</td><td>Spread thin. None great.</td></tr>
+      <tr><td><strong>FitnessForce</strong></td><td>India-focused gym mgmt.</td><td>Local</td><td>India context, payments.</td><td>UX dated. No training-science. No AI.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Pattern:</strong> Cluster C nails ops + billing + multi-branch, fails at training depth + member-facing UX. <strong>Mariana Tek's 2026-05 Appointments launch is a strong signal that the convergence Vis bets on is real and starting.</strong></p>
+
+  <h3>Vis White-Space Matrix</h3>
+  <p>Where the column reads ❌ across all clusters, that's Vis's defensible differentiator.</p>
+  <table>
+    <thead><tr><th>Capability</th><th>Cluster A (AI-coached)</th><th>Cluster B (PT-SaaS)</th><th>Cluster C (Multi-branch ops)</th><th>Vis must own</th></tr></thead>
+    <tbody>
+      <tr><td>Auto progressive overload (RIR/e1RM/RPE)</td><td>✅ strong</td><td>🟡 trainer-driven</td><td>❌</td><td>✅</td></tr>
+      <tr><td>Recovery / HRV / readiness-driven programming</td><td>✅ Motra/Bevel/JAI</td><td>❌ <em>Caliber gap explicit</em></td><td>❌</td><td>✅</td></tr>
+      <tr><td>Trainer ↔ client async loop</td><td>❌</td><td>✅ strong</td><td>❌</td><td>✅</td></tr>
+      <tr><td><strong>Trainer ↔ client real-time in-person session collab</strong></td><td>❌</td><td>❌</td><td>❌</td><td><strong>✅ unique</strong></td></tr>
+      <tr><td>Multi-branch + role-scoped data (staff/owner/trainer/client)</td><td>❌</td><td>🟡 single-org</td><td>✅ Mariana/Hapana</td><td>✅</td></tr>
+      <tr><td>Cinematic on-brand member UX (consumer-grade polish)</td><td>✅ Bevel/Motra</td><td>🟡 Trainerize 2026 redesign</td><td>❌ dated</td><td>✅ (orb language)</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">
+    <strong>Two cells red across all three clusters:</strong>
+    (1) real-time in-person session collab; (2) cinematic UX in a multi-stakeholder product.
+    <strong>These are Vis's defensible differentiators.</strong>
+  </div>
+
+  <h3>Business Models</h3>
+  <table>
+    <thead><tr><th>Model</th><th>Examples</th><th>Notes for Vis</th></tr></thead>
+    <tbody>
+      <tr><td>Pure consumer subscription</td><td>Motra, Bevel, Fitbod, Hevy, JuggernautAI, RP, Boostcamp</td><td>$3–$35/mo. Volume play. India price-sensitivity matters.</td></tr>
+      <tr><td>PT-SaaS per-trainer</td><td>Trainerize, TrueCoach, Everfit, MyPTHub</td><td>$5–$250/mo per trainer. B2B sticky.</td></tr>
+      <tr><td>Premium 1:1 coaching</td><td>Caliber, Future</td><td>$50–$300/mo per client. Concierge.</td></tr>
+      <tr><td>Enterprise multi-location ops</td><td>Mariana Tek, Hapana, Mindbody, Glofox</td><td>Annual contract. High TCV. Slow sales cycle.</td></tr>
+      <tr><td><strong>Hybrid (Vis hypothesis)</strong></td><td>—</td><td>Gym pays for ops + trainer seats; client app free as retention layer. Blend of Mariana Tek + Trainerize.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Entry Barriers Vis Faces</h3>
+  <ul>
+    <li><strong>High:</strong> trainer adoption (incumbents 10K–200K coaches). <em>Mitigation:</em> own gym institution first, trainers come bundled with gym contract.</li>
+    <li><strong>Medium:</strong> AI programming credibility (need named scientific frame — Schoenfeld/Helms/Israetel/RP). <em>Mitigation:</em> open methodology, citable.</li>
+    <li><strong>Medium:</strong> wearable breadth (Whoop, Oura, Garmin, Polar, Apple Watch, Health Connect). <em>Mitigation:</em> HealthKit + Health Connect first; defer brand-specific.</li>
+    <li><strong>Low:</strong> consumer logging UX (Strong/Hevy commoditized).</li>
+    <li><strong>Lowering:</strong> AI coaching cost (LLM cost falling).</li>
+  </ul>
+
+  <h3>Switching Costs</h3>
+  <ul>
+    <li>Cluster A (consumer): low — lifters switch apps in a session.</li>
+    <li>Cluster B (PT-SaaS): medium-high — trainer rebuilds programs. Vis must beat Trainerize on day-one switching cost (CSV import? video import?).</li>
+    <li>Cluster C (ops): very high — payment + schedule + member data all live there. Vis admin-web sells against migration pain.</li>
+  </ul>
+
+  <h3>Ecosystem &amp; Partnership Signals</h3>
+  <ul>
+    <li><strong>Wearables:</strong> Apple HealthKit + Google Health Connect (in spec — read-only). Tier-2: Whoop (HRV gold standard), Oura, Garmin.</li>
+    <li><strong>Payments (India):</strong> UPI, Razorpay, Stripe India — spec keeps payments in-person; member-facing surfaces post-v1.</li>
+    <li><strong>AI:</strong> Claude (Anthropic) — already in project tooling. Per-user prompt caching for cost.</li>
+    <li><strong>Equipment:</strong> long-tail. Mariana Tek × Technogym, Mindbody × smart equipment as references.</li>
+  </ul>
+
+  <h3>Sources</h3>
+  <ul>
+    <li><a href="https://apps.apple.com/us/app/motra-ai-workout-fitness-coach/id1548577496">Motra (App Store)</a></li>
+    <li><a href="https://www.motra.com/">Motra (motra.com)</a></li>
+    <li><a href="https://trainfitness.ai/">Train Fitness AI (trainfitness.ai)</a></li>
+    <li><a href="https://www.autonomous.ai/ourblog/bevel-app-review">Bevel — autonomous.ai review</a></li>
+    <li><a href="https://gadgetsandwearables.com/2026/05/16/bevel-3/">Bevel 3 — Gadgets and Wearables</a></li>
+    <li><a href="https://www.bevel.health/">Bevel official</a></li>
+    <li><a href="https://www.sensai.fit/blog/hevy-vs-strong-vs-fitbod">Fitbod vs Hevy vs Strong — SensAI</a></li>
+    <li><a href="https://www.findyouredge.app/news/best-strength-training-apps-2026">Findyouredge — Best Strength Apps 2026</a></li>
+    <li><a href="https://ideausher.com/blog/fitness-app-development-like-juggernautai/">JuggernautAI feature breakdown</a></li>
+    <li><a href="https://dr-muscle.com/rp-hypertrophy-app-review/">RP Hypertrophy review — dr-muscle.com</a></li>
+    <li><a href="https://www.trainerize.com/blog/trainerize-product-update-new-modern-app-experience/">Trainerize — 2026 Modern App Update</a></li>
+    <li><a href="https://www.marianatek.com/features/multi-location/">Mariana Tek — Multi-Location</a></li>
+    <li><a href="https://xplor.com/press/marianatek-appointments/">Mariana Tek Appointments 2026-05</a></li>
+    <li><a href="https://www.hapana.com/platform/multiple-locations">Hapana — Multi-Site</a></li>
+    <li><a href="https://fitnessdrum.com/caliber-app-review/">Caliber review — Fitness Drum</a></li>
+    <li><a href="https://barbend.com/caliber-fitness-app-review/">Caliber review — BarBend</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Step 4 — Regulatory Focus <span class="pill">Completed 2026-05-21</span></h2>
+
+  <p>Four regulatory layers materially shape Vis design. Three are about data, one is about credentials.</p>
+
+  <h3>Layer 1 — Apple HealthKit (iOS)</h3>
+  <table>
+    <thead><tr><th>Aspect</th><th>Rule</th><th>Vis implication</th></tr></thead>
+    <tbody>
+      <tr><td>Read vs write</td><td>Separate authorization per data type, per direction. Write grant → read for what was written.</td><td>Vis Client App needs read-only auth for HR, HRV, sleep, active energy, workouts, body mass. No write needed v1.</td></tr>
+      <tr><td>User control</td><td>Per-data-type toggle in iOS Privacy settings. Revocable anytime.</td><td>UI must degrade gracefully on revoke. No silent failure.</td></tr>
+      <tr><td>Encryption at rest</td><td>Stored in Data Protection class "Protected Unless Open". Released 10 min after device lock.</td><td>Backend never receives raw HealthKit data — already in spec.</td></tr>
+      <tr><td>Advertising</td><td><strong>Apps cannot use HealthKit data for advertising.</strong></td><td>Vis has no ads; document in privacy policy regardless.</td></tr>
+      <tr><td>Privacy policy</td><td>Mandatory before HealthKit auth prompt. Must specify exactly what data and why.</td><td>List each HealthKit read scope + purpose in privacy policy.</td></tr>
+      <tr><td>App Review</td><td>Apps that misuse health data are rejected.</td><td>First submission: include sample data-flow doc for reviewer.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Confidence:</strong> <code>HIGH</code> — Apple official sources.</p>
+
+  <h3>Layer 2 — Google Health Connect (Android)</h3>
+  <table>
+    <thead><tr><th>Aspect</th><th>Rule</th><th>Vis implication</th></tr></thead>
+    <tbody>
+      <tr><td>Google Fit API sunset</td><td>Google Fit APIs supported until end of 2026, then deprecated. Health Connect replaces.</td><td>Vis Android Client App must integrate Health Connect, not Google Fit.</td></tr>
+      <tr><td>Permissions model</td><td>Granular per-data-type (e.g., <code>READ_HEART_RATE</code>, <code>READ_SLEEP</code>). No catch-all.</td><td>Declare only what is actually used in-app.</td></tr>
+      <tr><td>History window</td><td>Default reads 30 days before grant. Deeper history requires <code>PERMISSION_READ_HEALTH_DATA_HISTORY</code>.</td><td>For long-term trend graphs (recovery curve, sleep over months), Vis needs the history permission.</td></tr>
+      <tr><td>Platform</td><td>Part of Android Framework from API 34 (Android 14+).</td><td>Min SDK 34 cleanest. For older Android, Health Connect installable as separate app. Decide min-SDK during Phase 0.</td></tr>
+      <tr><td>Play Store policy</td><td>Apps must request only permissions needed for user-facing features.</td><td>Strict scoping check before Play Store submission.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Confidence:</strong> <code>HIGH</code> — Android Developers official.</p>
+
+  <h3>Layer 3 — GDPR (EU users, even if Vis is India-anchored)</h3>
+  <table>
+    <thead><tr><th>Aspect</th><th>Rule</th><th>Vis implication</th></tr></thead>
+    <tbody>
+      <tr><td>Health data class</td><td>Article 9 "special category". Wearable HR/sleep/HRV all qualify.</td><td>All biometric flows are special-category.</td></tr>
+      <tr><td>Legal basis</td><td><strong>Explicit consent</strong> is the only realistic basis for commercial fitness apps.</td><td>Dedicated consent step, not bundled with ToS.</td></tr>
+      <tr><td>Consent UX</td><td>Specific, informed, freely given, distinct. Pre-ticked invalid (Planet49 CJEU).</td><td>Vis onboarding needs an isolated "Health data" consent screen with clear data list + per-item purpose.</td></tr>
+      <tr><td>Context-sensitive</td><td>EDPB 2023: same data treated differently by purpose. Casual HR vs cardiac monitor diverge.</td><td>Vis must self-classify as recreational fitness, not diagnostic. Document in DPIA.</td></tr>
+      <tr><td>Data residency</td><td>EU subject data should stay in EU or use SCCs / adequacy.</td><td>If EU users v1, host backend in Cloud Run europe-west*. <strong>Tentative: defer EU launch to v2.</strong></td></tr>
+      <tr><td>DPIA</td><td>Required for systematic processing of health data.</td><td>Produce a DPIA pre-launch if EU users in scope.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Confidence:</strong> <code>HIGH</code>.</p>
+
+  <h3>Layer 4 — India DPDPA 2023 + DPDP Rules 2025</h3>
+  <table>
+    <thead><tr><th>Aspect</th><th>Rule</th><th>Vis implication</th></tr></thead>
+    <tbody>
+      <tr><td>Classification</td><td>Biometric + health data = sensitive personal data.</td><td>Wearable + workout data both qualify.</td></tr>
+      <tr><td>Consent</td><td>Specific, <strong>not bundled</strong>. Informed, with purpose + scope + duration specified.</td><td>India onboarding mirrors GDPR explicit-consent UX. One screen per data domain.</td></tr>
+      <tr><td>Security</td><td>Encryption at rest + transit. Access controls. Continuous monitoring.</td><td>TLS 1.3 (Cloud Run default); at-rest via Neon PG. Audit logging required.</td></tr>
+      <tr><td>Third-party sharing</td><td>Sharing with insurance partners requires separate consent.</td><td>Vis: no third-party sharing v1. Future integrations need new consent flow.</td></tr>
+      <tr><td>Cross-border transfer</td><td>Government may restrict transfer to certain jurisdictions.</td><td>If EU/US infra used, monitor MeitY notifications. Indian DCs preferred long-term.</td></tr>
+      <tr><td>DPO</td><td>Required for Significant Data Fiduciaries. Must be India-based.</td><td>Below threshold initially. Plan DPO appointment around ~50k users or upon designation.</td></tr>
+      <tr><td>Penalty</td><td>Up to INR 250 crore (~USD 30M) per breach.</td><td>Material risk — justifies security spend.</td></tr>
+      <tr><td>Timeline</td><td>Phased: DPB immediate, consent manager after 12 months, broader compliance 18 months from Aug 2023. <strong>As of 2026-05, fully in force.</strong></td><td>Cannot defer.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Confidence:</strong> <code>HIGH</code>.</p>
+
+  <h3>Layer 5 — Sectoral / Industry Standards (not statutory)</h3>
+  <table>
+    <thead><tr><th>Standard</th><th>Relevance to Vis</th></tr></thead>
+    <tbody>
+      <tr><td>ACSM / NSCA / NASM trainer certifications</td><td>Trainer App should surface cert body + cert ID + expiry, with a verified badge. Trust signal.</td></tr>
+      <tr><td>HIPAA (US)</td><td>Out of scope unless Vis acts as Business Associate for a healthcare provider. Not applicable v1.</td></tr>
+      <tr><td>App Store + Play Store health/fitness guidelines</td><td>Apple §5.1.3 + §1.4 + Play Store Health Apps policy. Prohibit unsupported medical claims, require privacy disclosures, restrict ads on health data.</td></tr>
+      <tr><td>ISO 27001</td><td>Not required; useful signal when selling to enterprise gym chains.</td></tr>
+      <tr><td>WCAG 2.2 AA</td><td>RN apps + Angular admin should target AA for screen readers + contrast.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Implementation Checklist (drop into PRD)</h3>
+  <ul>
+    <li>iOS: per-data-type HealthKit read scopes; usage descriptions in <code>Info.plist</code>; privacy-policy section per scope.</li>
+    <li>Android: declare Health Connect permissions per data type only; decide on <code>PERMISSION_READ_HEALTH_DATA_HISTORY</code>; min SDK 34 (or fallback strategy).</li>
+    <li>Onboarding: dedicated Health Data Consent screen separate from ToS; per-data-domain toggle (HR, sleep, HRV, steps, workouts, weight).</li>
+    <li>Backend: lock in spec line — biometric data read-only, on-device, not persisted to backend.</li>
+    <li>DPDPA: TLS 1.3, encryption at rest, audit logs, breach notification procedure, in-app data export + delete flows.</li>
+    <li>No third-party data sharing v1; if added later, separate consent flow.</li>
+    <li>Trainer Profile: cert fields + verified badge.</li>
+    <li>EU users: defer to v2; if needed v1, host EU region + DPIA.</li>
+    <li>DPO: appoint when user threshold approached or upon designation.</li>
+    <li>Privacy policy + DPIA template owned by founder/legal; version-controlled in repo.</li>
+  </ul>
+
+  <div class="callout">
+    <strong>Spec compliance check:</strong> spec line — <em>"Apple HealthKit (iOS) + Google Health
+    Connect (Android) — read-only, not stored in backend"</em> — is the single most
+    compliance-friendly architectural choice in the spec. It collapses huge GDPR/DPDPA surface
+    because no special-category data ever leaves the device. <strong>Keep non-negotiable through
+    v1.</strong> If a future feature genuinely needs server-side biometric data (e.g. trainer
+    dashboard with client HRV trend), introduce as <strong>explicit opt-in</strong> with fresh
+    consent screen and privacy-policy version log entry.
+  </div>
+
+  <h3>Sources</h3>
+  <ul>
+    <li><a href="https://support.apple.com/guide/security/protecting-access-to-users-health-data-sec88be9900f/web">Apple — Protecting access to user's health data</a></li>
+    <li><a href="https://developer.apple.com/documentation/healthkit/protecting-user-privacy">Apple Developer — Protecting user privacy (HealthKit)</a></li>
+    <li><a href="https://developer.apple.com/documentation/healthkit/authorizing-access-to-health-data">Apple Developer — Authorizing access to health data</a></li>
+    <li><a href="https://www.apple.com/legal/privacy/data/en/health-app/">Apple Legal — Health App &amp; Privacy</a></li>
+    <li><a href="https://developer.android.com/health-and-fitness/health-connect/ui/permissions">Android Developers — Health Connect Permissions</a></li>
+    <li><a href="https://developer.android.com/health-and-fitness/health-connect/publish">Android Developers — Publish health apps on Google Play</a></li>
+    <li><a href="https://developer.android.com/health-and-fitness/health-connect/get-started">Android Developers — Health Connect Get Started</a></li>
+    <li><a href="https://www.themomentum.ai/blog/gdpr-consent-requirements-health-data">Momentum — GDPR Consent Requirements for Health Data</a></li>
+    <li><a href="https://www.gdpr-advisor.com/gdpr-compliance-for-fitness-apps-safeguarding-personal-health-information/">GDPR Advisor — Compliance for Fitness Apps</a></li>
+    <li><a href="https://www.ey.com/en_in/insights/cybersecurity/decoding-the-digital-personal-data-protection-act-2023">EY India — Decoding DPDPA 2023 and DPDP Rules 2025</a></li>
+    <li><a href="https://ksandk.com/data-protection-and-data-privacy/regulation-of-biometric-data-under-the-dpdp-act/">KS&amp;K — Regulation of Biometric Data under DPDPA</a></li>
+    <li><a href="https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf">MeitY — DPDPA 2023 text</a></li>
+    <li><a href="https://www.biometricupdate.com/202511/india-notifies-its-sweeping-digital-personal-data-protection-rules">Biometric Update — India notifies DPDP rules</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Step 5 — Tech Trends, Metric Catalog, JTBD Personas <span class="pill">Completed 2026-05-21</span></h2>
+
+  <p>Vis's product surface depends on which metrics get computed server-side, which stay on-device, and which the trainer sees in real time. This is the technical + behavioural foundation for those choices.</p>
+
+  <h3>Part A — Training-Science Metric Catalog</h3>
+
+  <h4>A1. Volume metrics</h4>
+  <table>
+    <thead><tr><th>Metric</th><th>Definition</th><th>Formula</th><th>Evidence</th><th>Vis tier</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Set count per muscle/week</strong></td><td># working sets per muscle group (RIR ≤ 3)</td><td>Σ across sessions</td><td>Schoenfeld 2017 + 2024 update: ~0.24% hypertrophy gain per added set at 12.25 weekly avg. Diminishing returns above ~20 sets/muscle/wk.</td><td><strong>Surface</strong></td><td>Backend</td></tr>
+      <tr><td>Tonnage</td><td>Total weight × reps × sets per session</td><td><code>Σ(load × reps)</code></td><td>Useful for absolute load; weak hypertrophy predictor alone.</td><td>Inform</td><td>Backend</td></tr>
+      <tr><td>Volume load</td><td>Tonnage scoped per muscle/week</td><td><code>Σ(load × reps)</code> filtered</td><td>Better than raw tonnage for muscle-level progression.</td><td>Inform</td><td>Backend</td></tr>
+      <tr><td>Effective reps</td><td>Reps performed at ≥ 3–5 RIR</td><td>derived</td><td>Practical hypertrophy framework (Helms / SBS).</td><td>Hide v1</td><td>Backend</td></tr>
+    </tbody>
+  </table>
+
+  <h4>A2. Intensity metrics</h4>
+  <table>
+    <thead><tr><th>Metric</th><th>Definition</th><th>Formula</th><th>Evidence</th><th>Vis tier</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td>1RM</td><td>True one-rep max</td><td>direct lift</td><td>Gold standard, high CNS cost.</td><td>Hide (manual only)</td><td>Backend</td></tr>
+      <tr><td><strong>e1RM</strong></td><td>Estimated 1RM from sub-maximal set</td><td><strong>Epley:</strong> <code>w × (1 + 0.0333 × r)</code><br><strong>Brzycki:</strong> <code>w / (1.0278 − 0.0278 × r)</code></td><td>Both ±5–10%; most accurate at 3–6 reps. Epley better r ≤ 5, Brzycki better r 6–10.</td><td><strong>Surface</strong></td><td>Backend</td></tr>
+      <tr><td>% of 1RM</td><td>Working weight ÷ e1RM</td><td><code>load / e1RM × 100</code></td><td>Standard intensity prescription.</td><td>Inform</td><td>Backend</td></tr>
+      <tr><td><strong>RPE (0–10)</strong></td><td>Rate of Perceived Exertion</td><td>self-report</td><td>Strong correlation with bar velocity + RIR in experienced lifters.</td><td><strong>Surface</strong></td><td>Backend</td></tr>
+      <tr><td><strong>RIR</strong></td><td>Reps in Reserve at set end</td><td>self-report</td><td>2024 evidence: 1–2 RIR matches failure training for hypertrophy. Less accurate in untrained + high-rep sets.</td><td><strong>Surface</strong></td><td>Backend</td></tr>
+      <tr><td>Bar velocity (VBT)</td><td>Concentric mean velocity</td><td>LPT or phone CV</td><td>Network meta-analysis 2025: APRE 93% / RPE 67% / VBT 27% / %1RM 13% for max strength.</td><td>Hide v1 / v2 premium</td><td>Backend</td></tr>
+    </tbody>
+  </table>
+
+  <h4>A3. Recovery + Readiness metrics</h4>
+  <table>
+    <thead><tr><th>Metric</th><th>Source</th><th>Evidence</th><th>Vis tier</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td><strong>HRV (RMSSD)</strong></td><td>HealthKit / Health Connect / Whoop / Oura</td><td>Strong autonomic-recovery proxy. Daily delta vs 7-day avg &gt; absolute value.</td><td><strong>Surface (recovery orb)</strong></td><td>On-device read</td></tr>
+      <tr><td>Resting HR</td><td>HealthKit / Health Connect</td><td>Trend matters more than absolute.</td><td>Inform</td><td>On-device read</td></tr>
+      <tr><td><strong>Sleep duration + stages</strong></td><td>HealthKit / Health Connect</td><td>Sleep &lt; 6h ⇒ measurable strength + RPE deficit next day.</td><td><strong>Surface</strong></td><td>On-device read</td></tr>
+      <tr><td><strong>Subjective readiness (0–10)</strong></td><td>manual one-tap pre-session</td><td>JuggernautAI / RP use it; cheap and effective.</td><td><strong>Surface</strong></td><td>Backend</td></tr>
+      <tr><td>DOMS / soreness</td><td>manual per-muscle 0–3</td><td>Drives next-session exercise selection.</td><td>Inform</td><td>Backend</td></tr>
+    </tbody>
+  </table>
+
+  <h4>A4. Training-load metrics</h4>
+  <table>
+    <thead><tr><th>Metric</th><th>Formula</th><th>Evidence</th><th>Vis tier</th></tr></thead>
+    <tbody>
+      <tr><td>sRPE (Session RPE)</td><td><code>RPE × minutes</code> (Foster)</td><td>Validated training-load proxy; IOC consensus 2016 ACWR basis.</td><td>Inform</td></tr>
+      <tr><td><strong>ACWR</strong></td><td><code>7-day load avg / 28-day load avg</code></td><td>IOC 2016: 0.80–1.30 → lower injury risk; &gt; 2.0 → higher. 2024 critiques exist; soft signal.</td><td>Inform (trainer alert at &gt; 1.5)</td></tr>
+      <tr><td>Monotony + Strain</td><td>sRPE std-dev variants</td><td>Trainer overtraining flag.</td><td>Hide v1</td></tr>
+    </tbody>
+  </table>
+
+  <h4>A5. Body comp + progress</h4>
+  <table>
+    <thead><tr><th>Metric</th><th>Source</th><th>Vis tier</th></tr></thead>
+    <tbody>
+      <tr><td>Body weight</td><td>scale / HealthKit / manual</td><td>Surface</td></tr>
+      <tr><td>Body fat %</td><td>impedance / DEXA / manual</td><td>Inform</td></tr>
+      <tr><td>Photos (weekly check-in)</td><td>manual upload</td><td>Surface (private)</td></tr>
+      <tr><td>Circumference</td><td>manual</td><td>Inform</td></tr>
+    </tbody>
+  </table>
+
+  <h4>A6. Progressive Overload — the one metric Vis must own</h4>
+  <div class="callout">
+    Combine per-exercise into a single <strong>Progression Index</strong>:
+    <pre><code>ProgressionIndex = w_e1rm × Δe1RM + w_vol × ΔVolume + w_quality × ΔRPE_efficiency</code></pre>
+    Where <code>RPE_efficiency</code> = same load × same reps achieved at lower RPE. Three knobs the
+    trainer can weight per client goal (strength / hypertrophy / endurance).
+    <br><br>
+    <strong>This is the surfaced output of all per-set inputs.</strong> Powers the recovery-orb-style
+    "you progressed today" feedback the prototype hints at.
+  </div>
+
+  <h3>Part B — Technology Trends (2024–2026)</h3>
+  <ul>
+    <li><strong>Auto-regulation mainstream.</strong> Network meta-analysis 2025: APRE 93% / RPE 67% / VBT 27% / %1RM 13% effectiveness ranking for max strength. <strong>Vis must include RPE + RIR as first-class per-set inputs.</strong></li>
+    <li><strong>Computer-vision rep counting / form check.</strong> Metric VBT, OVR Velocity, Sency. Realtime on iPhone 13+. <strong>Vis v1: skip. v2: ship CV rep-counting for squat / bench / deadlift / OHP.</strong></li>
+    <li><strong>Smartwatch-only auto-tracking.</strong> Motra: 470+ exercises from wrist motion. Leg lifts underdetected. <strong>Vis v1: manual entry. v2: integrate as Tier-2.</strong></li>
+    <li><strong>Recovery-driven programming.</strong> Bevel / Motra / JuggernautAI consume HRV + sleep + readiness. <strong>Vis v1: surface on recovery orb; shade trainer's intensity recommendation. v2: auto-override.</strong></li>
+    <li><strong>Wearable integration.</strong> v1 = HealthKit + Health Connect (read-only). v2 = Whoop / Oura / Garmin / Polar.</li>
+    <li><strong>AI exercise + macro generation.</strong> 52% of trainers use AI (Trainerize 2026). <strong>Stack: Claude + prompt caching for system prompts (~90% cost reduction). Backend proxies; client never holds the key.</strong> Outputs strongly typed.</li>
+    <li><strong>Real-time collab tech.</strong> <strong>WebSocket for in-session set logging</strong> with polling fallback. Last-write-wins per set row (spec OK). CRDT overkill for v1.</li>
+    <li><strong>India tech context.</strong> Cloud Run asia-south1 (Mumbai). Android dominant (~95% market). UPI + Razorpay native; in-person payments v1.</li>
+  </ul>
+
+  <h3>Part C — JTBD Personas (compact)</h3>
+
+  <h4>Client (4)</h4>
+  <table>
+    <thead><tr><th>Persona</th><th>JTBD statement</th><th>Vis hires to</th><th>Anti-job</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Aarav, 26 — Beginner</strong></td><td>When I show up not knowing what to do, I want the trainer to tell me exactly what + how, so I can feel productive not lost.</td><td>Pre-loaded session; form video per exercise; consistency-streak.</td><td>Don't bury me in HRV / RPE / e1RM jargon week 1.</td></tr>
+      <tr><td><strong>Priya, 33 — Recomposition</strong></td><td>When I'm 4 weeks in and scale hasn't moved, I want to see the work is still working, so I can keep going.</td><td>Progression index; weekly trend; check-in photo timeline; recovery orb improving.</td><td>Don't shame a low day.</td></tr>
+      <tr><td><strong>Rohit, 29 — Strength athlete</strong></td><td>When I'm in a 12-wk peaking block, I want RIR/RPE per top set + e1RM trajectory, so I can know if I'm on schedule.</td><td>e1RM curve per main lift; ACWR; readiness alerts; self-adjust load via RIR.</td><td>Don't oversimplify away the data.</td></tr>
+      <tr><td><strong>Mrs. Kapoor, 54 — Longevity</strong></td><td>When I think about why I'm here, I want to see I'm getting stronger and moving better, so I can age well.</td><td>Visit count; sit-to-stand reps; balance + mobility scores; HRV trend.</td><td>Don't gamify with badges that infantilize.</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Trainer (3)</h4>
+  <table>
+    <thead><tr><th>Persona</th><th>JTBD statement</th><th>Vis hires to</th><th>Anti-job</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Karan, 31 — In-gym PT</strong></td><td>When I'm running 8 sessions a day, I want to switch context fast + log accurately, so I can be present in the session not buried in the phone.</td><td>One-tap set logging; voice input for RIR/RPE; today-sessions on top; quick exercise swap.</td><td>Don't force typing during a set.</td></tr>
+      <tr><td><strong>Anjali, 27 — Online/hybrid PT</strong></td><td>When my remote client logs, I want auto-tagged signals (PR, skip, silent), so I can follow up at the right moment.</td><td>Auto-tags; video form check; AI program builder; check-in tracker.</td><td>Don't make me duplicate UI for the same data.</td></tr>
+      <tr><td><strong>Vikram, 38 — Lead/master trainer</strong></td><td>When I review junior PTs' programming, I want to see what they prescribed + why, so I can coach them and protect clients.</td><td>Branch-level program view; ACWR &gt; 1.5 flags; comment on junior PT drafts.</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Staff (2)</h4>
+  <table>
+    <thead><tr><th>Persona</th><th>JTBD statement</th><th>Vis hires to</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Meera, 24 — Front-desk</strong></td><td>When a member walks in, I want to take payment + activate + assign a trainer in under 60s, so I can keep the queue moving.</td><td>QR scan activate; in-person payment log (cash/card/UPI); trainer-pool picker; WhatsApp welcome template.</td></tr>
+      <tr><td><strong>Suresh, 36 — Branch manager</strong></td><td>When I review the branch end of week, I want retention + new joins + trainer utilization + revenue, so I can intervene before metrics dip.</td><td>Branch dashboard; retention cohort; trainer utilization heat-map; payment reconciliation export.</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Owner (2)</h4>
+  <table>
+    <thead><tr><th>Persona</th><th>JTBD statement</th><th>Vis hires to</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Hiren, 41 — Single-branch</strong></td><td>When I look at my gym in the morning, I want yesterday's revenue + active members + churn risks in one glance, so I can spend the day on the floor not in a spreadsheet.</td><td>Owner dashboard; churn-risk list; trainer ranking; in-person payment integrity audit.</td></tr>
+      <tr><td><strong>Mr. Bhandari, 52 — Multi-branch (= you)</strong></td><td>When I review my chain, I want to compare branches on retention + revenue + training quality + complaint rate, so I can invest in winners + intervene in losers.</td><td>Chain dashboard with per-branch ranking; consolidated trainer roster; shared program library; consolidated payment ledger.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Sources</h3>
+  <ul>
+    <li><a href="https://www.semanticscholar.org/paper/Dose-response-relationship-between-weekly-training-Schoenfeld-Ogborn/0d34206f962394983054451cddd8a3b91818f732">Schoenfeld dose-response meta — Semantic Scholar</a></li>
+    <li><a href="https://sportrxiv.org/index.php/server/preprint/view/460">2024 Dose-Response Meta-Regression update — SportRxiv</a></li>
+    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12336695/">Autoregulated RT for Max Strength — Network Meta-Analysis</a></li>
+    <li><a href="https://www.setforset.com/blogs/news/autoregulation-tools-for-strength-training">SET FOR SET — Autoregulation tools</a></li>
+    <li><a href="https://www.scienceforsport.com/acutechronic-workload-ratio/">ScienceForSport — ACWR</a></li>
+    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7047972/">ACWR systematic review meta — PMC</a></li>
+    <li><a href="https://gymaware.com/velocity-based-training/">GymAware — VBT theory and application</a></li>
+    <li><a href="https://www.metric.coach/articles/metric-vbt-pro-barbell-velocity-tracking-app">Metric VBT — barbell velocity tracking</a></li>
+    <li><a href="https://arvo.guru/resources/one-rep-max-formulas">Arvo — 1RM Formulas (Epley vs Brzycki vs Lander)</a></li>
+    <li><a href="https://www.strengthjourneys.xyz/articles/how-do-i-calculate-my-e1rm-estimated-one-rep-max">Strength Journeys — E1RM 7 Formulas</a></li>
+    <li><a href="https://www.nngroup.com/articles/personas-jobs-be-done/">NN/g — Personas vs Jobs-to-Be-Done</a></li>
+    <li><a href="https://www.aha.io/roadmapping/guide/release-management/what-is-the-jobs-to-be-done-framework">Aha — JTBD framework</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Step 6 — Research Synthesis <span class="pill">Completed 2026-05-21</span></h2>
+
+  <h3>Executive Summary</h3>
+  <p>
+    Vis is being designed at a structurally rare moment. The fitness-app market splits into three
+    competing categories that none of the incumbents has unified: <strong>AI-coached lifting</strong>
+    (Motra, Bevel, Fitbod, JuggernautAI), <strong>PT-SaaS</strong> (Trainerize, TrueCoach, Everfit,
+    Caliber, Future), and <strong>multi-location gym ops</strong> (Mariana Tek, Hapana, Mindbody,
+    Glofox). Each grows 10–19% CAGR. Each owns one user well and dismisses the other two as out of
+    scope. Mariana Tek's May 2026 launch of Appointments to add 1:1 PT into ops software is the
+    clearest market signal yet that convergence is starting.
+  </p>
+  <p>
+    Vis bets on full convergence — client + trainer + staff + owner as first-class roles in one
+    role-scoped, multi-branch product. Two capabilities are red across every cluster surveyed:
+    (1) trainer↔client real-time in-person session collaboration, and (2) cinematic on-brand UX in
+    a multi-stakeholder product. These are Vis's defensible moats; everything else is competitive
+    parity that must be cleared.
+  </p>
+  <p>
+    Training-science direction is settled. The 2025 network meta-analysis ranks autoregulation
+    (APRE 93%, RPE 67%) far above fixed-percentage prescription (13%) for maximal strength;
+    Schoenfeld's 2024 dose-response update confirms volume's diminishing returns above ~20
+    sets/muscle/week; e1RM from sub-maximal sets (Epley/Brzycki, ±5–10%) is accurate enough to
+    drive a Progression Index without ever loading 1RM tests. Vis's training engine should be
+    built on RIR, RPE, e1RM, set count per muscle, and on-device HealthKit/Health Connect
+    biometrics — not a more elaborate science layer.
+  </p>
+  <p>
+    Regulatory direction is also settled, and favorably. The spec's choice to keep biometric data
+    on-device, read-only, never persisted server-side collapses ~80% of the GDPR + India DPDPA
+    compliance surface. DPDPA is fully in force as of May 2026 with penalties up to ₹250 crore,
+    so this single architectural choice is also the most material risk mitigation in the product.
+  </p>
+  <p>
+    The remaining open questions are product, not strategy: how to make in-person real-time session
+    collab feel native; how to present a Progression Index without hiding it behind charts; how to
+    keep cinematic UX consistent across three engineering stacks (RN client, RN trainer, Angular
+    admin) while three different teams ship in parallel.
+  </p>
+
+  <h3>Top 10 Strategic Takeaways</h3>
+  <ol>
+    <li><strong>The white space is convergence, not a better lifter.</strong> Don't let scope creep dilute the four roles.</li>
+    <li><strong>Real-time in-person session collab is the unique moat.</strong> WebSocket + polling fallback, last-write-wins per set row.</li>
+    <li><strong>Auto-regulation is now table stakes.</strong> RPE + RIR per set are first-class inputs from v1.</li>
+    <li><strong>Progression Index is the single derived metric to lead with.</strong> Three weights (e1RM, volume, RPE-efficiency), trainer-tunable per goal.</li>
+    <li><strong>Recovery orb stays.</strong> HRV + sleep + readiness shade trainer's intensity recommendation; auto-override is v2.</li>
+    <li><strong>"Biometric data stays on-device" is the most valuable line in the spec.</strong> Lock non-negotiable v1.</li>
+    <li><strong>AI = Claude + prompt caching, backend-proxied.</strong> ~90% cost cut. Outputs strongly typed.</li>
+    <li><strong>Trainer adoption is the riskiest beach.</strong> Win the gym institution; trainers come bundled.</li>
+    <li><strong>Defer EU to v2.</strong> India + global non-EU first.</li>
+    <li><strong>Visually-dated category is an opportunity.</strong> Prototype orb language is a real differentiator.</li>
+  </ol>
+
+  <h3>Persona → Feature Mapping (PRD seed)</h3>
+  <table>
+    <thead><tr><th>Persona</th><th>Top-3 features they hire Vis for</th><th>Phase</th></tr></thead>
+    <tbody>
+      <tr><td>Aarav (beginner client)</td><td>Pre-loaded session, form video, consistency streak</td><td>P0</td></tr>
+      <tr><td>Priya (recomp client)</td><td>Progression Index, photo timeline, recovery orb</td><td>P0</td></tr>
+      <tr><td>Rohit (strength athlete)</td><td>e1RM curve, ACWR alert, RIR self-adjust</td><td>P1</td></tr>
+      <tr><td>Mrs. Kapoor (longevity)</td><td>Visit count, sit-to-stand, balance/mobility</td><td>P2</td></tr>
+      <tr><td>Karan (in-gym PT)</td><td>One-tap set logging, voice RIR, today-sessions</td><td>P0</td></tr>
+      <tr><td>Anjali (online/hybrid PT)</td><td>Auto-tags, AI program builder, check-in tracker</td><td>P1</td></tr>
+      <tr><td>Vikram (master trainer)</td><td>Branch program view, ACWR&gt;1.5 flag, comment on drafts</td><td>P2</td></tr>
+      <tr><td>Meera (front-desk staff)</td><td>QR-activate + payment log + trainer assign in 60s</td><td>P0</td></tr>
+      <tr><td>Suresh (branch manager)</td><td>Branch dashboard, retention cohort, reconciliation</td><td>P1</td></tr>
+      <tr><td>Hiren (single-branch owner)</td><td>Owner dashboard, churn-risk list, payment audit</td><td>P1</td></tr>
+      <tr><td><strong>Mr. Bhandari (multi-branch — you)</strong></td><td>Chain dashboard, shared program library, consolidated ledger</td><td>P0</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Architecture Implications</h3>
+  <ul>
+    <li><strong>Real-time:</strong> Spring Boot WebSocket + RN (Socket.IO). Polling fallback. Last-write-wins per set row.</li>
+    <li><strong>Biometric data:</strong> never persisted server-side v1.</li>
+    <li><strong>AI proxy:</strong> Spring controller → Claude with system-prompt caching. Per-user TTL. Audit logs. Strongly-typed outputs.</li>
+    <li><strong>Multi-branch:</strong> branch_id on every core entity; service-layer enforcement; OWNER unscoped.</li>
+    <li><strong>Region:</strong> Cloud Run asia-south1 primary; asia-southeast1 backup.</li>
+    <li><strong>DB:</strong> Neon PG. Flyway. <code>set_logs</code> with version column for optimistic locking.</li>
+    <li><strong>Auth:</strong> Firebase Auth → FirebaseAuthFilter → UserService resolves role + branch_id.</li>
+    <li><strong>Wearables:</strong> v1 = HealthKit + Health Connect read-only. v2 = Whoop / Oura / Garmin OAuth.</li>
+    <li><strong>Observability:</strong> structured JSON logs; MDC = branch_id + role + user_id. OTel traces on AI calls.</li>
+  </ul>
+
+  <h3>UX Implications</h3>
+  <ul>
+    <li>Recovery orb = state, not navigation.</li>
+    <li>Progression Index = headline number on home.</li>
+    <li>Per-set logger ≤ 3 taps. Voice optional for in-session trainer.</li>
+    <li>Trainer "today" view = vertical timeline; in-session split planned vs actual.</li>
+    <li>Staff front-desk = single search bar; activate/pay/assign inline modal.</li>
+    <li>Owner = at-a-glance + drill-down; per-branch ranked list opens branch-manager view.</li>
+    <li>Theme parity across light + dark per <code>docs/brand-ref/reference_*.png</code>. No pure white except elevated cards.</li>
+    <li>System font stack, 1.6–1.7 line-height, cinematic amber accents in hero CTAs only.</li>
+  </ul>
+
+  <h3>Red Flags &amp; Risks</h3>
+  <table>
+    <thead><tr><th>Risk</th><th>Severity</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr><td>Trainer adoption (Trainerize incumbent)</td><td>High</td><td>Win gym institution first; build Trainerize CSV import.</td></tr>
+      <tr><td>3-app parallel dev drift</td><td>High</td><td>Shared tokens in <code>prototype/src/tokens.js</code>; style review per PR.</td></tr>
+      <tr><td>Real-time sync correctness</td><td>Medium</td><td>Last-write-wins; Playwright + RN concurrent-edit tests.</td></tr>
+      <tr><td>AI cost overrun</td><td>Medium</td><td>Prompt caching day 1. Per-user daily cap. Cost dashboard.</td></tr>
+      <tr><td>DPDPA enforcement</td><td>Medium</td><td>On-device biometrics removes most exposure. Export + delete flows + breach procedure pre-launch.</td></tr>
+      <tr><td>v2 scope creep into v1</td><td>Medium</td><td>Lock v1 PRD; backlog v2 candidates (auto-override, CV form, VBT).</td></tr>
+      <tr><td>Bevel/Motra ships multi-trainer mode first</td><td>Low–Medium</td><td>Quarterly product-blog watch. Vis's gym institution distribution + India localization remain unique.</td></tr>
+      <tr><td>iOS-only competitors ignored by users</td><td>Low</td><td>Vis is RN, neutral. Android-first = India advantage.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Open Questions (carry into PRD / brainstorming)</h3>
+  <ul>
+    <li>Does v1 Trainer App ship voice RIR input or text-only?</li>
+    <li>Min Android SDK — 34 (clean Health Connect) or lower with fallback?</li>
+    <li>Progression Index degrade gracefully on skipped weeks?</li>
+    <li>Recovery orb — absolute readiness or 7-day delta?</li>
+    <li>Trainer cert — manual upload + admin verify, or pull cert-body API?</li>
+    <li>AI macro/nutrition layer — Client App only, or also Trainer-supervised approval?</li>
+    <li>WhatsApp templates — directly from Vis, or generate-and-copy?</li>
+  </ul>
+
+  <h3>Recommended Next BMad Steps</h3>
+  <p>Mapping your originally-stated team request to BMad skills + installed plugins:</p>
+  <table>
+    <thead><tr><th>You asked for</th><th>Skill / plugin to invoke (fresh context)</th></tr></thead>
+    <tbody>
+      <tr><td>Research the apps + personas + metrics + scientific gym expert</td><td>✅ done in this doc</td></tr>
+      <tr><td>Product Owner / PRD writer</td><td><code>bmad-prd</code></td></tr>
+      <tr><td>UX expert / innovative ideation</td><td><code>bmad-create-ux-design</code> + <code>bmad-brainstorming</code></td></tr>
+      <tr><td>UI expert for RN</td><td><code>react-native-best-practices</code> + <code>react-native-skills</code> + <code>frontend-design</code></td></tr>
+      <tr><td>UI expert for Angular</td><td><code>frontend-design</code> + Context7 MCP (live Angular docs) + 21st-dev/magic for components</td></tr>
+      <tr><td>Architect</td><td><code>bmad-create-architecture</code></td></tr>
+      <tr><td>Scrum master / Sprint planning</td><td><code>bmad-sprint-planning</code></td></tr>
+      <tr><td>3 strong devs</td><td><code>bmad-create-story</code> → <code>bmad-dev-story</code> cycle (or parallel via <code>subagent-driven-development</code>)</td></tr>
+      <tr><td>Multi-role roundtable for tough trade-offs</td><td><code>bmad-party-mode</code> (Mary + John + Sally + Winston + Amelia + Paige as subagents)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Recommended sequence:</strong>
+    <code>bmad-prd</code> → <code>bmad-party-mode</code> (challenge PRD with 6-agent round-table) →
+    <code>bmad-create-ux-design</code> → <code>bmad-create-architecture</code> →
+    <code>bmad-create-epics-and-stories</code> → <code>bmad-check-implementation-readiness</code> →
+    <code>bmad-sprint-planning</code> → story → dev cycle.
+  </div>
+
+  <h3>Completion</h3>
+  <p>
+    Domain research complete. Six sections. All sources cited inline + listed per section.
+    Companion <code>.md</code> sidecar retains BMad workflow state at
+    <code>domain-vis-fitness-pt-research-2026-05-21.md</code>.
+  </p>
+  <p><strong>Status:</strong> <span class="pill">completed 2026-05-21</span></p>
+</section>
+
+</main>
+
+<footer>
+  Vis project &middot; generated 2026-05-21 &middot; format: HTML per <a href="https://claude.com/blog/using-claude-code-the-unreasonable-effectiveness-of-html" style="color:var(--vis-amber-primary)">unreasonable effectiveness of HTML</a>
+</footer>
+
+</body>
+</html>
