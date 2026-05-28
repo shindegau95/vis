@@ -44,7 +44,7 @@ story_location: _bmad-output/implementation-artifacts
 development_status:
   # ── Epic E1a: Backend Infrastructure ────────────────────────────────────────
   epic-1a: in-progress
-  1a-1-gh-actions-ci-cd-pipelines: in-progress
+  1a-1-gh-actions-ci-cd-pipelines: review
   1a-2-spring-boot-3-5-x-upgrade-in-vis-package-migration: backlog
   1a-3-redis-integration-local-dev-testcontainers: backlog
   1a-4-cloud-armor-bucket4j-per-uid-rate-limiting: backlog

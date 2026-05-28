@@ -1,6 +1,6 @@
 # Story 1a.1: GH Actions CI/CD Pipelines
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -20,19 +20,19 @@ so that every PR is validated before merge and branch protection is enforced.
 
 ## Tasks / Subtasks
 
-- [ ] Create `.github/workflows/backend-ci.yml` (AC: 1, 4)
-  - [ ] Trigger: `push` and `pull_request` on all branches
-  - [ ] Steps: checkout → Java 21 setup → Maven cache → `mvn test` → `mvn package -DskipTests` → Docker build (no push)
-  - [ ] Set `SPRING_PROFILES_ACTIVE=test` so Testcontainers config is active; no real DB needed
-  - [ ] Confirm `MigrationsIntegrationTest`, controller/, filter/, service/ tests all pass in GH Actions Ubuntu runner
-- [ ] Create `.github/workflows/admin-web-ci.yml` (AC: 2, 4)
-  - [ ] Trigger: `push` and `pull_request` on all branches
-  - [ ] Steps: checkout → Node 20 setup → `npm ci` in `admin-web/` → `ng test --watch=false --browsers=ChromeHeadless` → `ng build --configuration production`
-  - [ ] Use `working-directory: admin-web` for all steps
-- [ ] Create `.github/workflows/pact-verify.yml` stub (AC: 3, 4)
-  - [ ] Stub only: single job that echoes "No Pact contracts yet — stub passes" and exits 0
-  - [ ] Trigger: `push` and `pull_request` on all branches
-- [ ] Enable GitHub branch protection rule on `main` requiring all 3 workflows to pass (AC: 5)
+- [x] Create `.github/workflows/backend-ci.yml` (AC: 1, 4)
+  - [x] Trigger: `push` and `pull_request` on all branches
+  - [x] Steps: checkout → Java 21 setup → Maven cache → `mvn test` → `mvn package -DskipTests` → Docker build (no push)
+  - [x] Set `SPRING_PROFILES_ACTIVE=test` so Testcontainers config is active; no real DB needed
+  - [x] Confirm `MigrationsIntegrationTest`, controller/, filter/, service/ tests all pass in GH Actions Ubuntu runner
+- [x] Create `.github/workflows/admin-web-ci.yml` (AC: 2, 4)
+  - [x] Trigger: `push` and `pull_request` on all branches
+  - [x] Steps: checkout → Node 20 setup → `npm ci` in `admin-web/` → `ng test --watch=false --browsers=ChromeHeadless` → `ng build --configuration production`
+  - [x] Use `working-directory: admin-web` for all steps
+- [x] Create `.github/workflows/pact-verify.yml` stub (AC: 3, 4)
+  - [x] Stub only: single job that echoes "No Pact contracts yet — stub passes" and exits 0
+  - [x] Trigger: `push` and `pull_request` on all branches
+- [x] Enable GitHub branch protection rule on `main` requiring all 3 workflows to pass (AC: 5)
 
 ## Dev Notes
 
@@ -140,4 +140,14 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- All 3 workflows created and verified green on GitHub Actions (run IDs: 26586599273 backend, 26586599279 admin-web, 26586599497 pact-verify).
+- application-test.properties already sets Firebase placeholders — no GH Secrets needed for backend CI.
+- Both backend-ci and admin-web-ci produce a check named `build` (job ID); GitHub branch protection requires ALL same-named checks to pass, covering both stacks.
+- Branch protection set via `gh api PUT /branches/main/protection` with contexts `["build","pact-verify"]`, strict=true.
+- Note for future: actions/checkout@v4 and actions/setup-java@v4 show Node.js 20 deprecation warnings. Update to @v5 variants before Sep 2026.
+
 ### File List
+
+- `.github/workflows/backend-ci.yml` (new)
+- `.github/workflows/admin-web-ci.yml` (new)
+- `.github/workflows/pact-verify.yml` (new)
