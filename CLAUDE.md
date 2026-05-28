@@ -15,6 +15,31 @@ All skills must be invoked at the start of the task, not after. If a task touche
 
 - **`/caveman`** — invoke at the start of every session, no exceptions. Reduces token usage by ~75% by dropping filler words while preserving full technical accuracy.
 
+## Documentation Format: HTML, not Markdown (MANDATORY)
+
+All documentation artifacts produced for this project — research reports, PRDs, UX specs, architecture docs, story files, retrospectives, plans, brainstorming outputs, validation reports, distillates, anything intended for a human to read — **must be written as standalone `.html` files**, not `.md`.
+
+Rationale: Anthropic engineering lead Thariq Shihipar's "The unreasonable effectiveness of HTML" (claude.com/blog/using-claude-code-the-unreasonable-effectiveness-of-html, May 2026). HTML enables tabs, tables, SVG illustrations, responsive layout, navigation, interactive controls (sliders, draggable cards, copy buttons), and stays readable past 100+ lines where Markdown collapses. There is no official Anthropic skill for this — it is a project-level convention enforced here.
+
+Rules:
+
+- **File extension:** `.html`. Self-contained — inline `<style>` and inline `<script>`, no external CDN deps unless explicitly approved.
+- **Styling:** match the Vis brand palette. Reference the CSS vars listed in this file (`--vis-amber-primary`, `--gc-bg-elevated`, etc.) embedded inline at the top of each doc, plus a light/dark `prefers-color-scheme` media query. Warm ivory bg (`#F9F6F0`), never pure white. Cinematic amber accents.
+- **Typography:** system font stack (`-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif`). Generous line-height (1.6–1.7). Max content width ~760px for prose, full-width for tables/diagrams.
+- **Structure:** `<header>` with title + date + author, sticky table-of-contents `<nav>` for docs >300 lines, semantic `<section>` blocks. Use `<details>`/`<summary>` for collapsible long-form. Use `<table>` for comparisons (not ASCII tables).
+- **Interactivity when helpful:** tabs for parallel options, side-by-side diff blocks, draggable Kanban for backlog views, sliders for parameter tuning, "copy to clipboard" buttons on code/spec blocks.
+- **Code blocks:** `<pre><code>` with minimal monospace styling. Syntax highlighting optional — keep dependency-free.
+- **Mockups & diagrams:** inline SVG (preferred), or `<canvas>` only if needed. No external image hosts.
+- **Frontmatter equivalent:** every doc starts with a `<header>` block carrying title, date, author (`Gauravprakashshinde`), and a one-line abstract.
+
+**Narrow exceptions — keep as Markdown:**
+
+- `README.md`, `CLAUDE.md`, `PLAN.md` at repo root (tool-readable conventions).
+- `*.md` files BMad/superpowers skills require by name to drive their own workflows (e.g. BMad story files, sprint-status files where the skill machinery reads `.md`). When a skill writes `.md`, leave it as `.md`, but also generate a companion `.html` rendering at the same path for human reading.
+- Git commit messages, PR descriptions, inline code comments.
+
+**Naming:** `<topic>-<YYYY-MM-DD>.html`. Place inside the same output folder the producing skill would have used for `.md`.
+
 ## UI Reference Images (MANDATORY)
 
 Whenever the user asks for any UI update, change, or new component, **first open and read** these reference images via the `Read` tool:
@@ -308,3 +333,4 @@ Both Trainer App and Client App can update the same session simultaneously (set 
 - **Linear MCP** `save_cycle` does not exist — the MCP server only supports `save_milestone`. To create actual Cycles (sprints), the user must create them in the Linear web UI; then issues can be assigned via MCP. Do not promise cycle-based sprints without confirming the tool exists first.
 - **Linear issue list size** Fetching all team issues with `list_issues` at limit 250 can exceed token limits (~87K chars). Fetch by project or filter by specific criteria instead of pulling the full team backlog at once.
 - **Linear title consistency** When creating issues across phases, verify the separator convention (colon vs dash) matches all other issues in the same phase before saving. Inconsistencies require a second pass of `save_issue` calls to fix.
+- **BMad stories must be mirrored to Linear** Every BMad story created via `bmad-create-story` or `bmad-dev-story` must have a corresponding Linear issue created in the matching Epic project. Create it at story start (In Progress), update to In Review when dev done, update to Done after code review passes. Never complete a story workflow without syncing Linear.

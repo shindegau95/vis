@@ -1,6 +1,6 @@
 # Story 1a.1: GH Actions CI/CD Pipelines
 
-Status: review
+Status: done
 
 ## Story
 
@@ -151,3 +151,10 @@ claude-sonnet-4-6
 - `.github/workflows/backend-ci.yml` (new)
 - `.github/workflows/admin-web-ci.yml` (new)
 - `.github/workflows/pact-verify.yml` (new)
+
+### Review Findings
+
+- [x] [Review][Defer] No timeout on `ng test` [`.github/workflows/admin-web-ci.yml`] — deferred, pre-existing pattern not introduced by this story
+- [x] [Review][Defer] Docker COPY glob `target/*.jar` silent fail [`backend/Dockerfile`] — deferred, pre-existing Dockerfile not created by this story
+- [x] [Review][Defer] Testcontainers image `postgres:16` not pinned [`backend/src/test/resources/application-test.properties`] — deferred, pre-existing config not introduced by this story
+- [x] [Review][Defer] Double Maven compile (`mvn test` + `mvn package`) [`.github/workflows/backend-ci.yml`] — deferred, story spec explicitly prescribes this sequence
