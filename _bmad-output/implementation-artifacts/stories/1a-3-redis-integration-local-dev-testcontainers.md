@@ -1,6 +1,6 @@
 # Story 1a.3: Redis Integration — Local Dev + Testcontainers
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
