@@ -1,6 +1,6 @@
 # Story 1a.2: Spring Boot 3.5.x Upgrade + in.vis.* Package Migration
 
-Status: review
+Status: done
 
 ## Story
 
@@ -182,6 +182,10 @@ claude-sonnet-4-6
 - Full `mvn test` (15/15) passes after upgrade. Docker daemon needed to be started locally for Testcontainers; CI (ubuntu-latest) has Docker pre-installed so `MigrationsIntegrationTest` will pass in CI without any workaround.
 - Spring Boot 3.5.14 ships Spring Framework 6.2.18. Migrated both controller tests from deprecated `@MockBean` (spring-boot-test) → `@MockitoBean` (spring-test `org.springframework.test.context.bean.override.mockito`). All 15 tests pass post-migration.
 - No other breaking changes found: `SecurityConfig` DSL stable, Flyway 10.10.0 compatible, Testcontainers 1.19.7 compatible, Firebase Admin 9.3.0 unchanged.
+
+### Review Findings
+
+- [x] [Review][Defer] Testcontainers 1.19.7 pin stale vs Boot 3.5 BOM [`backend/pom.xml:23`] — deferred, pre-existing. Boot 3.5 BOM manages a newer version; explicit pin takes precedence. Tests pass at 1.19.7. Upgrade only if tests fail (per story Dev Notes policy).
 
 ### File List
 

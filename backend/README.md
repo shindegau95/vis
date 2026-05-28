@@ -5,7 +5,7 @@ Spring Boot 3.3 (Java 21) REST API. Multi-branch, role-based, Firebase-auth. Pos
 ## Quick start
 
 ```bash
-# 1. Bring up Postgres locally
+# 1. Bring up Postgres + Redis locally
 docker compose up -d
 
 # 2. Export env vars (copy from .env.example)
@@ -14,6 +14,9 @@ export DATABASE_USER=vis
 export DATABASE_PASSWORD=vis
 export FIREBASE_CREDENTIALS_PATH=./firebase-service-account.json
 export FIREBASE_PROJECT_ID=your-firebase-project-id
+export REDIS_HOST=localhost
+export REDIS_PORT=6379
+export REDIS_PASSWORD=
 
 # 3. Run migrations
 mvn flyway:migrate
