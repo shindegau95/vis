@@ -2,6 +2,7 @@ package in.vis.config;
 
 import com.google.firebase.auth.FirebaseAuth;
 import in.vis.filter.FirebaseAuthFilter;
+import in.vis.filter.RateLimitFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    FirebaseAuthFilter firebaseAuthFilter,
+                                                   RateLimitFilter rateLimitFilter,
                                                    CorsFilter corsFilter) throws Exception {
         return http
                 .cors(cors -> {})
@@ -40,6 +42,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(rateLimitFilter, FirebaseAuthFilter.class)
                 .build();
     }
 }
