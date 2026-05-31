@@ -1,6 +1,6 @@
 # Story 1a.6: Observability Day-1 — Counter Metrics + Distributed Tracing
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
