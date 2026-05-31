@@ -36,6 +36,29 @@ Flyway scans `src/main/resources/db/migration` on startup and replays any unappl
 
 Run manually outside the app: `mvn flyway:migrate` (uses the same env vars).
 
+## Observability
+
+Counter metrics (`SM-C1`–`SM-C10`) + the `ai.cost.wau_spend` gauge are registered at startup by `in.vis.observability.MetricsRegistrar`. Call sites in domain stories increment them via `meterRegistry.counter(VisMetrics.SM_C2_WS_DISCONNECT).increment()`.
+
+**Scrape endpoint:** `GET /actuator/prometheus` (no auth — Cloud Run's Managed Service for Prometheus scrapes externally; in production behind Cloud Run + Cloud Armor).
+
+**Tracing:** Spring Boot's Micrometer Observation API bridges to OpenTelemetry → OTLP/HTTP exporter. Configure via env vars:
+
+| Var | Default | Effect |
+|---|---|---|
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | _empty_ | Empty = exporter disabled, no log spam in local dev. Cloud Run sidecar injects the real endpoint. |
+| `app.tracing.sampling.probability` | `0.1` | 10% sample rate in prod; tests pin `1.0` for determinism. |
+| `OBSERVABILITY_ENV` | `dev` | Tags every meter with `env=<value>` (`dev` / `staging` / `prod`). |
+
+**Cloud Monitoring dashboard:** ship the day-1 template via gcloud:
+
+```bash
+gcloud monitoring dashboards create \
+  --config-from-file=backend/dashboards/vis-observability.json
+```
+
+Dashboard ships SM-C1, SM-C2, SM-C3, SM-C6 panels with threshold lines plus placeholder text panels listing remaining counters' owning epics.
+
 ## API Versioning
 
 Every REST endpoint negotiates content via vendor media types (RFC 6838 §3.2).

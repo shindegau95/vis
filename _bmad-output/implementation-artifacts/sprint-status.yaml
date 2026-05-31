@@ -1,5 +1,5 @@
 # generated: 2026-05-28
-# last_updated: 2026-05-30
+# last_updated: 2026-05-31
 # project: Vis
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-28
-last_updated: 2026-05-30
+last_updated: 2026-05-31
 project: Vis
 project_key: NOKEY
 tracking_system: file-system
@@ -49,7 +49,7 @@ development_status:
   1a-3-redis-integration-local-dev-testcontainers: done
   1a-4-cloud-armor-bucket4j-per-uid-rate-limiting: done
   1a-5-versioned-dto-content-negotiation: done
-  1a-6-observability-day-1-counter-metrics-distributed-tracing: backlog
+  1a-6-observability-day-1-counter-metrics-distributed-tracing: review
   epic-1a-retrospective: optional
 
   # ── Epic E1b: Mobile Infrastructure ─────────────────────────────────────────

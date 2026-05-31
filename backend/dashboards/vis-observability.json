@@ -1,0 +1,113 @@
+{
+  "displayName": "Vis — Observability (Day 1)",
+  "mosaicLayout": {
+    "columns": 12,
+    "tiles": [
+      {
+        "xPos": 0, "yPos": 0, "width": 6, "height": 4,
+        "widget": {
+          "title": "SM-C1 · AI cost / WAU (threshold $0.40, alert $0.80, pivot $1.00)",
+          "xyChart": {
+            "dataSets": [{
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"prometheus.googleapis.com/ai_cost_wau_spend/gauge\"",
+                  "aggregation": {
+                    "alignmentPeriod": "60s",
+                    "perSeriesAligner": "ALIGN_MEAN"
+                  }
+                }
+              },
+              "plotType": "LINE"
+            }],
+            "thresholds": [
+              { "value": 0.40, "color": "YELLOW", "direction": "ABOVE", "label": "warn $0.40" },
+              { "value": 0.80, "color": "ORANGE", "direction": "ABOVE", "label": "throttle $0.80" },
+              { "value": 1.00, "color": "RED", "direction": "ABOVE", "label": "pivot $1.00" }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 6, "yPos": 0, "width": 6, "height": 4,
+        "widget": {
+          "title": "SM-C2 · WebSocket disconnect rate (5-min) — threshold 5%",
+          "xyChart": {
+            "dataSets": [{
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"prometheus.googleapis.com/vis_sm_c2_ws_disconnect_total/counter\"",
+                  "aggregation": {
+                    "alignmentPeriod": "300s",
+                    "perSeriesAligner": "ALIGN_RATE"
+                  }
+                }
+              },
+              "plotType": "LINE"
+            }],
+            "thresholds": [
+              { "value": 0.05, "color": "RED", "direction": "ABOVE", "label": "SLO 5%" }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 0, "yPos": 4, "width": 6, "height": 4,
+        "widget": {
+          "title": "SM-C3 · Crash-free rate — threshold ≥99%",
+          "xyChart": {
+            "dataSets": [{
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"prometheus.googleapis.com/vis_sm_c3_crash_free_rate/gauge\" AND metric.labels.source!=\"backend-placeholder\"",
+                  "aggregation": {
+                    "alignmentPeriod": "60s",
+                    "perSeriesAligner": "ALIGN_MEAN"
+                  }
+                }
+              },
+              "plotType": "LINE"
+            }],
+            "thresholds": [
+              { "value": 0.99, "color": "RED", "direction": "BELOW", "label": "SLO 99%" }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 6, "yPos": 4, "width": 6, "height": 4,
+        "widget": {
+          "title": "SM-C6 · Set-save p95 latency — threshold 1.5s",
+          "xyChart": {
+            "dataSets": [{
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"prometheus.googleapis.com/vis_sm_c6_set_save_latency_seconds/histogram\"",
+                  "aggregation": {
+                    "alignmentPeriod": "60s",
+                    "perSeriesAligner": "ALIGN_DELTA",
+                    "crossSeriesReducer": "REDUCE_PERCENTILE_95"
+                  }
+                }
+              },
+              "plotType": "LINE"
+            }],
+            "thresholds": [
+              { "value": 1.5, "color": "RED", "direction": "ABOVE", "label": "p95 SLO 1.5s" }
+            ]
+          }
+        }
+      },
+      {
+        "xPos": 0, "yPos": 8, "width": 12, "height": 2,
+        "widget": {
+          "title": "Placeholders (panel ships when call site lands)",
+          "text": {
+            "content": "SM-C4 (DPDPA tickets > 0.5%/WAU/wk) — owner: E1d Compliance / Admin Tickets\nSM-C5 (Trainer override > 70%) — owner: E7 AI Progression\nSM-C7 (Marketplace abuse > 1%) — owner: E10 Solo + Marketplace\nSM-C8 (New-signup-no-log > 50%) — owner: E1d Auth / Onboarding\nSM-C9 (Batch logging > 24h > 30%) — owner: E4 Equipment-Aware Logger\nSM-C10 (PR-card no-share > 80%) — owner: E8 PR Moments",
+            "format": "MARKDOWN"
+          }
+        }
+      }
+    ]
+  }
+}
