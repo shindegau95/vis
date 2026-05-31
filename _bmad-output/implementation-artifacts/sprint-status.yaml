@@ -50,7 +50,7 @@ development_status:
   1a-4-cloud-armor-bucket4j-per-uid-rate-limiting: done
   1a-5-versioned-dto-content-negotiation: done
   1a-6-observability-day-1-counter-metrics-distributed-tracing: done
-  epic-1a-retrospective: optional
+  epic-1a-retrospective: done
 
   # ── Epic E1b: Mobile Infrastructure ─────────────────────────────────────────
   epic-1b: backlog
