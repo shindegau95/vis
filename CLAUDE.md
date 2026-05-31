@@ -334,3 +334,23 @@ Both Trainer App and Client App can update the same session simultaneously (set 
 - **Linear issue list size** Fetching all team issues with `list_issues` at limit 250 can exceed token limits (~87K chars). Fetch by project or filter by specific criteria instead of pulling the full team backlog at once.
 - **Linear title consistency** When creating issues across phases, verify the separator convention (colon vs dash) matches all other issues in the same phase before saving. Inconsistencies require a second pass of `save_issue` calls to fix.
 - **BMad stories must be mirrored to Linear** Every BMad story created via `bmad-create-story` or `bmad-dev-story` must have a corresponding Linear issue created in the matching Epic project. Create it at story start (In Progress), update to In Review when dev done, update to Done after code review passes. Never complete a story workflow without syncing Linear.
+
+- **Local Docker Engine 29.x daemon hangs (macOS)** Testcontainers + `docker ps` periodically stall on Docker Desktop ≥29.x because the shaded `docker-java` mis-parses the new `_ping` response shape. CI (ubuntu-latest, older Docker) is unaffected. When `curl --max-time 3 --unix-socket /var/run/docker.sock http://localhost/_ping` returns exit 28 (timeout) or 7 (refused), force-restart Docker:
+  ```bash
+  pkill -9 -f "com.docker" 2>&1
+  pkill -9 -f "Docker Desktop" 2>&1
+  sleep 3
+  open -a Docker
+  # then poll: until [ "$(curl -s --max-time 3 --unix-socket /var/run/docker.sock http://localhost/_ping 2>&1)" = "OK" ]; do sleep 3; done
+  ```
+  Don't reboot the laptop and don't wait for the GUI to "settle." `osascript -e 'quit app "Docker"'` is NOT sufficient — the GUI process refuses to exit when the backend is hung, so `pkill -9` is required.
+
+- **Verify Maven Central artifact coordinates before pinning from upstream docs** Upstream documentation routinely lags published artifact names. Two confirmed in epic E1a:
+  - **Bucket4j** docs cite `com.bucket4j:bucket4j-lettuce` → does NOT exist on Central. Real artifact is `com.bucket4j:bucket4j_jdk17-lettuce` (JDK-tagged for JDK 17+) or `bucket4j_jdk11-lettuce` for JDK 11 baseline. Confirm via `curl -s "https://search.maven.org/solrsearch/select?q=g:com.bucket4j&rows=30&wt=json" | jq -r '.response.docs[] | "\(.g):\(.a)"' | sort`.
+  - **Spring Boot OTLP exporter** behavior: `management.otlp.tracing.endpoint=` (empty string) is NOT a silent no-op — `OtlpHttpSpanExporter` validates the URL on bean construction and crashes startup with `Invalid endpoint, must start with http:// or https://: `. Leave the property UNSET so Boot's auto-config skips exporter registration; Cloud Run uses `MANAGEMENT_OTLP_TRACING_ENDPOINT` env var.
+
+  Generalized rule: when pinning a dependency `groupId:artifactId:version` or a property value from external blog posts / library docs, confirm the artifact exists on Central or the property semantics in the Boot source before committing. One quick `mvn dependency:tree` or `javap` against the autoconfig class saves a recompile cycle.
+
+- **Mockito + Java interface `default` methods** When stubbing an interface that uses `default` methods (e.g., `ProxyManager.getProxy` in Bucket4j returns `BucketProxy` via a default method body), prefer `doReturn(...).when(mock).method(...)` over `when(mock.method(...)).thenReturn(...)`. The latter executes the default body inside `when()`, which can NPE on un-stubbed downstream calls and produce confusing ClassCastException. Also mock the most-specific declared return type (`BucketProxy` not its parent `Bucket`) so the cast inside the default method body succeeds when it is invoked.
+
+- **Spring MVC `ContentNegotiationConfigurer.defaultContentType(...)` interacts with Spring Security's HTML-vs-JSON entry-point classifier** Setting `defaultContentType(vnd.vis.v1+json)` made `@WebMvcTest` 401 expectations return 302 instead — Spring Security's `DelegatingAuthenticationEntryPoint` classifies clients by Accept header, and vendor JSON wasn't in its "JSON client" list, so it picked the HTML login-redirect entry point. Avoid `defaultContentType` if `*/*` → first-`produces` fallback already lands where you want. If `defaultContentType` is genuinely needed, also override Spring Security's `RequestMatcher` for JSON clients to include vendor media types.
