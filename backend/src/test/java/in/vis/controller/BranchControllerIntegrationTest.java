@@ -1,5 +1,8 @@
 package in.vis.controller;
 
+import in.vis.MediaTypes;
+import in.vis.config.V1ContentTypeAdvice;
+import in.vis.config.WebConfig;
 import in.vis.exception.GlobalExceptionHandler;
 import in.vis.model.Branch;
 import in.vis.repository.BranchRepository;
@@ -8,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -18,11 +22,12 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BranchController.class)
-@Import(GlobalExceptionHandler.class)
+@Import({GlobalExceptionHandler.class, WebConfig.class, V1ContentTypeAdvice.class})
 class BranchControllerIntegrationTest {
 
     @Autowired private MockMvc mockMvc;
@@ -42,6 +47,7 @@ class BranchControllerIntegrationTest {
 
         mockMvc.perform(get("/branches").with(authentication(auth())))
                 .andExpect(status().isOk())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.APPLICATION_VND_VIS_V1_JSON_VALUE))
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("Kandivali"))

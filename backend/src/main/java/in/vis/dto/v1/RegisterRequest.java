@@ -1,4 +1,4 @@
-package in.vis.dto;
+package in.vis.dto.v1;
 
 import jakarta.validation.constraints.NotBlank;
 

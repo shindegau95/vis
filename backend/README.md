@@ -36,6 +36,22 @@ Flyway scans `src/main/resources/db/migration` on startup and replays any unappl
 
 Run manually outside the app: `mvn flyway:migrate` (uses the same env vars).
 
+## API Versioning
+
+Every REST endpoint negotiates content via vendor media types (RFC 6838 §3.2).
+
+| Client `Accept`                          | Server `Content-Type`             | Body shape |
+|------------------------------------------|-----------------------------------|------------|
+| `application/vnd.vis.v1+json`            | `application/vnd.vis.v1+json`     | v1         |
+| `application/vnd.vis.v2+json`            | `application/vnd.vis.v2+json`     | v2         |
+| `application/json`                       | `application/vnd.vis.v1+json`     | v1 (default) |
+| `*/*` or header missing                  | `application/vnd.vis.v1+json`     | v1 (default) |
+| `application/vnd.vis.v3+json` or any unsupported version | — (`406 Not Acceptable`, empty body) | — |
+
+`/actuator/**` endpoints stay on plain `application/json` — they are infra/ops, not domain API.
+
+v1 = `in.vis.dto.v1.*`. v2 = `in.vis.dto.v2.*`. Media-type constants live in `in.vis.MediaTypes`. Content-Type rewriting (plain `application/json` → versioned default) is handled by `in.vis.config.V1ContentTypeAdvice` (`ResponseBodyAdvice`). Implemented in Story 1a.5 (GC-68 / VIS-139).
+
 ## Tests
 
 ```bash

@@ -1,11 +1,16 @@
 package in.vis.controller;
 
-import in.vis.dto.UserResponse;
+import in.vis.MediaTypes;
+import in.vis.config.V1ContentTypeAdvice;
+import in.vis.config.WebConfig;
+import in.vis.dto.v1.UserResponse;
 import in.vis.enums.Role;
 import in.vis.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,10 +20,12 @@ import java.util.Collections;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthController.class)
+@Import({WebConfig.class, V1ContentTypeAdvice.class})
 class AuthControllerIntegrationTest {
 
     @Autowired private MockMvc mockMvc;
@@ -35,6 +42,7 @@ class AuthControllerIntegrationTest {
 
         mockMvc.perform(get("/auth/me").with(authentication(auth)))
                 .andExpect(status().isOk())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.APPLICATION_VND_VIS_V1_JSON_VALUE))
                 .andExpect(jsonPath("$.firebaseUid").value("uid-abc"))
                 .andExpect(jsonPath("$.name").value("Aarav"))
                 .andExpect(jsonPath("$.role").value("CLIENT"))

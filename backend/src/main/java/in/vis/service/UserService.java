@@ -1,7 +1,7 @@
 package in.vis.service;
 
-import in.vis.dto.RegisterRequest;
-import in.vis.dto.UserResponse;
+import in.vis.dto.v1.RegisterRequest;
+import in.vis.dto.v1.UserResponse;
 import in.vis.enums.Role;
 import in.vis.exception.NotFoundException;
 import in.vis.model.Branch;

@@ -1,10 +1,12 @@
 package in.vis.controller;
 
-import in.vis.dto.RegisterRequest;
-import in.vis.dto.UserResponse;
+import in.vis.MediaTypes;
+import in.vis.dto.v1.RegisterRequest;
+import in.vis.dto.v1.UserResponse;
 import in.vis.enums.Role;
 import in.vis.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(value = "/auth", produces = {
+        MediaTypes.APPLICATION_VND_VIS_V1_JSON_VALUE,
+        MediaType.APPLICATION_JSON_VALUE
+})
 public class AuthController {
 
     private final UserService userService;
@@ -28,7 +33,10 @@ public class AuthController {
         return userService.getByFirebaseUid(firebaseUid);
     }
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", consumes = {
+            MediaTypes.APPLICATION_VND_VIS_V1_JSON_VALUE,
+            MediaType.APPLICATION_JSON_VALUE
+    })
     public UserResponse register(@AuthenticationPrincipal String firebaseUid,
                                  @RequestParam Role role,
                                  @RequestParam(required = false) Long branchId,
