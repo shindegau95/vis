@@ -48,7 +48,7 @@ development_status:
   1a-2-spring-boot-3-5-x-upgrade-in-vis-package-migration: done
   1a-3-redis-integration-local-dev-testcontainers: done
   1a-4-cloud-armor-bucket4j-per-uid-rate-limiting: done
-  1a-5-versioned-dto-content-negotiation: review
+  1a-5-versioned-dto-content-negotiation: done
   1a-6-observability-day-1-counter-metrics-distributed-tracing: backlog
   epic-1a-retrospective: optional
 

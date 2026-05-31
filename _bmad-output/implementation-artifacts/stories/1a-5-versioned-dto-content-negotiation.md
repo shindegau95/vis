@@ -1,6 +1,6 @@
 # Story 1a.5: Versioned DTO Content-Negotiation
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
