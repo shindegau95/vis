@@ -8,22 +8,30 @@
   </header>
 
   <main>
-    <div *ngIf="status === 'loading'" class="state">Loading profile…</div>
+    @if (status === 'loading') {
+      <div class="state">Loading profile…</div>
+    }
 
-    <div *ngIf="status === 'ready' && user" class="profile">
-      <h2>Welcome, {{ user.name }}</h2>
-      <p class="role">{{ user.role }} · {{ user.branchName || 'all branches' }}</p>
-      <pre>{{ user | json }}</pre>
-    </div>
+    @if (status === 'ready' && user) {
+      <div class="profile">
+        <h2>Welcome, {{ user.name }}</h2>
+        <p class="role">{{ user.role }} · {{ user.branchName || 'all branches' }}</p>
+        <pre>{{ user | json }}</pre>
+      </div>
+    }
 
-    <div *ngIf="status === 'pending'" class="state pending">
-      <h2>Account Pending</h2>
-      <p>Your account hasn't been activated by an admin yet. Check back soon.</p>
-    </div>
+    @if (status === 'pending') {
+      <div class="state pending">
+        <h2>Account Pending</h2>
+        <p>Your account hasn't been activated by an admin yet. Check back soon.</p>
+      </div>
+    }
 
-    <div *ngIf="status === 'error'" class="state error">
-      <h2>Something went wrong</h2>
-      <p>{{ errorMessage }}</p>
-    </div>
+    @if (status === 'error') {
+      <div class="state error">
+        <h2>Something went wrong</h2>
+        <p>{{ errorMessage }}</p>
+      </div>
+    }
   </main>
 </section>
