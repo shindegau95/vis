@@ -1,0 +1,59 @@
+name: Client App EAS Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'client-app/**'
+      - '.github/workflows/client-app-eas.yml'
+  pull_request:
+    paths:
+      - 'client-app/**'
+      - '.github/workflows/client-app-eas.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: client-app/package-lock.json
+      - name: Install dependencies
+        working-directory: client-app
+        run: npm ci
+      - name: Run tests
+        working-directory: client-app
+        run: npm test -- --ci
+
+  eas-build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: client-app/package-lock.json
+      - name: Set up EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install dependencies
+        working-directory: client-app
+        run: npm ci
+      - name: EAS Build (PR — preview profile, queue only)
+        if: github.event_name == 'pull_request'
+        working-directory: client-app
+        run: eas build --profile preview --non-interactive --no-wait --platform all
+      - name: EAS Build (main — development profile, queue only)
+        if: github.ref == 'refs/heads/main'
+        working-directory: client-app
+        run: eas build --profile development --non-interactive --no-wait --platform all

@@ -1,0 +1,59 @@
+name: Trainer App EAS Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'trainer-app/**'
+      - '.github/workflows/trainer-app-eas.yml'
+  pull_request:
+    paths:
+      - 'trainer-app/**'
+      - '.github/workflows/trainer-app-eas.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: trainer-app/package-lock.json
+      - name: Install dependencies
+        working-directory: trainer-app
+        run: npm ci
+      - name: Run tests
+        working-directory: trainer-app
+        run: npm test -- --ci
+
+  eas-build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: trainer-app/package-lock.json
+      - name: Set up EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install dependencies
+        working-directory: trainer-app
+        run: npm ci
+      - name: EAS Build (PR — preview profile, queue only)
+        if: github.event_name == 'pull_request'
+        working-directory: trainer-app
+        run: eas build --profile preview --non-interactive --no-wait --platform all
+      - name: EAS Build (main — development profile, queue only)
+        if: github.ref == 'refs/heads/main'
+        working-directory: trainer-app
+        run: eas build --profile development --non-interactive --no-wait --platform all
