@@ -24,7 +24,7 @@ jobs:
 
       - name: Run tests
         working-directory: admin-web
-        run: npx ng test --watch=false --browsers=ChromeHeadless
+        run: npx ng test --watch=false
 
       - name: Build production
         working-directory: admin-web

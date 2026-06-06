@@ -1,6 +1,8 @@
 # AdminWeb
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.17.
+Angular 21 + Vitest. Node ≥ 20 required.
+
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) (currently 21.x; originally scaffolded on 17.3).
 
 ## Development server
 
@@ -16,7 +18,15 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test` to execute the unit tests via [Vitest](https://vitest.dev) (JSDOM environment, no browser launcher). Karma + Jasmine were removed in Story 1c.1.
+
+## Test commands
+
+| Command | Purpose |
+|---|---|
+| `npm test` | Single-run unit tests via Vitest (developer-facing entrypoint). |
+| `npm run test:watch` | Vitest in watch mode. |
+| `npm run test:coverage` | Vitest with V8 coverage; HTML report in `coverage/`. |
 
 ## Running end-to-end tests
 
