@@ -1,4 +1,27 @@
 {
-  "name": "TrainerApp",
-  "displayName": "TrainerApp"
+  "expo": {
+    "name": "Vis Trainer",
+    "slug": "vis-trainer",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#F9F6F0"
+    },
+    "ios": {
+      "bundleIdentifier": "in.vis.trainer",
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "in.vis.trainer",
+      "adaptiveIcon": {
+        "backgroundColor": "#F9F6F0"
+      }
+    },
+    "jsEngine": "hermes",
+    "plugins": [
+      "expo-status-bar"
+    ]
+  }
 }

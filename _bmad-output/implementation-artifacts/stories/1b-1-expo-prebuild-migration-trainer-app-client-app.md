@@ -1,6 +1,6 @@
 # Story 1b.1: Expo Prebuild Migration — trainer-app + client-app
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -360,22 +360,122 @@ From **Story 1a.6 (Observability)** — the discipline of "register the scaffold
 
 ### Agent Model Used
 
-_To be filled by dev session._
+claude-opus-4-7 (dev-story session, 2026-05-31).
 
 ### Debug Log References
 
-_To be filled by dev session._
+**HALTED at pre-flight — version mismatch between story spec and codebase baseline.**
+
+Pre-flight baseline inspection:
+
+- `trainer-app/package.json` (current): `"react": "19.2.3"`, `"react-native": "0.85.3"`, `@react-native/babel-preset` and other RN tooling pinned to `0.85.3`. RN community CLI on `20.1.0`. `@react-native-firebase/app` + `/auth` already pinned to `^24.0.0` (these are in `dependencies` — story Dev Notes assumed they were NOT installed yet; they ARE).
+- `client-app/package.json` (current): identical version surface — `react 19.2.3`, `react-native 0.85.3`, RN tooling pinned to `0.85.3`, same RNFirebase v24 lines.
+- `trainer-app/app.json` and `client-app/app.json`: vanilla RN shape `{ name, displayName }` — matches story's "before" snapshot.
+- Both apps have `__tests__/`, `src/`, `ios/`, `android/`, `Gemfile`, `index.js`, `babel.config.js`, `metro.config.js`, `jest.config.js`, `tsconfig.json`.
+- Files present per story expectation; only the dependency floor diverges.
+
+Context7 confirmation (queried `/websites/expo_dev` on 2026-05-31):
+
+> "Expo SDK 56.0.0 requires React Native 0.85, React 19.2.3, React Native Web 0.21.0, React Native TV 0.85-stable, and Node.js 22.13.x."
+> "expo": "~56.0.2", "expo-status-bar": "~56.0.4", "react": "19.2.3", "react-native": "0.85.3"
+
+In other words, **Expo SDK 56** is the version that pairs with the codebase's existing RN 0.85.3 + React 19.2.3. **Expo SDK 52** (the version the story prescribes in AC1, Tasks, and Dev Notes §"Why Expo SDK 52") pairs with **RN 0.76 + React 18.3.1** — i.e. installing SDK 52 per the story would force a **downgrade** of RN by 9 minor versions and React by a full major version. That is the inverse of the risk register entry "Expo SDK 52 install bumps RN minor version (0.73 → 0.76)" — the story was authored when the apps were assumed to be on RN 0.73-0.74, but in practice they are already on RN 0.85.3.
+
+Why the assumption broke: the story Dev Notes §"Current state (verified 2026-05-31)" says "Both `trainer-app/` and `client-app/` exist, created via `npx react-native init` originally." It is true they were `init`'d, but they have since been kept current to RN 0.85.3 (no record in git of when — `git log --follow trainer-app/package.json` would show the bump). The story's "verified 2026-05-31" line was not actually verified against `package.json` at authoring time.
 
 ### Completion Notes List
 
-_To be filled by dev session._
+**HALT reason:** Story spec requires `expo: ~52.0.0`, which forces RN 0.76 + React 18.3.1. Codebase is on RN 0.85.3 + React 19.2.3. Per dev-session contract: "If RN/Expo SDK version mismatch surfaces (e.g. RN 0.73 vs Expo 52 requires RN 0.76), HALT and report." Also: "If you need to bump dependencies BEYOND what the story specifies, HALT and ask." The natural fix is to use **Expo SDK 56** (which is the correct SDK pairing for the current RN baseline) — but bumping the SDK target from 52 → 56 is a story-spec change that requires user sign-off, not a unilateral dev decision. SDK 56 also matters downstream:
+
+- 1b.3 (op-sqlite) — op-sqlite Expo config plugin must be validated against SDK 56, not SDK 52.
+- 1b.4 (MMKV) — `react-native-mmkv` v3 JSI on RN 0.85 + Hermes 0.85 — same.
+- 1b.2 (EAS Build CI) — EAS images for SDK 56 differ from SDK 52.
+- 1d.1 (Firebase Auth Expo plugin) — `@react-native-firebase/app` v24 (already in `dependencies`) ships an Expo plugin that targets recent SDKs; v24 + SDK 56 pairing is the supported lane.
+
+**Work actually completed before halt:**
+1. Read story file in full.
+2. Flipped sprint-status `1b-1-...: ready-for-dev → in-progress`.
+3. Inspected both apps' `package.json` and `app.json` (file paths in File List below).
+4. Queried context7 `/websites/expo_dev` to confirm Expo SDK 56 ↔ RN 0.85.3 pairing.
+5. No code changes, no `npx expo install`, no `npx expo prebuild` run. No `ios/`/`android/` regeneration. No backup of Firebase config files (deferred — only needed before `--clean`).
+6. No commits created. No pushes.
+
+**Linear mirror back-fill flag:** MCP token expired this session → no Linear mirror issue created for VIS-NOMIRROR-1b1. When user un-halts (whether by approving SDK 56 swap or by re-authoring the story), Linear mirror should be created in project `E1b — Mobile Infrastructure` first, then the dev session resumes with the real `VIS-<n>:` commit prefix.
+
+**Recommended user decision (NOT executed):**
+
+Option A — bump story spec to SDK 56 (recommended).
+- Edit the story file's AC1, AC7, Tasks, Dev Notes §"Why Expo SDK 52", and risk register to read "SDK 56" instead of "SDK 52". Keep all other content (bare workflow rationale, prebuild discipline, Firebase-copy choreography, README structure) — those are SDK-version-agnostic.
+- Rationale: zero downgrade risk; aligns with `@react-native-firebase` v24 already in `package.json`; preserves React 19 (which the Vis prototype already uses, so mental model stays consistent across web + mobile).
+- Downstream stories (1b.3 / 1b.4 / 1d.1) need a one-line "SDK 56" note added; no real spec rewrite.
+
+Option B — accept the RN downgrade (NOT recommended).
+- Force `react-native 0.85 → 0.76` and `react 19.2.3 → 18.3.1`. Bumps `@react-native-firebase/app` and `/auth` from v24 → v21 (last RN-0.76-compatible). Drops React 19 features. Breaks parity with the web prototype which uses React 19.
+- Only justification would be if there is a known reason Vis must stay on SDK 52 — none surfaced in the story or its references.
+
+Option C — split the story.
+- Make 1b.1 install Expo SDK 56 in both apps without prebuild (just the dep + `app.json` Expo schema), and defer `npx expo prebuild --clean` to a new 1b.1.5. Useful if the user wants a smaller blast radius per commit. Probably overkill given the bare-workflow story is already scoped per-app.
 
 ### File List
 
-_To be filled by dev session._
+**Inspected (read-only):**
+- `/Users/gauravprakashshinde/Documents/Projects/Ai/Vis/trainer-app/package.json`
+- `/Users/gauravprakashshinde/Documents/Projects/Ai/Vis/trainer-app/app.json`
+- `/Users/gauravprakashshinde/Documents/Projects/Ai/Vis/client-app/package.json`
+- `/Users/gauravprakashshinde/Documents/Projects/Ai/Vis/client-app/app.json`
+- `/Users/gauravprakashshinde/Documents/Projects/Ai/Vis/_bmad-output/implementation-artifacts/sprint-status.yaml`
+
+**Modified:**
+- `/Users/gauravprakashshinde/Documents/Projects/Ai/Vis/_bmad-output/implementation-artifacts/sprint-status.yaml` — `1b-1-...: ready-for-dev → in-progress`.
+- `/Users/gauravprakashshinde/Documents/Projects/Ai/Vis/_bmad-output/implementation-artifacts/stories/1b-1-expo-prebuild-migration-trainer-app-client-app.md` (this file) — `Status: ready-for-dev → in-progress`; Dev Agent Record filled with halt context.
+
+**NOT modified (no app code touched):**
+- `trainer-app/**`, `client-app/**` — untouched.
+- `_bmad-output/implementation-artifacts/deferred-work.md` — no entry added; the SDK-version question is a story-spec decision, not a prod-hardening defer.
+
+### 2026-06-06 resume — execution
+
+**SDK swap to 56 (story-spec deviation):** Story prescribed SDK 52. Codebase on RN 0.85.3 + React 19.2.3. SDK 56 is the pairing SDK; SDK 52 would have forced major downgrades. Applied SDK 56 per Option A in prior halt notes. **Story spec references to "SDK 52" are now stale-by-design**; this commit + Dev Agent Record is the source of truth.
+
+**Per-app changes:**
+
+trainer-app:
+- `npm install expo@~56.0.0` + `npx expo install expo-status-bar` → `expo@~56.0.0` + `expo-status-bar@~56.0.4` in deps.
+- `app.json` rewritten to Expo schema: `expo.name="Vis Trainer"`, `slug="vis-trainer"`, `version="0.1.0"`, `orientation="portrait"`, `userInterfaceStyle="automatic"`, `splash.backgroundColor="#F9F6F0"` (warm ivory per CLAUDE.md), `ios.bundleIdentifier="in.vis.trainer"`, `android.package="in.vis.trainer"`, `jsEngine="hermes"`, `plugins=["expo-status-bar"]`.
+- `npx expo prebuild --clean --no-install` → regenerated `ios/VisTrainer/` + `android/app/src/main/java/in/vis/trainer/`. Bundle IDs match `app.json`. `MainApplication.kt` + `MainActivity.kt` Expo-templated.
+- `npm test` → 1 skipped (matches baseline).
+
+client-app: same sequence with `Vis Client` / `vis-client` / `in.vis.client`. iOS dir = `VisClient/`. Android Java package = `in.vis.client`.
+
+**Deferred to Story 1d.1 (Firebase Auth):**
+- `pod install` skipped via `--no-install`. `@react-native-firebase/app@^24` + `/auth@^24` are still in `dependencies`. iOS `pod install` fails today with: `The Swift pod FirebaseAuth depends upon FirebaseAuthInterop, FirebaseAppCheckInterop, GoogleUtilities, and RecaptchaInterop, which do not define modules`. Fix is `use_modular_headers!` in Podfile — Story 1d.1's `@react-native-firebase/app` Expo config plugin handles this injection, so this story does not touch the Podfile manually.
+- Firebase config files (`GoogleService-Info.plist` / `google-services.json`) are NOT present in repo (gitignored AND not held in dev environment). Story 1d.1 owns the secure-store + Console-download workflow.
+
+**Native build verification:** `npx react-native run-ios` / `run-android` NOT exercised in this dev session — no iOS simulator + no Android emulator available in the working environment. Build verified at the prebuild + jest layer only. Native sim/emulator smoke is a reviewer responsibility.
+
+**AC 5 status:** logical intent met (apps now Expo-bare-workflow + reproducible from `app.json`). Literal "build and run on a clean checkout via run-ios + run-android" not executed in this session — see above. AC 6 met (npm test passes both apps). AC 4 (Firebase configs restored post-prebuild) deferred to 1d.1 per RN-Firebase Expo plugin lane.
+
+**AC 7 scope guards:**
+- `grep -r "expo-router" trainer-app/ client-app/` — empty (managed workflow not introduced).
+- `grep -r "watermelondb\|op-sqlite\|mmkv" trainer-app/src/ client-app/src/` — empty.
+
+**Files modified (this session):**
+
+trainer-app:
+- `package.json` — added `expo`, `expo-status-bar`. Scripts: `android` + `ios` rewritten to `expo run:android` / `expo run:ios` by prebuild.
+- `app.json` — full Expo schema rewrite.
+- `README.md` — added "Native regeneration (Expo prebuild)" section + paths updated to `VisTrainer/`.
+- `ios/**` — entire tree regenerated by `expo prebuild --clean`.
+- `android/**` — entire tree regenerated.
+- `package-lock.json` — regenerated.
+
+client-app:
+- Same as trainer-app with `Vis Client` / `vis-client` / `in.vis.client` / `VisClient/` substitutions.
 
 ### Change Log
 
 | Date       | Change |
 |------------|--------|
 | 2026-05-31 | Initial story draft (ready-for-dev). |
+| 2026-05-31 | Dev session HALTED at pre-flight. Codebase on RN 0.85.3 + React 19.2.3 — story spec's Expo SDK 52 would force a 9-minor RN downgrade + React 19→18 downgrade. SDK 56 is the SDK that pairs with the current baseline (confirmed via context7 `/websites/expo_dev`). User decision required before resuming. Status flipped to `in-progress` per HALT protocol. |
+| 2026-06-06 | Resumed under blanket user auth ("go on implementing stories without my permission till you reach visual stories"). Applied Option A: SDK 56 instead of SDK 52. Both apps migrated. Prebuild ran with `--no-install` (CocoaPods pod install deferred to 1d.1 because `@react-native-firebase/auth` Swift pods need `use_modular_headers!` Podfile injection that 1d.1's RN-Firebase Expo plugin will own). `npm test` passes in both apps (1 skipped each, same as Karma baseline). Status → review. |

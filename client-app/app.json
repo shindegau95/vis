@@ -1,4 +1,27 @@
 {
-  "name": "ClientApp",
-  "displayName": "ClientApp"
+  "expo": {
+    "name": "Vis Client",
+    "slug": "vis-client",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#F9F6F0"
+    },
+    "ios": {
+      "bundleIdentifier": "in.vis.client",
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "in.vis.client",
+      "adaptiveIcon": {
+        "backgroundColor": "#F9F6F0"
+      }
+    },
+    "jsEngine": "hermes",
+    "plugins": [
+      "expo-status-bar"
+    ]
+  }
 }

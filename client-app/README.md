@@ -1,6 +1,6 @@
 # Client App — Vis
 
-React Native 0.85 (bare CLI) — PT member-facing app. Phase 0 ships only the auth shell:
+React Native 0.85 + Expo SDK 56 (bare workflow) — PT member-facing app. Phase 0 ships only the auth shell:
 `Login → (Pending | HomeShell)` driven by Firebase Auth + backend `GET /auth/me`.
 
 ## Prerequisites
@@ -19,7 +19,7 @@ Both files are `.gitignore`d.
 | File | Source | Drop into |
 | -- | -- | -- |
 | `google-services.json` | Firebase Console → Project settings → Android app `in.vis.client` | `android/app/google-services.json` |
-| `GoogleService-Info.plist` | Firebase Console → iOS app `in.vis.client` | `ios/ClientApp/GoogleService-Info.plist` (also drag-drop into the Xcode project so it's in the resources bundle) |
+| `GoogleService-Info.plist` | Firebase Console → iOS app `in.vis.client` | `ios/VisClient/GoogleService-Info.plist` (also drag-drop into the Xcode project so it's in the resources bundle) |
 
 Then update `src/config.ts` with the **Web client ID** from
 `Firebase Console → Project settings → General → Web SDK configuration → Web client ID`.
@@ -45,6 +45,25 @@ npx react-native run-ios
 # Android (with an emulator running)
 npx react-native run-android
 ```
+
+## Native regeneration (Expo prebuild)
+
+`ios/` and `android/` are **generated artifacts** produced by `npx expo prebuild` from `app.json`. They are still committed today so a fresh checkout builds without the prebuild step, but they are reproducible from `app.json`.
+
+Re-run prebuild after:
+- editing `app.json` (`name`, `slug`, `bundleIdentifier`, `package`, `plugins`, etc.)
+- adding an Expo config plugin (`op-sqlite`, `expo-build-properties`, `@react-native-firebase/app`, …)
+- upgrading the Expo SDK
+
+```bash
+npx expo prebuild --clean
+```
+
+`--clean` deletes `ios/` and `android/` before regenerating. **Warning:** this also deletes:
+- `ios/VisClient/GoogleService-Info.plist`
+- `android/app/google-services.json`
+
+Re-copy them from your secure store after every clean prebuild. Story 1d.1 introduces a config-plugin-driven copy step (likely via `@react-native-firebase/app`'s Expo plugin) so the manual copy goes away.
 
 ## Auth flow (Phase 0)
 
