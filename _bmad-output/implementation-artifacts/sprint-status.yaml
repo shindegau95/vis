@@ -57,7 +57,7 @@ development_status:
   1b-1-expo-prebuild-migration-trainer-app-client-app: review
   1b-2-eas-build-ci-pipelines-trainer-app-client-app: review
   1b-3-watermelondb-op-sqlite-integration: review
-  1b-4-mmkv-setup-auth-token-storage: backlog
+  1b-4-mmkv-setup-auth-token-storage: review
   1b-5-light-dark-theme-token-system-os-preference-hooks: backlog
   epic-1b-retrospective: optional
 
